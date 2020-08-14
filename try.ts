@@ -1,7 +1,4 @@
-import {tuple, literal} from "../zod/src/index.ts";
+import { tuple, literal } from "deps.ts";
 
-const x = ['a', 'b', 'c']
-    .map(x => literal(x))
-
-
-
+const x = ["a", "b", "c"]
+  .map((x) => literal(x));

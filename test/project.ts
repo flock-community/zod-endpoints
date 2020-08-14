@@ -4,7 +4,7 @@ import {
   string,
   tuple,
   union,
-} from "../../zod/src/index.ts";
+} from "../deps.ts";
 
 const routerSchema = union([
   object({

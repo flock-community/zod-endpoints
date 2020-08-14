@@ -10,4 +10,3 @@ export type Http = {
     body?: Record<PropertyKey, unknown>;
   };
 };
-

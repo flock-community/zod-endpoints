@@ -1,8 +1,4 @@
-import * as z from "../zod/src/index.ts";
-
+import * as z from "deps.ts";
 
 class Parameter extends z.ZodTuple {
-
-
 }
-

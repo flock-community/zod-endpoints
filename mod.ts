@@ -1,4 +1,4 @@
-import { number, object, string, boolean, array } from "../zod/src/index.ts";
+import { number, object, string, boolean, array } from "deps.ts";
 //import {number, object, string, boolean, array } from 'https://raw.githubusercontent.com/flock-community/zod/deno/src/index.ts';
 
 const Person = object({
