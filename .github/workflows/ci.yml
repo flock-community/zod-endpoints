@@ -7,8 +7,9 @@ on:
     - cron: "0 * * * *"
 
 jobs:
-  stable:
+  build:
     name: Deno
+    runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
 
