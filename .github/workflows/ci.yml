@@ -21,4 +21,4 @@ jobs:
       - name: Run deno test
         run: |
           deno --version
-          deno run ./test.ts
+          deno test --allow-net test.ts
