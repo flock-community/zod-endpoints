@@ -1,4 +1,4 @@
-#! /usr/bin/env deno test --allow-net test.ts
+#! /usr/bin/env deno test --allow-net --reload test.ts
 
 import "./test/param.ts";
 import "./test/pets.ts";
