@@ -1,4 +1,5 @@
 import * as z from "../deps.ts";
+import { Component, component, Parameter, parameter } from "../lib/index.ts";
 
 function assertUnreachable(x: never): never {
   throw new Error("Didn't expect to get here");
@@ -15,7 +16,7 @@ type Http = z.ZodObject<{
     z.ZodLiteral<string>
   >;
   method: z.ZodLiteral<"GET" | "POST">;
-  headers: z.ZodObject<{[key:string]:z.ZodLiteral<string>}>
+  headers: z.ZodObject<{ [key: string]: z.ZodLiteral<string> }>;
 }>;
 
 type HttpUnion = z.ZodUnion<[Http, Http, ...Http[]]>;
@@ -24,12 +25,12 @@ const route: HttpUnion = z.union([
   z.object({
     name: z.literal("A").default("A"),
     method: z.literal("GET"),
-    headers: z.object({})
+    headers: z.object({}),
   }),
   z.object({
     name: z.literal("B").default("B"),
     method: z.literal("POST"),
-    headers: z.object({})
+    headers: z.object({}),
   }),
 ]);
 
@@ -55,3 +56,15 @@ route._def.options
   });
 
 console.log(api(x));
+
+type AB = z.ZodObject<{
+  a: Component | Parameter;
+  b: Component | Parameter;
+}>;
+
+const ab: AB = z.object({
+  a: component(z.object({
+    name: z.string(),
+  })),
+  b: parameter(z.string()),
+});

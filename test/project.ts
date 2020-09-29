@@ -1,8 +1,9 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+
 import * as z from "../deps.ts";
 import { object } from "../deps.ts";
-import { Http, Headers, openApi } from "../openapi.ts";
-import { component, parameter } from "../lib/index.ts";
+import { Http, openApi } from "../openapi.ts";
+import {component, parameter} from "../lib/index.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 
 const route: Http = {
@@ -25,13 +26,10 @@ const route: Http = {
           [z.literal("application/json"), z.literal("text/html")],
         ),
       }),
-      content: component(
-        "Pets",
-        z.object({
-          uuid: z.string().uuid(),
-          name: z.string(),
-        }),
-      ),
+      content: component(z.object({
+        uuid: z.string().uuid(),
+        name: z.string(),
+      })),
     }),
     z.object({
       description: z.literal("Not projects found"),
@@ -41,13 +39,10 @@ const route: Http = {
           [z.literal("application/json"), z.literal("text/html")],
         ),
       }),
-      content: component(
-        "Pets",
-        z.object({
-          uuid: z.string().uuid(),
-          name: z.string(),
-        }),
-      ),
+      content: component(z.object({
+        uuid: z.string().uuid(),
+        name: z.string(),
+      })),
     }),
   ]),
 };
@@ -75,7 +70,7 @@ const exp: OpenAPIObject = {
             name: "test",
             required: false,
             schema: {
-              format: "int32",
+              format: "int64",
               type: "integer",
             },
           },
@@ -98,8 +93,20 @@ const exp: OpenAPIObject = {
             },
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pets",
+                schema: {
+                  properties: {
+                    name: {
+                      type: "string",
+                    },
+                    uuid: {
+                      type: "string",
+                    },
+                  },
+                  required: [
+                    "uuid",
+                    "name",
+                  ],
+                  type: "object",
                 },
               },
             },
@@ -116,8 +123,20 @@ const exp: OpenAPIObject = {
             },
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pets",
+                schema: {
+                  properties: {
+                    name: {
+                      type: "string",
+                    },
+                    uuid: {
+                      type: "string",
+                    },
+                  },
+                  required: [
+                    "uuid",
+                    "name",
+                  ],
+                  type: "object",
                 },
               },
             },
@@ -126,6 +145,7 @@ const exp: OpenAPIObject = {
       },
     },
   },
+  components: undefined
 };
 
 assertEquals(res, exp);

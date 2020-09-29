@@ -1,19 +1,29 @@
 import * as z from "../deps.ts";
+import {Integer} from "./integer.ts";
 
-export class Component extends z.ZodType<any, any> {
-  readonly state: {
-    name: string;
-  };
+export type ComponentType =
+  | z.ZodObject<z.ZodRawShape>
+  | z.ZodArray<z.ZodTypeAny>
+  | z.ZodString
+  | z.ZodBigInt
+  | z.ZodNumber
+  | z.ZodBoolean
+  | z.ZodOptional<z.ZodTypeAny>
+  | z.ZodTypeAny
+| Integer
 
-  constructor(name: string, type: z.ZodType<any, any>) {
+export class Component extends z.ZodType<any> {
+  readonly component: ComponentType;
+
+  constructor(type: ComponentType) {
     super(type._def);
-    this.state = { name };
+    this.component = type;
   }
 
   public toJSON = () => this._def;
 
-  static create(name: string, type: z.ZodType<any, any>) {
-    return new Component(name, type);
+  static create(type: ComponentType) {
+    return new Component(type);
   }
 }
 

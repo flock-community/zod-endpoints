@@ -1,19 +1,19 @@
 import * as z from "../deps.ts";
 
 type ParameterState = {
-  type: z.ZodType<any, any>;
   name?: string;
   description?: string;
   required?: boolean;
 };
 
-export class Parameter extends z.ZodType<any, any> {
+export class Parameter extends z.ZodType<any> {
+  readonly type: z.ZodType<any>;
   state: ParameterState;
 
-  constructor(type: z.ZodType<any, any>) {
+  constructor(type: z.ZodType<any>) {
     super(type._def);
+    this.type = type;
     this.state = {
-      type,
       name: undefined,
       description: undefined,
       required: false,
@@ -37,7 +37,7 @@ export class Parameter extends z.ZodType<any, any> {
     return this;
   }
 
-  static create(type: z.ZodType<any, any>) {
+  static create(type: z.ZodType<any>) {
     return new Parameter(type);
   }
 }
