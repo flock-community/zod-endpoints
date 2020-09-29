@@ -145,16 +145,17 @@ Deno.test("compare open api schema", () => {
 Deno.test("validate example request", () => {
   type ReqRes = TypeOf<HttpObject>;
 
-  const reqRes:ReqRes = {
-    name:"listPets",
-    summary: "List all pets",
-    tags: ["pets"],
+  const listPets:ReqRes = {
     path: ["pets"],
     method: "GET",
     query: {
       limit: 10,
     },
     headers: {},
+
+    summary: "List all pets",
+    tags: ["pets"],
+
     responses: {
       status: 200,
       description: "A paged array of pets",
@@ -168,8 +169,24 @@ Deno.test("validate example request", () => {
       }],
     },
   };
-  const res = schema.parse(reqRes);
-  console.log("---res", res);
+  assertEquals(schema.parse(listPets).name, "listPets");
 
-  assertEquals(res.name, "listPets");
+  const showPetById:ReqRes = {
+    summary: "Info for a specific pet",
+    tags: ["pets"],
+    path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
+    method: "GET",
+    query: {},
+    headers: {},
+    responses: {
+      status: undefined,
+      description: "unexpected error",
+      headers: {},
+      content: {
+        code: 50,
+        message: "This is an error",
+      },
+    },
+  };
+  assertEquals(schema.parse(showPetById).name, "showPetById");
 });

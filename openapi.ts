@@ -64,11 +64,9 @@ function mapSchema(type: ComponentType): SchemaObject | undefined {
 
 export function createSchema(obj: ReferenceType | Reference | Component): SchemaObject | ReferenceObject | undefined {
   if ("reference" in obj) {
-    console.log('==========')
     return {"$ref": `#/components/schemas/${obj.state.name}`};
   }
   if ("component" in obj) {
-    console.log('==========')
     return createSchema(obj.component);
   }
   if ("innerType" in obj._def) {
@@ -128,7 +126,7 @@ export type HttpResponses =
   | ZodUnion<[HttpResponse, HttpResponse, ...HttpResponse[]]>;
 
 export type Http = {
-  name: ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>>;
+  name: ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>> | ZodUndefined;
   method: ZodLiteral<string>;
   path: ZodTuple<[
     ZodLiteral<any> | ZodString | Parameter,
@@ -215,7 +213,7 @@ function createOperationObject(http: HttpObject): OperationObject {
     summary: ("value" in shape.summary._def)
       ? shape.summary._def.value
       : undefined,
-    operationId: shape.name._def.output._def.value,
+    operationId: ("output" in shape.name._def) ? shape.name._def.output._def.value : undefined,
     tags: ("items" in shape.tags._def)
       ? shape.tags._def.items
         .map((x) => ("value" in x._def) ? x._def.value : undefined)

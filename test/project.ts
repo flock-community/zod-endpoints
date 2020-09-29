@@ -70,7 +70,7 @@ const exp: OpenAPIObject = {
             name: "test",
             required: false,
             schema: {
-              format: "int64",
+              format: "int32",
               type: "integer",
             },
           },
