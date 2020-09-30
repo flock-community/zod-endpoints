@@ -35,7 +35,7 @@ const Pet = z.object({
 
 const Pets = array(reference("Pet", Pet))
 
-const schema: HttpUnion = union([
+const schema:HttpUnion = union([
   object({
     name: literal("listPets").default("listPets"),
     summary: literal("List all pets"),
@@ -143,9 +143,9 @@ Deno.test("compare open api schema", () => {
 });
 
 Deno.test("validate example request", () => {
-  type ReqRes = TypeOf<HttpObject>;
+  type Input = z.input<typeof schema>;
 
-  const listPets:ReqRes = {
+  const listPets:Input = {
     path: ["pets"],
     method: "GET",
     query: {
@@ -171,7 +171,7 @@ Deno.test("validate example request", () => {
   };
   assertEquals(schema.parse(listPets).name, "listPets");
 
-  const showPetById:ReqRes = {
+  const showPetById:Input = {
     summary: "Info for a specific pet",
     tags: ["pets"],
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
