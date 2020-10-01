@@ -1,5 +1,5 @@
 import * as z from "../deps.ts";
-import {Integer} from "./integer.ts";
+import { Integer } from "./integer.ts";
 
 export type ComponentType =
   | z.ZodObject<z.ZodRawShape>
@@ -10,7 +10,7 @@ export type ComponentType =
   | z.ZodBoolean
   | z.ZodOptional<z.ZodTypeAny>
   | z.ZodTypeAny
-| Integer
+  | Integer;
 
 export class Component extends z.ZodType<any> {
   readonly component: ComponentType;

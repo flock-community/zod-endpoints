@@ -1,5 +1,5 @@
 import * as z from "../deps.ts";
-import {Integer} from "./integer.ts";
+import { Integer } from "./integer.ts";
 
 export type ReferenceType =
   | z.ZodObject<z.ZodRawShape>
@@ -10,23 +10,23 @@ export type ReferenceType =
   | z.ZodBoolean
   | z.ZodOptional<z.ZodTypeAny>
   | z.ZodTypeAny
-    |Integer;
+  | Integer;
 
 export class Reference extends z.ZodType<any> {
   readonly reference: ReferenceType;
-  state:{
-    name?: string
+  state: {
+    name?: string;
   };
 
-  constructor(name:string, type: ReferenceType) {
+  constructor(name: string, type: ReferenceType) {
     super(type._def);
     this.reference = type;
-    this.state = {name}
+    this.state = { name };
   }
 
   public toJSON = () => this._def;
 
-  static create(name:string, type: ReferenceType) {
+  static create(name: string, type: ReferenceType) {
     return new Reference(name, type);
   }
 }

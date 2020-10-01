@@ -4,7 +4,8 @@ import {
   OpenAPIObject,
   OperationObject,
   ParameterObject,
-  PathsObject, ReferenceObject,
+  PathsObject,
+  ReferenceObject,
   ResponseObject,
   SchemaObject,
   ServerObject,
@@ -23,7 +24,14 @@ import {
   ZodType,
 } from "./deps.ts";
 
-import { Parameter, Reference, ReferenceType, Component, ComponentType } from "./lib/index.ts";
+import {
+  Parameter,
+  Reference,
+  ReferenceType,
+  Component,
+  ComponentType,
+} from "./lib/index.ts";
+import * as z from "./deps.ts";
 
 const base = {
   "openapi": "3.0.0",
@@ -37,34 +45,35 @@ const base = {
 };
 
 function mapSchema(type: ComponentType): SchemaObject | undefined {
-    switch (type._def.t) {
-      case ZodTypes.number:
-        if('format' in type._def){
-          return {
-            type: "integer",
-            format: type._def.format,
-          };
-        }
+  switch (type._def.t) {
+    case ZodTypes.number:
+      if ("format" in type._def) {
         return {
           type: "integer",
-          format: "int32",
+          format: type._def.format,
         };
-      case ZodTypes.bigint:
-        return {
-          type: "integer",
-          format: "int32",
-        };
-      case ZodTypes.string:
-        return {
-          type: "string",
-        };
-    }
-
+      }
+      return {
+        type: "integer",
+        format: "int32",
+      };
+    case ZodTypes.bigint:
+      return {
+        type: "integer",
+        format: "int32",
+      };
+    case ZodTypes.string:
+      return {
+        type: "string",
+      };
+  }
 }
 
-export function createSchema(obj: ReferenceType | Reference | Component): SchemaObject | ReferenceObject | undefined {
+export function createSchema(
+  obj: ReferenceType | Reference | Component,
+): SchemaObject | ReferenceObject | undefined {
   if ("reference" in obj) {
-    return {"$ref": `#/components/schemas/${obj.state.name}`};
+    return { "$ref": `#/components/schemas/${obj.state.name}` };
   }
   if ("component" in obj) {
     return createSchema(obj.component);
@@ -72,11 +81,11 @@ export function createSchema(obj: ReferenceType | Reference | Component): Schema
   if ("innerType" in obj._def) {
     return createSchema(obj._def.innerType);
   }
-  if ("type" in obj._def){
+  if ("type" in obj._def) {
     return {
       type: "array",
-      items: createSchema(obj._def.type)
-    }
+      items: createSchema(obj._def.type),
+    };
   }
   if ("shape" in obj._def) {
     const shape = obj._def.shape();
@@ -126,14 +135,18 @@ export type HttpResponses =
   | ZodUnion<[HttpResponse, HttpResponse, ...HttpResponse[]]>;
 
 export type Http = {
-  name: ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>> | ZodUndefined;
+  name:
+    | ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>>
+    | ZodUndefined;
   method: ZodLiteral<string>;
   path: ZodTuple<[
     ZodLiteral<any> | ZodString | Parameter,
     ...(ZodLiteral<any> | ZodString | Parameter)[],
   ]>;
-  summary: ZodLiteral<string> | ZodUndefined;
-  tags: ZodTuple<[ZodLiteral<string>, ...ZodLiteral<string>[]]> | ZodUndefined;
+  summary:
+    | ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>>
+    | ZodUndefined;
+  tags: z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>;
   query: ZodObject<{ [key: string]: Parameter }>;
   headers: Headers;
   responses: HttpResponses;
@@ -210,14 +223,15 @@ function createComponents(options: HttpObject[]): ComponentsObject | undefined {
 function createOperationObject(http: HttpObject): OperationObject {
   const shape = http._def.shape();
   return {
-    summary: ("value" in shape.summary._def)
-      ? shape.summary._def.value
+    summary: ("output" in shape.summary._def)
+      ? shape.summary._def.output._def.value
       : undefined,
-    operationId: ("output" in shape.name._def) ? shape.name._def.output._def.value : undefined,
-    tags: ("items" in shape.tags._def)
-      ? shape.tags._def.items
-        .map((x) => ("value" in x._def) ? x._def.value : undefined)
+    operationId: ("output" in shape.name._def)
+      ? shape.name._def.output._def.value
       : undefined,
+    tags: shape.tags._def.output._def.items.map((x: z.ZodLiteral<string>) =>
+      ("value" in x._def) ? x._def.value : undefined
+    ),
     parameters: createParameterObject(http),
     responses: createResponsesObject(shape.responses),
   };
@@ -301,7 +315,7 @@ function createResponseObject(
       content: ("reference" in shape.content || "component" in shape.content)
         ? {
           "application/json": {
-            schema: createSchema(shape.content)
+            schema: createSchema(shape.content),
           },
         }
         : undefined,

@@ -14,7 +14,7 @@ import {
   TypeOf,
   undefined as undef,
   union,
-    array
+  array,
 } from "../deps.ts";
 
 import * as z from "../deps.ts";
@@ -28,18 +28,18 @@ const Error = object({
 });
 
 const Pet = z.object({
-  id: integer('int64'),
+  id: integer("int64"),
   name: string(),
   tag: string().optional(),
 });
 
-const Pets = array(reference("Pet", Pet))
+const Pets = array(reference("Pet", Pet));
 
-const schema:HttpUnion = union([
+const schema: HttpUnion = union([
   object({
     name: literal("listPets").default("listPets"),
-    summary: literal("List all pets"),
-    tags: tuple([literal("pets")]),
+    summary: literal("List all pets").default("List all pets"),
+    tags: tuple([literal("pets")]).default(["pets"]),
     path: tuple([literal("pets")]),
     method: literal("GET"),
     query: object({
@@ -68,8 +68,10 @@ const schema:HttpUnion = union([
   }),
   object({
     name: literal("showPetById").default("showPetById"),
-    summary: literal("Info for a specific pet"),
-    tags: tuple([literal("pets")]),
+    summary: literal("Info for a specific pet").default(
+      "Info for a specific pet",
+    ),
+    tags: tuple([literal("pets")]).default(["pets"]),
     path: tuple([
       literal("pets"),
       parameter(string().uuid())
@@ -96,8 +98,8 @@ const schema:HttpUnion = union([
   }),
   object({
     name: literal("createPets").default("createPets"),
-    summary: literal("Create a pet"),
-    tags: tuple([literal("pets")]),
+    summary: literal("Create a pet").default("Create a pet"),
+    tags: tuple([literal("pets")]).default(["pets"]),
     path: tuple([literal("pets")]),
     method: literal("POST"),
     query: object({}),
@@ -145,16 +147,13 @@ Deno.test("compare open api schema", () => {
 Deno.test("validate example request", () => {
   type Input = z.input<typeof schema>;
 
-  const listPets:Input = {
+  const listPets: Input = {
     path: ["pets"],
     method: "GET",
     query: {
       limit: 10,
     },
     headers: {},
-
-    summary: "List all pets",
-    tags: ["pets"],
 
     responses: {
       status: 200,
@@ -171,9 +170,7 @@ Deno.test("validate example request", () => {
   };
   assertEquals(schema.parse(listPets).name, "listPets");
 
-  const showPetById:Input = {
-    summary: "Info for a specific pet",
-    tags: ["pets"],
+  const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
     method: "GET",
     query: {},

@@ -3,7 +3,7 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import * as z from "../deps.ts";
 import { object } from "../deps.ts";
 import { Http, openApi } from "../openapi.ts";
-import {component, parameter} from "../lib/index.ts";
+import { component, parameter } from "../lib/index.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 
 const route: Http = {
@@ -11,7 +11,7 @@ const route: Http = {
   method: z.literal("GET"),
   path: z.tuple([z.literal("user")]),
   summary: z.undefined(),
-  tags: z.tuple([z.literal("a"), z.literal("b")]),
+  tags: z.tuple([z.literal("a"), z.literal("b")]).default(["a", "b"]),
   query: object({
     test: parameter(z.number().max(100))
       .description("How many items to return at one time (max 100)"),
@@ -145,7 +145,7 @@ const exp: OpenAPIObject = {
       },
     },
   },
-  components: undefined
+  components: undefined,
 };
 
 assertEquals(res, exp);

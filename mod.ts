@@ -1,1 +1,1 @@
-export {openApi} from './openapi.ts'
+export { openApi } from "./openapi.ts";
