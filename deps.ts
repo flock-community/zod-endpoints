@@ -4,5 +4,5 @@
 
 export * from "../zod/src/index.ts";
 export { ZodRawShape } from "../zod/src/types/base.ts";
-export { ZodUnion, ZodUnionDef } from '../zod/src/types/union.ts';
+export { ZodUnion, ZodUnionDef } from "../zod/src/types/union.ts";
 export { errorUtil } from "../zod/src/helpers/errorUtil.ts";

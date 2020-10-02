@@ -2,7 +2,16 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 import * as z from "../deps.ts";
 import { object } from "../deps.ts";
-import { Http, openApi } from "../openapi.ts";
+import {
+  Headers,
+  HttpResponse,
+  HttpResponses,
+  Http,
+  HttpObject,
+  HttpUnion,
+  Schema,
+} from "../lib/domain.ts";
+import { openApi } from "../openapi.ts";
 import { component, parameter } from "../lib/index.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 

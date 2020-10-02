@@ -1,9 +1,17 @@
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { Http, HttpObject, HttpUnion, openApi } from "../openapi.ts";
+import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
 import { parameter, reference, integer } from "../lib/index.ts";
-
+import {
+  Headers,
+  HttpResponse,
+  HttpResponses,
+  Http,
+  HttpObject,
+  HttpUnion,
+  Schema,
+} from "../lib/domain.ts";
 import {
   literal,
   number,

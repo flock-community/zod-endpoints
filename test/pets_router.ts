@@ -1,9 +1,24 @@
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { Http, HttpObject, HttpUnion, openApi } from "../openapi.ts";
+import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
-import {Router, parameter, reference, integer, router, route} from "../lib/index.ts";
-
+import {
+  Router,
+  parameter,
+  reference,
+  integer,
+  router,
+  route,
+} from "../lib/index.ts";
+import {
+  Headers,
+  HttpResponse,
+  HttpResponses,
+  Http,
+  HttpObject,
+  HttpUnion,
+  Schema,
+} from "../lib/domain.ts";
 import {
   literal,
   number,
@@ -37,9 +52,9 @@ const Pets = array(reference("Pet", Pet));
 
 const schema: Router = router([
   route({
-    name:"listPets",
+    name: "listPets",
     summary: "List all pets",
-    method: "GET"
+    method: "GET",
   }),
   object({
     name: literal("showPetById").default("showPetById"),
@@ -162,5 +177,5 @@ Deno.test("validate example request", () => {
   };
   assertEquals(schema.parse(showPetById).name, "showPetById");
 
-  console.log("------", schema.match("GET"))
+  console.log("------", schema.match("GET"));
 });
