@@ -3,128 +3,107 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
 import { parameter, reference, integer } from "../lib/index.ts";
-import {
-  Headers,
-  HttpResponse,
-  HttpResponses,
-  Http,
-  HttpObject,
-  HttpUnion,
-  Schema,
-} from "../lib/domain.ts";
-import {
-  literal,
-  number,
-  bigint,
-  object,
-  string,
-  tuple,
-  TypeOf,
-  undefined as undef,
-  union,
-  array,
-} from "../deps.ts";
 
 import * as z from "../deps.ts";
 
 const petApi =
   "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
 
-const Error = object({
+const Error = z.object({
   code: integer(),
-  message: string(),
+  message: z.string(),
 });
 
 const Pet = z.object({
   id: integer("int64"),
-  name: string(),
-  tag: string().optional(),
+  name: z.string(),
+  tag: z.string().optional(),
 });
 
-const Pets = array(reference("Pet", Pet));
+const Pets_raw = z.array(reference("Pet", Pet));
 
-const schema: HttpUnion = union([
-  object({
-    name: literal("listPets").default("listPets"),
-    summary: literal("List all pets").default("List all pets"),
-    tags: tuple([literal("pets")]).default(["pets"]),
-    path: tuple([literal("pets")]),
-    method: literal("GET"),
-    query: object({
+const schema = z.union([
+  z.object({
+    name: z.literal("listPets").default("listPets"),
+    summary: z.literal("List all pets").default("List all pets"),
+    tags: z.tuple([z.literal("pets")]).default(["pets"]),
+    path: z.tuple([z.literal("pets")]),
+    method: z.literal("GET"),
+    query: z.object({
       limit: parameter(integer("int32").max(100))
         .description("How many items to return at one time (max 100)"),
     }),
-    headers: object({}),
-    responses: union([
-      object({
-        status: literal(200),
-        description: literal("A paged array of pets"),
-        headers: object({
-          "x-next": parameter(string())
+    headers: z.object({}),
+    responses: z.union([
+      z.object({
+        status: z.literal(200),
+        description: z.literal("A paged array of pets"),
+        headers: z.object({
+          "x-next": parameter(z.string())
             .name("x-next")
             .description("A link to the next page of responses"),
         }),
-        content: reference("Pets", Pets),
+        content: reference("Pets", Pets_raw),
       }),
-      object({
-        status: undef(),
-        description: literal("unexpected error"),
-        headers: object({}),
+      z.object({
+        status: z.literal("default"),
+        description: z.literal("unexpected error"),
+        headers: z.object({}),
         content: reference("Error", Error),
       }),
     ]),
   }),
-  object({
-    name: literal("showPetById").default("showPetById"),
-    summary: literal("Info for a specific pet").default(
+  z.object({
+    name: z.literal("showPetById").default("showPetById"),
+    summary: z.literal("Info for a specific pet").default(
       "Info for a specific pet",
     ),
-    tags: tuple([literal("pets")]).default(["pets"]),
-    path: tuple([
-      literal("pets"),
-      parameter(string().uuid())
+    tags: z.tuple([z.literal("pets")]).default(["pets"]),
+    path: z.tuple([
+      z.literal("pets"),
+      parameter(z.string().uuid())
         .name("petId")
         .description("The id of the pet to retrieve"),
     ]),
-    method: literal("GET"),
-    query: object({}),
-    headers: object({}),
-    responses: union([
-      object({
-        status: literal(200),
-        description: literal("Expected response to a valid request"),
-        headers: object({}),
+    method: z.literal("GET"),
+    query: z.object({}),
+    headers: z.object({}),
+    responses: z.union([
+      z.object({
+        status: z.literal(200),
+        description: z.literal("Expected response to a valid request"),
+        headers: z.object({}),
         content: reference("Pet", Pet),
       }),
-      object({
-        status: undef(),
-        description: literal("unexpected error"),
-        headers: object({}),
+      z.object({
+        status: z.literal("default"),
+        description: z.literal("unexpected error"),
+        headers: z.object({}),
         content: reference("Error", Error),
       }),
     ]),
   }),
-  object({
-    name: literal("createPets").default("createPets"),
-    summary: literal("Create a pet").default("Create a pet"),
-    tags: tuple([literal("pets")]).default(["pets"]),
-    path: tuple([literal("pets")]),
-    method: literal("POST"),
-    query: object({}),
-    headers: object({
-      accept: literal("application/json"),
+  z.object({
+    name: z.literal("createPets").default("createPets"),
+    summary: z.literal("Create a pet").default("Create a pet"),
+    tags: z.tuple([z.literal("pets")]).default(["pets"]),
+    path: z.tuple([z.literal("pets")]),
+    method: z.literal("POST"),
+    query: z.object({}),
+    headers: z.object({
+      accept: z.literal("application/json"),
     }),
-    responses: union([
-      object({
-        status: literal(201),
-        description: literal("Null response"),
-        headers: object({}),
-        content: undef(),
+    responses: z.union([
+      z.object({
+        status: z.literal(201),
+        description: z.literal("Null response"),
+        headers: z.object({}),
+        content: z.undefined(),
       }),
-      object({
-        status: undef(),
-        description: literal("unexpected error"),
-        headers: object({}),
+      z.object({
+        status: z.literal("default"),
+        description: z.literal("unexpected error"),
+        headers: z.object({}),
         content: reference("Error", Error),
       }),
     ]),
@@ -184,7 +163,7 @@ Deno.test("validate example request", () => {
     query: {},
     headers: {},
     responses: {
-      status: undefined,
+      status: "default",
       description: "unexpected error",
       headers: {},
       content: {

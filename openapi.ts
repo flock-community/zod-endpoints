@@ -271,9 +271,7 @@ function createResponseObject(
   response: HttpResponse,
 ): Record<number | string, ResponseObject> {
   const shape = response._def.shape();
-  const name = ("value" in shape.status._def)
-    ? shape.status._def?.value
-    : "default";
+  const name = shape.status._def.value;
   return {
     [name]: {
       description: shape.description._def.value,

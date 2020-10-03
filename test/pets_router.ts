@@ -1,116 +1,121 @@
+import * as z from "../deps.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
 import {
-  Router,
   parameter,
   reference,
   integer,
   router,
   route,
+  response,
 } from "../lib/index.ts";
-import {
-  Headers,
-  HttpResponse,
-  HttpResponses,
-  Http,
-  HttpObject,
-  HttpUnion,
-  Schema,
-} from "../lib/domain.ts";
-import {
-  literal,
-  number,
-  bigint,
-  object,
-  string,
-  tuple,
-  TypeOf,
-  undefined as undef,
-  union,
-  array,
-} from "../deps.ts";
-
-import * as z from "../deps.ts";
 
 const petApi =
   "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
 
-const Error = object({
+const Error = z.object({
   code: integer(),
-  message: string(),
+  message: z.string(),
 });
 
 const Pet = z.object({
   id: integer("int64"),
-  name: string(),
-  tag: string().optional(),
+  name: z.string(),
+  tag: z.string().optional(),
 });
 
-const Pets = array(reference("Pet", Pet));
+const Pets = z.array(reference("Pet", Pet));
 
-const schema: Router = router([
+const schema = router([
+
   route({
     name: "listPets",
     summary: "List all pets",
+    tags: [z.literal("pets")],
     method: "GET",
+    path: [z.literal("pets")],
+    query: {
+      limit: parameter(integer("int32").max(100))
+        .description("How many items to return at one time (max 100)"),
+    },
+    headers: {},
+    responses: [
+      response({
+        status: 200,
+        description: "A paged array of pets",
+        headers: {
+          "x-next": parameter(z.string())
+            .name("x-next")
+            .description("A link to the next page of responses"),
+        },
+        content: reference("Pets", Pets),
+      }),
+      response({
+        status: "default",
+        description: "unexpected error",
+        headers: {},
+        content: reference("Error", Error),
+      }),
+    ],
   }),
-  object({
-    name: literal("showPetById").default("showPetById"),
-    summary: literal("Info for a specific pet").default(
-      "Info for a specific pet",
-    ),
-    tags: tuple([literal("pets")]).default(["pets"]),
-    path: tuple([
-      literal("pets"),
-      parameter(string().uuid())
-        .name("petId")
-        .description("The id of the pet to retrieve"),
-    ]),
-    method: literal("GET"),
-    query: object({}),
-    headers: object({}),
-    responses: union([
-      object({
-        status: literal(200),
-        description: literal("Expected response to a valid request"),
-        headers: object({}),
+
+  route({
+    name: "showPetById",
+    summary: "Info for a specific pet",
+    tags: [z.literal("pets")],
+    method: "GET",
+    path: [
+      z.literal("pets"),
+      parameter(z.string().uuid())
+          .name("petId")
+          .description("The id of the pet to retrieve"),
+    ],
+    query: {},
+    headers: {},
+    responses: [
+      response({
+        status: 200,
+        description: "Expected response to a valid request",
+        headers: {},
         content: reference("Pet", Pet),
       }),
-      object({
-        status: undef(),
-        description: literal("unexpected error"),
-        headers: object({}),
+      response({
+        status: "default",
+        description: "unexpected error",
+        headers: {},
         content: reference("Error", Error),
       }),
-    ]),
+    ],
   }),
-  object({
-    name: literal("createPets").default("createPets"),
-    summary: literal("Create a pet").default("Create a pet"),
-    tags: tuple([literal("pets")]).default(["pets"]),
-    path: tuple([literal("pets")]),
-    method: literal("POST"),
-    query: object({}),
-    headers: object({
-      accept: literal("application/json"),
-    }),
-    responses: union([
-      object({
-        status: literal(201),
-        description: literal("Null response"),
-        headers: object({}),
-        content: undef(),
+
+  route({
+    name: "createPets",
+    summary: "Create a pet",
+    tags: [z.literal("pets")],
+    method: "POST",
+    path: [z.literal("pets")],
+    query: {},
+    headers: {
+      accept:  parameter(z.literal("application/json")),
+    },
+    responses: [
+      response({
+        status: 201,
+        description: "Null response",
+        headers: {},
+        content: undefined,
       }),
-      object({
-        status: undef(),
-        description: literal("unexpected error"),
-        headers: object({}),
+      response({
+        status: "default",
+        description: "unexpected error",
+        headers: {},
         content: reference("Error", Error),
       }),
-    ]),
+    ],
   }),
+
 ]);
 
 const server = { url: "http://petstore.swagger.io/v1" };
@@ -166,7 +171,7 @@ Deno.test("validate example request", () => {
     query: {},
     headers: {},
     responses: {
-      status: undefined,
+      status: "default",
       description: "unexpected error",
       headers: {},
       content: {
