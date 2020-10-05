@@ -8,9 +8,11 @@ import {
   reference,
   integer,
   router,
+  Router,
   route,
   response,
 } from "../lib/index.ts";
+import {ResponsesForRequest} from "../lib/router.ts";
 
 const petApi =
   "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
@@ -28,8 +30,8 @@ const Pet = z.object({
 
 const Pets = z.array(reference("Pet", Pet));
 
-const schema = router([
 
+const schema = router([
   route({
     name: "listPets",
     summary: "List all pets",
@@ -69,8 +71,8 @@ const schema = router([
     path: [
       z.literal("pets"),
       parameter(z.string().uuid())
-          .name("petId")
-          .description("The id of the pet to retrieve"),
+        .name("petId")
+        .description("The id of the pet to retrieve"),
     ],
     query: {},
     headers: {},
@@ -98,7 +100,7 @@ const schema = router([
     path: [z.literal("pets")],
     query: {},
     headers: {
-      accept:  parameter(z.literal("application/json")),
+      accept: parameter(z.literal("application/json")),
     },
     responses: [
       response({
@@ -115,7 +117,6 @@ const schema = router([
       }),
     ],
   }),
-
 ]);
 
 const server = { url: "http://petstore.swagger.io/v1" };
@@ -141,6 +142,7 @@ Deno.test("compare open api schema", () => {
 
 Deno.test("validate example request", () => {
   type Input = z.input<typeof schema>;
+  type Output = z.output<typeof schema>;
 
   const listPets: Input = {
     path: ["pets"],
@@ -165,6 +167,11 @@ Deno.test("validate example request", () => {
   };
   assertEquals(schema.parse(listPets).name, "listPets");
 
+  const response: ResponsesForRequest<typeof schema, {method: 'GET', path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"]}> = {
+    status: 200,
+    headers: {},
+  }
+
   const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
     method: "GET",
@@ -180,7 +187,17 @@ Deno.test("validate example request", () => {
       },
     },
   };
-  assertEquals(schema.parse(showPetById).name, "showPetById");
+  const res = schema.parse(showPetById);
+  assertEquals(res.name, "showPetById");
+});
 
-  console.log("------", schema.match("GET"));
+Deno.test("match", () => {
+
+  const req = {
+    path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
+    method: "GET",
+  } as const
+  const res = schema.match(req);
+  console.log(res)
+  assertEquals(res?.name, "showPetById");
 });

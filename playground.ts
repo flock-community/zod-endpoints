@@ -1,41 +1,39 @@
-import * as z from "./deps.ts";
-
-type P = [...string[]];
-
-const p: P = ["a", "a", "a"];
-
-type Default = z.ZodTransformer<
-  z.ZodOptional<z.ZodTuple<any>>,
-  z.ZodTuple<[z.ZodLiteral<string>, ...z.ZodLiteral<string>[]]>
->;
-
-const tuple: Default = z.tuple(
-  [z.literal("a"), z.literal("a"), z.literal("a"), z.literal("a")],
-).default(["a", "a", "a", "a"]);
-
-function stringifyAll(...elements) {
-  return elements.map((x) => String(x));
+type Route = {
+    method: "GET" | "POST",
+    path: [...string[]],
+    responses: [...{ status: number }[]]
 }
 
-type Strings = [string, string];
-type Numbers = [number, number];
+type Router = {
+    method: "GET",
+    path: ["pets", "id"],
+    responses: {status: 200} | {status: 404}
+} | {
+    method: "POST",
+    path: ["pets"],
+    responses: {status: 200},
 
-type StrStrNumNumBool = [...Strings, ...Numbers, boolean];
+}
+type Test =
+    | {
+    type: 'Union'
+    responses:
+        | { status: 200 }
+        | { status: 400 }
+        | { status: 600}
 
-type Http = {
-  readonly method: "GET" | "POST";
-  readonly path: string;
-  readonly tags: readonly string[];
-};
+}
+    | {
+    type: 'Union'
+    responses:
+        | { status: 100 }
+        | { status: 300 }
+        | { status: 500}
 
-function y<T extends Http>(y: Readonly<T>): T {
-  return y;
 }
 
-const asdf = y({
-  method: "POST",
-  path: "/a/b",
-  tags: ["a", "b"],
-});
+type Flatten<T extends { responses: unknown }> = { [P in keyof T]: P extends 'responses' ? T[P] : never }[keyof T]
 
-type Res = typeof asdf;
+type Result = Flatten<Test>;
+
+

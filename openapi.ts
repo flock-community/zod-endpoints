@@ -80,7 +80,7 @@ function mapSchema(type: ComponentType): SchemaObject | undefined {
 }
 
 export function createSchema(
-  obj: ReferenceType | Reference | Component,
+  obj: ReferenceType | Reference<any> | Component<any>,
 ): SchemaObject | ReferenceObject | undefined {
   if ("reference" in obj) {
     return { "$ref": `#/components/schemas/${obj.state.name}` };
@@ -194,10 +194,11 @@ function createOperationObject(http: HttpObject): OperationObject {
       : undefined,
     operationId: ("output" in shape.name._def)
       ? shape.name._def.output._def.value
-      : undefined,
-    tags: shape.tags._def.output._def.items.map((x: z.ZodLiteral<string>) =>
+        : undefined,
+    tags: ("output" in shape.tags._def)
+      ? shape.tags._def.output._def.items.map((x: z.ZodLiteral<string>) =>
       ("value" in x._def) ? x._def.value : undefined
-    ),
+    ): undefined,
     parameters: createParameterObject(http),
     responses: createResponsesObject(shape.responses),
   };

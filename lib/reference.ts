@@ -2,23 +2,23 @@ import * as z from "../deps.ts";
 import { Integer } from "./integer.ts";
 
 export type ReferenceType =
-  | z.ZodObject<z.ZodRawShape>
-  | z.ZodArray<z.ZodTypeAny>
+  | z.ZodObject<any>
+  | z.ZodArray<any>
   | z.ZodString
   | z.ZodBigInt
   | z.ZodNumber
   | z.ZodBoolean
-  | z.ZodOptional<z.ZodTypeAny>
+  | z.ZodOptional<any>
   | z.ZodTypeAny
   | Integer;
 
-export class Reference extends z.ZodType<any> {
+export class Reference<T extends ReferenceType> extends z.ZodType<T['_output'], T['_def'], T['_input']> {
   readonly reference: ReferenceType;
   state: {
     name?: string;
   };
 
-  constructor(name: string, type: ReferenceType) {
+  constructor(name: string, type: T) {
     super(type._def);
     this.reference = type;
     this.state = { name };
@@ -26,7 +26,7 @@ export class Reference extends z.ZodType<any> {
 
   public toJSON = () => this._def;
 
-  static create(name: string, type: ReferenceType) {
+  static create<T extends ReferenceType>(name: string, type: T) {
     return new Reference(name, type);
   }
 }

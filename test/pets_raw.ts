@@ -20,7 +20,8 @@ const Pet = z.object({
   tag: z.string().optional(),
 });
 
-const Pets_raw = z.array(reference("Pet", Pet));
+const Pets = z.array(reference("Pet", Pet));
+
 
 const schema = z.union([
   z.object({
@@ -43,7 +44,7 @@ const schema = z.union([
             .name("x-next")
             .description("A link to the next page of responses"),
         }),
-        content: reference("Pets", Pets_raw),
+        content: reference("Pets", Pets),
       }),
       z.object({
         status: z.literal("default"),
@@ -133,6 +134,7 @@ Deno.test("compare open api schema", () => {
 
 Deno.test("validate example request", () => {
   type Input = z.input<typeof schema>;
+  type Output = z.output<typeof schema>;
 
   const listPets: Input = {
     path: ["pets"],

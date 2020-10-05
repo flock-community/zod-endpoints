@@ -23,7 +23,7 @@ export type Headers = ZodObject<
       | Parameter;
   }
 >;
-export type Content = Reference | Component | ZodUndefined;
+export type Content = Reference<any> | Component<any> | ZodUndefined;
 
 export type HttpResponse = ZodObject<{
   status: ZodLiteral<number | string>;
@@ -48,7 +48,7 @@ export type HttpRequest = {
   summary:
     | ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>>
     | ZodUndefined;
-  tags: z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>;
+  tags: z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>| ZodUndefined;
   query: ZodObject<{ [key: string]: Parameter }>;
   headers: Headers;
 };

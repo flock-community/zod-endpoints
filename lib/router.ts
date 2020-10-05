@@ -1,10 +1,34 @@
 import * as z from "../deps.ts";
-import { HttpObject, HttpResponse } from "../lib/domain.ts";
+import { Http, HttpObject, HttpRequest, HttpResponse } from "../lib/domain.ts";
 import { Parameter } from "./parameter.ts";
 import { Reference } from "./reference.ts";
 
+type Request = {
+  name: string;
+  summary: string;
+  tags: [z.ZodLiteral<string>, ...z.ZodLiteral<string>[]];
+  method: "GET" | "POST" | "PUT" | "DELETE";
+  path: [
+    z.ZodLiteral<string> | Parameter,
+    ...(z.ZodLiteral<string> | Parameter)[],
+  ];
+  query: Record<string, Parameter>;
+  headers: Record<string, Parameter>;
+};
+
+type Response = {
+  status: number | string;
+  headers: Record<string, Parameter>;
+  description: string;
+  content?: Reference<any>;
+};
+
+type Route = Request & {
+  responses: [HttpResponse, HttpResponse, ...HttpResponse[]];
+};
+
 export class Router<
-  T extends [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]],
+  T extends [HttpObject, HttpObject, ...HttpObject[]],
 > extends z.ZodType<
   T[number]["_output"],
   z.ZodUnionDef<T>,
@@ -19,11 +43,20 @@ export class Router<
     return this._def.options;
   }
 
-  match = (method: string): HttpObject | undefined => {
-    return undefined;
+  match = <R extends unknown>(request: Readonly<R>): Extract<z.output<Router<T>>, Readonly<R>> | undefined => {
+    // @ts-ignore
+    return z.union(this._def.options.map(res => (z.object({
+        name: res.shape.name,
+        // summary: res.shape.summary,
+        // tags: res.shape.tags,
+        method: res.shape.method,
+        path: res.shape.path,
+        // query: res.shape.query,
+        // headers: res.shape.headers,
+      })))).parse(request)
   };
 
-  static create = <T extends [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]]>(
+  static create = <T extends [HttpObject, HttpObject, ...HttpObject[]]>(
     types: T,
   ): Router<T> => {
     return new Router({
@@ -35,13 +68,6 @@ export class Router<
 
 export const router = Router.create;
 
-type Response = {
-  status: number | string;
-  headers: Record<string, Parameter>;
-  description: string;
-  content?: Reference;
-};
-
 export function response<T extends Response>(response: Readonly<T>) {
   return z.object({
     status: z.literal(response.status),
@@ -50,20 +76,6 @@ export function response<T extends Response>(response: Readonly<T>) {
     content: response.content ?? z.undefined(),
   });
 }
-
-type Route = {
-  name: string;
-  method: "GET" | "POST" | "PUT" | "DELETE";
-  summary: string;
-  tags: [z.ZodLiteral<string>, ...z.ZodLiteral<string>[]];
-  path: [
-    z.ZodLiteral<string> | Parameter,
-    ...(z.ZodLiteral<string> | Parameter)[],
-  ];
-  query: Record<string, Parameter>;
-  headers: Record<string, Parameter>;
-  responses: [HttpResponse, HttpResponse, ...HttpResponse[]];
-};
 
 export function route<T extends Route>(route: Readonly<T>) {
   return z.object({
@@ -78,3 +90,5 @@ export function route<T extends Route>(route: Readonly<T>) {
     responses: z.union(route.responses),
   });
 }
+
+export type ResponsesForRequest<R extends Router<any>,T> = Pick<Extract<z.output<R>, T>['responses'], "status" | "headers" | "content">;

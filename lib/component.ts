@@ -1,5 +1,6 @@
 import * as z from "../deps.ts";
 import { Integer } from "./integer.ts";
+import {ReferenceType} from "./reference.ts";
 
 export type ComponentType =
   | z.ZodObject<z.ZodRawShape>
@@ -12,7 +13,7 @@ export type ComponentType =
   | z.ZodTypeAny
   | Integer;
 
-export class Component extends z.ZodType<any> {
+export class Component <T extends ReferenceType> extends z.ZodType<T['_output'], T['_def'], T['_input']>  {
   readonly component: ComponentType;
 
   constructor(type: ComponentType) {
