@@ -44,12 +44,14 @@ const schema = z.union([
             .name("x-next")
             .description("A link to the next page of responses"),
         }),
+        type: z.literal("application/json"),
         content: reference("Pets", Pets),
       }),
       z.object({
         status: z.literal("default"),
         description: z.literal("unexpected error"),
         headers: z.object({}),
+        type: z.literal("application/json"),
         content: reference("Error", Error),
       }),
     ]),
@@ -74,12 +76,14 @@ const schema = z.union([
         status: z.literal(200),
         description: z.literal("Expected response to a valid request"),
         headers: z.object({}),
+        type: z.literal("application/json"),
         content: reference("Pet", Pet),
       }),
       z.object({
         status: z.literal("default"),
         description: z.literal("unexpected error"),
         headers: z.object({}),
+        type: z.literal("application/json"),
         content: reference("Error", Error),
       }),
     ]),
@@ -99,12 +103,14 @@ const schema = z.union([
         status: z.literal(201),
         description: z.literal("Null response"),
         headers: z.object({}),
+        type: z.literal("application/json"),
         content: z.undefined(),
       }),
       z.object({
         status: z.literal("default"),
         description: z.literal("unexpected error"),
         headers: z.object({}),
+        type: z.literal("application/json"),
         content: reference("Error", Error),
       }),
     ]),
@@ -150,6 +156,7 @@ Deno.test("validate example request", () => {
       headers: {
         "x-next": "?",
       },
+      type: "application/json",
       content: [{
         id: 1,
         name: "Bello",
@@ -168,6 +175,7 @@ Deno.test("validate example request", () => {
       status: "default",
       description: "unexpected error",
       headers: {},
+      type: "application/json",
       content: {
         code: 50,
         message: "This is an error",

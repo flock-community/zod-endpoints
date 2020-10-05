@@ -52,12 +52,14 @@ const schema = router([
             .name("x-next")
             .description("A link to the next page of responses"),
         },
+        type: "application/json",
         content: reference("Pets", Pets),
       }),
       response({
         status: "default",
         description: "unexpected error",
         headers: {},
+        type: "application/json",
         content: reference("Error", Error),
       }),
     ],
@@ -81,12 +83,14 @@ const schema = router([
         status: 200,
         description: "Expected response to a valid request",
         headers: {},
+        type: "application/json",
         content: reference("Pet", Pet),
       }),
       response({
         status: "default",
         description: "unexpected error",
         headers: {},
+        type: "application/json",
         content: reference("Error", Error),
       }),
     ],
@@ -107,12 +111,14 @@ const schema = router([
         status: 201,
         description: "Null response",
         headers: {},
+        type: "application/json",
         content: undefined,
       }),
       response({
         status: "default",
         description: "unexpected error",
         headers: {},
+        type: "application/json",
         content: reference("Error", Error),
       }),
     ],
@@ -158,6 +164,7 @@ Deno.test("validate example request", () => {
       headers: {
         "x-next": "?",
       },
+      type: "application/json",
       content: [{
         id: 1,
         name: "Bello",
@@ -181,6 +188,7 @@ Deno.test("validate example request", () => {
       status: "default",
       description: "unexpected error",
       headers: {},
+      type: "application/json",
       content: {
         code: 50,
         message: "This is an error",

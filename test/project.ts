@@ -35,6 +35,7 @@ const route: Http = {
           [z.literal("application/json"), z.literal("text/html")],
         ),
       }),
+      type: z.literal("application/json"),
       content: component(z.object({
         uuid: z.string().uuid(),
         name: z.string(),
@@ -48,6 +49,7 @@ const route: Http = {
           [z.literal("application/json"), z.literal("text/html")],
         ),
       }),
+      type: z.literal("application/json"),
       content: component(z.object({
         uuid: z.string().uuid(),
         name: z.string(),

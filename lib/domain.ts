@@ -29,6 +29,7 @@ export type HttpResponse = ZodObject<{
   status: ZodLiteral<number | string>;
   description: ZodLiteral<string>;
   headers: Headers;
+  type: ZodLiteral<string>;
   content: Content;
 }>;
 

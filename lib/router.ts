@@ -20,6 +20,7 @@ type Response = {
   status: number | string;
   headers: Record<string, Parameter>;
   description: string;
+  type: string;
   content?: Reference<any>;
 };
 
@@ -73,6 +74,7 @@ export function response<T extends Response>(response: Readonly<T>) {
     status: z.literal(response.status),
     description: z.literal(response.description),
     headers: z.object(response.headers),
+    type: z.literal(response.type),
     content: response.content ?? z.undefined(),
   });
 }

@@ -279,7 +279,7 @@ function createResponseObject(
       headers: createHeadersObject(shape.headers),
       content: ("reference" in shape.content || "component" in shape.content)
         ? {
-          "application/json": {
+          [shape.type._def.value]: {
             schema: createSchema(shape.content),
           },
         }
