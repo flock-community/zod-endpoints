@@ -1,62 +1,61 @@
-import {
-  ZodLiteral,
-  ZodObject,
-  ZodOptional,
-  ZodString,
-  ZodTransformer,
-  ZodTuple,
-  ZodUndefined,
-  ZodUnion,
-} from "../deps.ts";
+import * as z  from "../deps.ts";
 import { Parameter } from "./parameter.ts";
 import { Reference } from "./reference.ts";
 import { Component } from "./component.ts";
-import * as z from "../deps.ts";
 
-export type Headers = ZodObject<
+export type Headers = z.ZodObject<
   {
     [key: string]:
-      | ZodLiteral<string>
-      | ZodUnion<
-        [ZodLiteral<string>, ZodLiteral<string>, ...ZodLiteral<string>[]]
+      | z.ZodLiteral<string>
+      | z.ZodUnion<
+        [z.ZodLiteral<string>, z.ZodLiteral<string>, ...z.ZodLiteral<string>[]]
       >
       | Parameter;
   }
 >;
-export type Content = Reference<any> | Component<any> | ZodUndefined;
+export type Content = Reference<any> | Component<any> | z.ZodUndefined;
 
-export type HttpResponse = ZodObject<{
-  status: ZodLiteral<number | string>;
-  description: ZodLiteral<string>;
-  headers: Headers;
-  type: ZodLiteral<string>;
-  content: Content;
-}>;
-
-export type HttpResponses =
-  | HttpResponse
-  | ZodUnion<[HttpResponse, HttpResponse, ...HttpResponse[]]>;
 
 export type HttpRequest = {
   name:
-    | ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>>
-    | ZodUndefined;
-  method: ZodLiteral<string>;
-  path: ZodTuple<[
-    ZodLiteral<any> | ZodString | Parameter,
-    ...(ZodLiteral<any> | ZodString | Parameter)[],
+      | z.ZodTransformer<z.ZodOptional<z.ZodLiteral<any>>, z.ZodLiteral<string>>
+      | z.ZodUndefined;
+  method: z.ZodLiteral<string>;
+  path: z.ZodTuple<[
+        z.ZodLiteral<any> | z.ZodString | Parameter,
+    ...(z.ZodLiteral<any> | z.ZodString | Parameter)[],
   ]>;
   summary:
-    | ZodTransformer<ZodOptional<ZodLiteral<any>>, ZodLiteral<string>>
-    | ZodUndefined;
-  tags: z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>| ZodUndefined;
-  query: ZodObject<{ [key: string]: Parameter }>;
+      | z.ZodTransformer<z.ZodOptional<z.ZodLiteral<any>>, z.ZodLiteral<string>>
+      | z.ZodUndefined;
+  tags: z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>| z.ZodUndefined;
+  query: z.ZodObject<{ [key: string]: Parameter }>;
   headers: Headers;
 };
+
+export type HttpRequestObject = z.ZodObject<HttpRequest>;
+
+export type HttpResponse = {
+  status: z.ZodLiteral<number | string>;
+  description: z.ZodLiteral<string>;
+  headers: Headers;
+  type: z.ZodLiteral<string>;
+  content: Content;
+};
+
+export type HttpResponseObject = z.ZodObject<HttpResponse>;
+
+export type HttpResponses =
+    | HttpResponseObject
+    | z.ZodUnion<[HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]>;
+
 
 export type Http = HttpRequest & {
   responses: HttpResponses;
 };
-export type HttpObject = ZodObject<Http>;
-export type HttpUnion = ZodUnion<[HttpObject, HttpObject, ...HttpObject[]]>;
-export type Schema = HttpObject | HttpUnion;
+export type HttpObject = z.ZodObject<Http>;
+
+export type HttpUnion = z.ZodUnion<[HttpObject, HttpObject, ...HttpObject[]]>;
+export type HttpSchema = HttpObject | HttpUnion;
+
+export type HttpOutput = z.output<HttpObject>

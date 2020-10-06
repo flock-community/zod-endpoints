@@ -1,11 +1,9 @@
 import {
   Headers,
-  HttpResponse,
+  HttpResponseObject,
   HttpResponses,
-  Http,
   HttpObject,
-  HttpUnion,
-  Schema,
+  HttpSchema,
 } from "./lib/domain.ts";
 
 import {
@@ -108,7 +106,7 @@ export function createSchema(
 }
 
 export function openApi(
-  schema: Schema,
+  schema: HttpSchema,
   info: InfoObject = {title:"No title", version:"1.0.0"},
   servers: ServerObject[] = [],
 ): OpenAPIObject {
@@ -245,7 +243,7 @@ function createResponsesObject(
   return {};
 }
 
-function mapResponsesObject(responses: HttpResponses): HttpResponse[] {
+function mapResponsesObject(responses: HttpResponses): HttpResponseObject[] {
   if ("options" in responses) {
     return responses.options.map((it) => it);
   }
@@ -256,7 +254,7 @@ function mapResponsesObject(responses: HttpResponses): HttpResponse[] {
 }
 
 function createResponseObject(
-  response: HttpResponse,
+  response: HttpResponseObject,
 ): Record<number | string, ResponseObject> {
   const shape = response._def.shape();
   const name = shape.status._def.value;

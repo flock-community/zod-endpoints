@@ -1,5 +1,5 @@
 import * as z from "../deps.ts";
-import { Http, HttpObject, HttpRequest, HttpResponse } from "../lib/domain.ts";
+import { HttpObject, HttpResponseObject } from "../lib/domain.ts";
 import { Parameter } from "./parameter.ts";
 import { Reference } from "./reference.ts";
 import {ZodUndefined} from "../deps.ts";
@@ -26,7 +26,7 @@ type Response = {
 };
 
 type Route = Request & {
-  responses: [HttpResponse, HttpResponse, ...HttpResponse[]];
+  responses: [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]];
 };
 
 export class Router<
