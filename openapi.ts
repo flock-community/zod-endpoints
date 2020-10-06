@@ -10,7 +10,7 @@ import {
 
 import {
   ComponentsObject,
-  HeadersObject,
+  HeadersObject, InfoObject,
   OpenAPIObject,
   OperationObject,
   ParameterObject,
@@ -23,15 +23,8 @@ import {
 
 import {
   ZodLiteral,
-  ZodObject,
-  ZodOptional,
   ZodString,
-  ZodTransformer,
-  ZodTuple,
   ZodTypes,
-  ZodUndefined,
-  ZodUnion,
-  ZodType,
 } from "./deps.ts";
 
 import {
@@ -45,13 +38,6 @@ import * as z from "./deps.ts";
 
 const base = {
   "openapi": "3.0.0",
-  "info": {
-    "version": "1.0.0",
-    "title": "Swagger Petstore",
-    "license": {
-      "name": "MIT",
-    },
-  },
 };
 
 function mapSchema(type: ComponentType): SchemaObject | undefined {
@@ -123,12 +109,13 @@ export function createSchema(
 
 export function openApi(
   schema: Schema,
+  info: InfoObject = {title:"No title", version:"1.0.0"},
   servers: ServerObject[] = [],
 ): OpenAPIObject {
   const options = ("options" in schema) ? schema.options : [schema];
   const paths = createPaths(options);
   const components = createComponents(options);
-  return { ...base, servers, paths, components };
+  return { ...base, info, servers, paths, components };
 }
 
 function createPaths(options: HttpObject[]): PathsObject {

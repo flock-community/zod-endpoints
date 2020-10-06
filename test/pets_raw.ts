@@ -118,7 +118,7 @@ const schema = z.union([
 ]);
 
 const server = { url: "http://petstore.swagger.io/v1" };
-const api = openApi(schema, [server]);
+const api = openApi(schema, {"version": "1.0.0", "title": "Swagger Petstore", license: {name: "MIT"}}, [server]);
 const res: OpenAPIObject = await fetch(petApi)
   .then((res) => res.text())
   .then((text) => yaml.parse(text) as OpenAPIObject);

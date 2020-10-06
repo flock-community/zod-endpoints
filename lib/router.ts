@@ -2,6 +2,7 @@ import * as z from "../deps.ts";
 import { Http, HttpObject, HttpRequest, HttpResponse } from "../lib/domain.ts";
 import { Parameter } from "./parameter.ts";
 import { Reference } from "./reference.ts";
+import {ZodUndefined} from "../deps.ts";
 
 type Request = {
   name: string;
@@ -79,7 +80,7 @@ export function response<T extends Response>(response: Readonly<T>) {
   });
 }
 
-export function route<T extends Route>(route: Readonly<T>) {
+export function route<T extends Route, R extends HttpObject>(route: Readonly<T>) {
   return z.object({
     name: z.literal(route.name).default(route.name),
     summary: z.literal(route.summary).default(route.summary),
