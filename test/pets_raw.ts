@@ -1,10 +1,10 @@
+import * as z from "../mod.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
-import { parameter, reference, integer } from "../lib/index.ts";
+import { parameter, reference, integer, Api } from "../lib/index.ts";
 
-import * as z from "../deps.ts";
 
 const petApi =
   "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
@@ -21,7 +21,6 @@ const Pet = z.object({
 });
 
 const Pets = z.array(reference("Pet", Pet));
-
 
 const schema = z.union([
   z.object({
@@ -96,7 +95,7 @@ const schema = z.union([
     method: z.literal("POST"),
     query: z.object({}),
     headers: z.object({
-      accept: z.literal("application/json"),
+      accept: z.parameter(z.literal("application/json")),
     }),
     responses: z.union([
       z.object({
@@ -117,13 +116,36 @@ const schema = z.union([
   }),
 ]);
 
-const server = { url: "http://petstore.swagger.io/v1" };
-const api = openApi(schema, {"version": "1.0.0", "title": "Swagger Petstore", license: {name: "MIT"}}, [server]);
-const res: OpenAPIObject = await fetch(petApi)
-  .then((res) => res.text())
-  .then((text) => yaml.parse(text) as OpenAPIObject);
+Deno.test("api interface", () => {
+  const api: Api<typeof schema> = {
+    "listPets": () =>
+      Promise.resolve(
+        { status: 200, headers: { "x-next": "abc" }, content: [] },
+      ),
+    "showPetById": () =>
+      Promise.resolve(
+        { status: 200, headers: {}, content: { id: 1, name: "Pet" } },
+      ),
+    "createPets": () =>
+      Promise.resolve({ status: 201, headers: {}, content: undefined }),
+  };
+});
 
-Deno.test("compare open api schema", () => {
+Deno.test("compare open api schema", async () => {
+  const server = { url: "http://petstore.swagger.io/v1" };
+  const api = openApi(
+    schema,
+    {
+      "version": "1.0.0",
+      "title": "Swagger Petstore",
+      license: { name: "MIT" },
+    },
+    [server],
+  );
+  const res: OpenAPIObject = await fetch(petApi)
+    .then((res) => res.text())
+    .then((text) => yaml.parse(text) as OpenAPIObject);
+
   function compare(actual: unknown, expected: unknown) {
     const value = JSON.parse(JSON.stringify(actual));
     assertEquals(value, expected);

@@ -24,11 +24,7 @@ const route: Http = {
     z.object({
       description: z.literal("List of projects"),
       status: z.literal(200),
-      headers: z.object({
-        "content-type": z.union(
-          [z.literal("application/json"), z.literal("text/html")],
-        ),
-      }),
+      headers: z.object({}),
       type: z.literal("application/json"),
       content: component(z.object({
         uuid: z.string().uuid(),
@@ -38,11 +34,7 @@ const route: Http = {
     z.object({
       description: z.literal("Not projects found"),
       status: z.literal(404),
-      headers: z.object({
-        "content-type": z.union(
-          [z.literal("application/json"), z.literal("text/html")],
-        ),
-      }),
+      headers: z.object({}),
       type: z.literal("application/json"),
       content: component(z.object({
         uuid: z.string().uuid(),

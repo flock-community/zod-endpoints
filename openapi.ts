@@ -8,7 +8,8 @@ import {
 
 import {
   ComponentsObject,
-  HeadersObject, InfoObject,
+  HeadersObject,
+  InfoObject,
   OpenAPIObject,
   OperationObject,
   ParameterObject,
@@ -107,7 +108,7 @@ export function createSchema(
 
 export function openApi(
   schema: HttpSchema,
-  info: InfoObject = {title:"No title", version:"1.0.0"},
+  info: InfoObject = { title: "No title", version: "1.0.0" },
   servers: ServerObject[] = [],
 ): OpenAPIObject {
   const options = ("options" in schema) ? schema.options : [schema];
@@ -179,11 +180,12 @@ function createOperationObject(http: HttpObject): OperationObject {
       : undefined,
     operationId: ("output" in shape.name._def)
       ? shape.name._def.output._def.value
-        : undefined,
+      : undefined,
     tags: ("output" in shape.tags._def)
       ? shape.tags._def.output._def.items.map((x: z.ZodLiteral<string>) =>
-      ("value" in x._def) ? x._def.value : undefined
-    ): undefined,
+        ("value" in x._def) ? x._def.value : undefined
+      )
+      : undefined,
     parameters: createParameterObject(http),
     responses: createResponsesObject(shape.responses),
   };
@@ -260,8 +262,12 @@ function createResponseObject(
   const name = shape.status._def.value;
   return {
     [name]: {
-      description: shape.description._def.value,
-      headers: createHeadersObject(shape.headers),
+      description: ("value" in shape.description._def)
+        ? shape.description._def.value
+        : "",
+      headers: ("shape" in shape.headers)
+        ? createHeadersObject(shape.headers)
+        : {},
       content: ("reference" in shape.content || "component" in shape.content)
         ? {
           [shape.type._def.value]: {
@@ -290,14 +296,14 @@ function createHeadersObject(headers: Headers): HeadersObject | undefined {
         },
       });
     }
-    if ("options" in obj) {
-      return ({
-        ...acc,
-        [cur]: {
-          "schema": obj.options.map((it) => it._def.value),
-        },
-      });
-    }
+    // if ("options" in obj) {
+    //   return ({
+    //     ...acc,
+    //     [cur]: {
+    //       "schema": obj.options.map((it) => it._def.value),
+    //     },
+    //   });
+    // }
     if ("state" in obj) {
       return ({
         ...acc,
