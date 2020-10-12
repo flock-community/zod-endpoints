@@ -1,7 +1,7 @@
 import * as z from "../deps.ts";
 import { HttpSchema } from "./domain.ts";
 
-export type ApiRoutNames<T extends HttpSchema> = z.output<T> extends
+export type ApiRouteNames<T extends HttpSchema> = z.output<T> extends
   { name: string } ? z.output<T>["name"]
   : never;
 export type ApiRequest<T extends HttpSchema, Key> = Pick<
@@ -17,9 +17,9 @@ export type ApiRouteFunction<T extends HttpSchema, Key> = (
 ) => Promise<ApiResponse<T, Key>>;
 
 export type Api<T extends HttpSchema> = {
-  [Key in ApiRoutNames<T>]: ApiRouteFunction<T, Key>;
+  [Key in ApiRouteNames<T>]: ApiRouteFunction<T, Key>;
 };
-export type ApiFragment<T extends HttpSchema, Key extends ApiRoutNames<T>> =
+export type ApiFragment<T extends HttpSchema, Key extends ApiRouteNames<T>> =
   Pick<
     Api<T>,
     Key
