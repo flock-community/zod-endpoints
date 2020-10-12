@@ -1,26 +1,26 @@
 import * as z from "../deps.ts";
-import { Http, HttpObject } from "./domain.ts";
 import { HttpSchema } from "./domain.ts";
 
-type RoutNames<T extends HttpSchema> = z.output<T> extends { name: string }
-  ? z.output<T>["name"]
+export type ApiRoutNames<T extends HttpSchema> = z.output<T> extends
+  { name: string } ? z.output<T>["name"]
   : never;
-type Request<T extends HttpSchema, Key> = Pick<
+export type ApiRequest<T extends HttpSchema, Key> = Pick<
   Extract<z.output<T>, { name: Key }>,
   "method" | "path" | "headers"
 >;
-type Response<T extends HttpSchema, Key> = Pick<
+export type ApiResponse<T extends HttpSchema, Key> = Pick<
   Extract<z.output<T>, { name: Key }>["responses"],
   "status" | "headers" | "content"
 >;
-type RouteFunction<T extends HttpSchema, Key> = (
-  request: Request<T, Key>,
-) => Promise<Response<T, Key>>;
+export type ApiRouteFunction<T extends HttpSchema, Key> = (
+  request: ApiRequest<T, Key>,
+) => Promise<ApiResponse<T, Key>>;
 
 export type Api<T extends HttpSchema> = {
-  [Key in RoutNames<T>]: RouteFunction<T, Key>;
+  [Key in ApiRoutNames<T>]: ApiRouteFunction<T, Key>;
 };
-export type ApiFragment<T extends HttpSchema, Key extends RoutNames<T>> = Pick<
-  Api<T>,
-  Key
->;
+export type ApiFragment<T extends HttpSchema, Key extends ApiRoutNames<T>> =
+  Pick<
+    Api<T>,
+    Key
+  >;

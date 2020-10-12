@@ -15,7 +15,8 @@ import {
   ParameterObject,
   PathsObject,
   ReferenceObject,
-  ResponseObject, ResponsesObject,
+  ResponseObject,
+  ResponsesObject,
   SchemaObject,
   ServerObject,
 } from "./utils/openapi3/OpenApi.ts";
@@ -238,25 +239,26 @@ function createResponsesObject(
 ): ResponsesObject {
   if ("options" in responses) {
     return responses.options.reduce<ResponsesObject>((acc, cur) => {
-      const res = createResponseObject(cur)
-      const key = res[0]
-      const content = (acc && acc[key]) ? acc[key].content : null
+      const res = createResponseObject(cur);
+      const key = res[0];
+      const content = (acc && acc[key]) ? acc[key].content : null;
       return ({
         ...acc,
-        [res[0]] : {
+        [res[0]]: {
           ...res[1],
-          content: content || res[1].content ? {
-            ...content,
-            ...res[1].content
-          } : undefined
-
+          content: content || res[1].content
+            ? {
+              ...content,
+              ...res[1].content,
+            }
+            : undefined,
         },
-      })
+      });
     }, {});
   }
   if ("shape" in responses) {
-    const res = createResponseObject(responses)
-    return {[res[0]] : res[1]};
+    const res = createResponseObject(responses);
+    return { [res[0]]: res[1] };
   }
 
   return {};
@@ -278,21 +280,20 @@ function createResponseObject(
   const shape = response._def.shape();
   const name = shape.status._def.value as string;
   return [name, {
-      description: ("value" in shape.description._def)
-        ? shape.description._def.value
-        : "",
-      headers: ("shape" in shape.headers)
-        ? createHeadersObject(shape.headers)
-        : undefined,
-      content: "value" in shape.type._def
-        ? {
-          [shape.type._def.value]: {
-            schema: createSchema(shape.content),
-          },
-        }
-        : undefined,
-    }
-  ];
+    description: ("value" in shape.description._def)
+      ? shape.description._def.value
+      : "",
+    headers: ("shape" in shape.headers)
+      ? createHeadersObject(shape.headers)
+      : undefined,
+    content: "value" in shape.type._def
+      ? {
+        [shape.type._def.value]: {
+          schema: createSchema(shape.content),
+        },
+      }
+      : undefined,
+  }];
 }
 
 function createHeadersObject(headers: Headers): HeadersObject | undefined {
