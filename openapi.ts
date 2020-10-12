@@ -15,7 +15,7 @@ import {
   ParameterObject,
   PathsObject,
   ReferenceObject,
-  ResponseObject,
+  ResponseObject, ResponsesObject,
   SchemaObject,
   ServerObject,
 } from "./utils/openapi3/OpenApi.ts";
@@ -123,19 +123,22 @@ function createPaths(options: HttpObject[]): PathsObject {
       (acc, cur) => {
         const shape = cur._def.shape();
         const method = shape.method._def.value;
-        const path = "/" + shape.path._def.items
-          .map((p) => {
-            if ("state" in p) {
-              return `{${p.state.name}}`;
-            }
-            if (p._def.t === ZodTypes.string) {
-              return `{${p._def.t}}`;
-            }
-            if (p._def.t === ZodTypes.literal) {
-              return p._def.value;
-            }
-          })
-          .join("/");
+        const path =
+          (shape.path._def !== undefined && "items" in shape.path._def)
+            ? ("/" + shape.path._def.items
+              .map((p) => {
+                if ("state" in p) {
+                  return `{${p.state.name}}`;
+                }
+                if (p._def.t === ZodTypes.string) {
+                  return `{${p._def.t}}`;
+                }
+                if (p._def.t === ZodTypes.literal) {
+                  return p._def.value;
+                }
+              })
+              .join("/"))
+            : "/";
         return ({
           ...acc,
           [path]: {
@@ -197,7 +200,7 @@ function createParameterObject(http: HttpObject) {
     ...("shape" in shape.query._def)
       ? createQueryParameterObject(shape.query._def.shape())
       : [],
-    ...("items" in shape.path._def)
+    ...(shape.path._def && "items" in shape.path._def)
       ? shape.path._def.items.filter((it) => "state" in it).map(
         createPathParameterObject,
       )
@@ -232,16 +235,30 @@ function createQueryParameterObject(
 
 function createResponsesObject(
   responses: HttpResponses,
-): Record<number, ResponseObject> {
+): ResponsesObject {
   if ("options" in responses) {
-    return responses.options.reduce((acc, cur) => ({
-      ...acc,
-      ...createResponseObject(cur),
-    }), {});
+    return responses.options.reduce<ResponsesObject>((acc, cur) => {
+      const res = createResponseObject(cur)
+      const key = res[0]
+      const content = (acc && acc[key]) ? acc[key].content : null
+      return ({
+        ...acc,
+        [res[0]] : {
+          ...res[1],
+          content: content || res[1].content ? {
+            ...content,
+            ...res[1].content
+          } : undefined
+
+        },
+      })
+    }, {});
   }
   if ("shape" in responses) {
-    return createResponseObject(responses);
+    const res = createResponseObject(responses)
+    return {[res[0]] : res[1]};
   }
+
   return {};
 }
 
@@ -257,26 +274,25 @@ function mapResponsesObject(responses: HttpResponses): HttpResponseObject[] {
 
 function createResponseObject(
   response: HttpResponseObject,
-): Record<number | string, ResponseObject> {
+): [string, ResponseObject] {
   const shape = response._def.shape();
-  const name = shape.status._def.value;
-  return {
-    [name]: {
+  const name = shape.status._def.value as string;
+  return [name, {
       description: ("value" in shape.description._def)
         ? shape.description._def.value
         : "",
       headers: ("shape" in shape.headers)
         ? createHeadersObject(shape.headers)
-        : {},
-      content: ("reference" in shape.content || "component" in shape.content)
+        : undefined,
+      content: "value" in shape.type._def
         ? {
           [shape.type._def.value]: {
             schema: createSchema(shape.content),
           },
         }
         : undefined,
-    },
-  };
+    }
+  ];
 }
 
 function createHeadersObject(headers: Headers): HeadersObject | undefined {

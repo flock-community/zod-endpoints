@@ -1,15 +1,14 @@
 import * as z from "../deps.ts";
 import { Http, HttpObject } from "./domain.ts";
-//import {HttpSchema} from "./domain.ts";
-
-type HttpSchema =
-  | HttpObject
-  | z.ZodUnion<[HttpObject, HttpObject, ...HttpObject[]]>;
+import { HttpSchema } from "./domain.ts";
 
 type RoutNames<T extends HttpSchema> = z.output<T> extends { name: string }
   ? z.output<T>["name"]
   : never;
-type Request<T extends HttpSchema, Key> = Extract<z.output<T>, { name: Key }>;
+type Request<T extends HttpSchema, Key> = Pick<
+  Extract<z.output<T>, { name: Key }>,
+  "method" | "path" | "headers"
+>;
 type Response<T extends HttpSchema, Key> = Pick<
   Extract<z.output<T>, { name: Key }>["responses"],
   "status" | "headers" | "content"

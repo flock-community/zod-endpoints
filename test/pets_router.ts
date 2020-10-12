@@ -31,7 +31,6 @@ const schema = z.router([
       limit: z.parameter(z.integer("int32").max(100))
         .description("How many items to return at one time (max 100)"),
     },
-    headers: {},
     responses: [
       z.response({
         status: 200,
@@ -47,7 +46,6 @@ const schema = z.router([
       z.response({
         status: "default",
         description: "unexpected error",
-        headers: {},
         type: "application/json",
         content: z.reference("Error", Error),
       }),
@@ -65,20 +63,16 @@ const schema = z.router([
         .name("petId")
         .description("The id of the pet to retrieve"),
     ],
-    query: {},
-    headers: {},
     responses: [
       z.response({
         status: 200,
         description: "Expected response to a valid request",
-        headers: {},
         type: "application/json",
         content: z.reference("Pet", Pet),
       }),
       z.response({
         status: "default",
         description: "unexpected error",
-        headers: {},
         type: "application/json",
         content: z.reference("Error", Error),
       }),
@@ -91,7 +85,6 @@ const schema = z.router([
     tags: [z.literal("pets")],
     method: "POST",
     path: [z.literal("pets")],
-    query: {},
     headers: {
       accept: z.parameter(z.literal("application/json")),
     },
@@ -99,14 +92,10 @@ const schema = z.router([
       z.response({
         status: 201,
         description: "Null response",
-        headers: {},
-        type: "application/json",
-        content: undefined,
       }),
       z.response({
         status: "default",
         description: "unexpected error",
-        headers: {},
         type: "application/json",
         content: z.reference("Error", Error),
       }),
@@ -149,8 +138,6 @@ Deno.test("validate example request", () => {
     query: {
       limit: 10,
     },
-    headers: {},
-
     responses: {
       status: 200,
       description: "A paged array of pets",
@@ -170,12 +157,9 @@ Deno.test("validate example request", () => {
   const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
     method: "GET",
-    query: {},
-    headers: {},
     responses: {
       status: "default",
       description: "unexpected error",
-      headers: {},
       type: "application/json",
       content: {
         code: 50,

@@ -5,7 +5,6 @@ import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
 import { parameter, reference, integer, Api } from "../lib/index.ts";
 
-
 const petApi =
   "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
 
@@ -102,7 +101,7 @@ const schema = z.union([
         status: z.literal(201),
         description: z.literal("Null response"),
         headers: z.object({}),
-        type: z.literal("application/json"),
+        type: z.undefined(),
         content: z.undefined(),
       }),
       z.object({

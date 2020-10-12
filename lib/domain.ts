@@ -12,7 +12,7 @@ export type HttpRequest = {
     | z.ZodTransformer<z.ZodOptional<z.ZodLiteral<any>>, z.ZodLiteral<string>>
     | z.ZodUndefined;
   method: z.ZodLiteral<string>;
-  path: z.ZodTuple<[Path, ...Path[]]>;
+  path: z.ZodTuple<[Path, ...Path[]]> | z.ZodUndefined;
   summary:
     | z.ZodTransformer<z.ZodOptional<z.ZodLiteral<any>>, z.ZodLiteral<string>>
     | z.ZodUndefined;
@@ -29,8 +29,8 @@ export type HttpResponse = {
   status: z.ZodLiteral<number | string>;
   description: z.ZodLiteral<string> | z.ZodUndefined;
   headers: Headers | z.ZodUndefined;
-  type: z.ZodLiteral<string>;
-  content: Content;
+  type: z.ZodLiteral<string> | z.ZodUndefined;
+  content: Content | z.ZodType<any>;
 };
 
 export type HttpResponseObject = z.ZodObject<HttpResponse>;
@@ -48,6 +48,6 @@ export type Http = HttpRequest & {
 export type HttpObject = z.ZodObject<Http>;
 export type HttpOptions = [HttpObject, HttpObject, ...HttpObject[]];
 export type HttpUnion = z.ZodUnion<HttpOptions>;
-export type HttpSchema = HttpUnion;
+export type HttpSchema = HttpObject | HttpUnion;
 
 export type HttpOutput = z.output<HttpObject>;

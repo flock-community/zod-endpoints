@@ -24,9 +24,9 @@ export type Request = {
 export type Response = {
   description?: string;
   status: number | string;
-  type: string;
+  type?: string;
   headers?: { [key: string]: Parameter };
-  content?: z.ZodType<any>;
+  content?: z.ZodType<any, any, any>;
 };
 
 export type Route = Request & {
@@ -90,7 +90,7 @@ export function route<T extends Route>(route: Readonly<T>): RouteMapper<T> {
       : z.undefined(),
     method: z.literal(route.method),
     // @ts-ignore
-    path: z.tuple(route.path),
+    path: route.path !== undefined ? z.tuple(route.path) : [],
     query: route.query !== undefined
       ? z.object(route.query as z.ZodRawShape)
       : z.undefined(),
@@ -98,7 +98,7 @@ export function route<T extends Route>(route: Readonly<T>): RouteMapper<T> {
       ? z.object(route.headers as z.ZodRawShape)
       : z.undefined(),
     // @ts-ignore
-    responses: route.headers !== undefined
+    responses: route.responses !== undefined
       ? // @ts-ignore
         z.union(route.responses)
       : z.undefined(),
@@ -109,10 +109,10 @@ export type ResponseMapper<T extends Response> = z.ZodObject<{
   description: T["description"] extends string ? z.ZodLiteral<T["description"]>
     : z.ZodUndefined;
   status: z.ZodLiteral<T["status"]>;
-  type: z.ZodLiteral<T["type"]>;
+  type: T["type"] extends string ? z.ZodLiteral<T["type"]> : z.ZodUndefined;
   headers: T["headers"] extends z.ZodRawShape ? z.ZodObject<T["headers"]>
     : z.ZodUndefined;
-  content: T["content"] extends z.ZodType<any, any> ? T["content"]
+  content: T["content"] extends z.ZodType<any, any, any> ? T["content"]
     : z.ZodUndefined;
 }>;
 export function response<T extends Response>(
@@ -125,9 +125,11 @@ export function response<T extends Response>(
     headers: response.headers !== undefined
       ? z.object(response.headers as z.ZodRawShape)
       : z.undefined(),
-    type: z.literal(response.type),
+    type: response.type !== undefined
+      ? z.literal(response.type)
+      : z.undefined(),
     content: response.content !== undefined
-      ? response.content as z.ZodType<any, any>
+      ? response.content as z.ZodType<any, any, any>
       : z.undefined(),
   });
 }
