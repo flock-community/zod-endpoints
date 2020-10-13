@@ -6,7 +6,7 @@ export type ApiRouteNames<T extends HttpSchema> = z.output<T> extends
   : never;
 export type ApiRequest<T extends HttpSchema, Key> = Pick<
   Extract<z.output<T>, { name: Key }>,
-  "method" | "path" | "headers"
+  "method" | "path" | "headers" | "body"
 >;
 export type ApiResponse<T extends HttpSchema, Key> = Pick<
   Extract<z.output<T>, { name: Key }>["responses"],

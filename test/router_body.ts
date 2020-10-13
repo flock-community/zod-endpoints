@@ -30,7 +30,7 @@ Deno.test("router with body", async () => {
         "C": () => Promise.resolve({status: 201}),
     };
 
-    const res = await api["C"]({method: "POST", path: ["pets"]});
+    const res = await api["C"]({method: "POST", path: ["pets"], body:{id: 1, name:"Fred"}});
     assertEquals(res, {status: 201});
 
     const open = openApi(schema);
