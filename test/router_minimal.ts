@@ -1,5 +1,5 @@
 import * as z from "../mod.ts";
-import { Api, openApi } from "../mod.ts";
+import { Api, body, openApi } from "../mod.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 Deno.test("minimal router one route", async () => {
@@ -10,7 +10,6 @@ Deno.test("minimal router one route", async () => {
       responses: [
         z.response({
           status: 200,
-          type: "application/json",
         }),
       ],
     }),
@@ -32,16 +31,20 @@ Deno.test("minimal router two routes", async () => {
       responses: [
         z.response({
           status: 200,
-          type: "application/json",
-          content: z.object({
-            b: z.string(),
+          body: body({
+            type: "application/json",
+            content: z.object({
+              b: z.string(),
+            }),
           }),
         }),
         z.response({
           status: 200,
-          type: "plain/text",
-          content: z.object({
-            c: z.string(),
+          body: body({
+            type: "plain/text",
+            content: z.object({
+              c: z.string(),
+            }),
           }),
         }),
       ],
@@ -49,11 +52,20 @@ Deno.test("minimal router two routes", async () => {
   ]);
 
   const api: Api<typeof schema> = {
-    "B": () => Promise.resolve({ status: 200, content: { b: "b" } }),
+    "B": () =>
+      Promise.resolve(
+        {
+          status: 200,
+          body: { type: "application/json", content: { b: "b" } },
+        },
+      ),
   };
 
   const res = await api["B"]({ method: "POST", path: [""] });
-  assertEquals(res, { status: 200, content: { b: "b" } });
+  assertEquals(
+    res,
+    { status: 200, body: { type: "application/json", content: { b: "b" } } },
+  );
 
   const open = openApi(schema);
   assertEquals(open, {

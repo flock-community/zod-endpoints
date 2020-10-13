@@ -1,5 +1,5 @@
 import * as z from "../deps.ts";
-import { HttpSchema } from "./domain.ts";
+import { HttpSchema } from "./model.ts";
 
 export type ApiRouteNames<T extends HttpSchema> = z.output<T> extends
   { name: string } ? z.output<T>["name"]
@@ -10,7 +10,7 @@ export type ApiRequest<T extends HttpSchema, Key> = Pick<
 >;
 export type ApiResponse<T extends HttpSchema, Key> = Pick<
   Extract<z.output<T>, { name: Key }>["responses"],
-  "status" | "headers" | "content"
+  "status" | "headers" | "body"
 >;
 export type ApiRouteFunction<T extends HttpSchema, Key> = (
   request: ApiRequest<T, Key>,

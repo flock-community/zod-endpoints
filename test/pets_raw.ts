@@ -3,7 +3,7 @@ import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import { openApi } from "../openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
-import { parameter, reference, integer, Api } from "../lib/index.ts";
+import { Api, integer, parameter, reference } from "../lib/index.ts";
 
 const petApi =
   "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
@@ -44,15 +44,19 @@ const schema = z.union([
             .name("x-next")
             .description("A link to the next page of responses"),
         }),
-        type: z.literal("application/json"),
-        content: reference("Pets", Pets),
+        body: z.object({
+          type: z.literal("application/json"),
+          content: reference("Pets", Pets),
+        }),
       }),
       z.object({
         status: z.literal("default"),
         description: z.literal("unexpected error"),
         headers: z.object({}),
-        type: z.literal("application/json"),
-        content: reference("Error", Error),
+        body: z.object({
+          type: z.literal("application/json"),
+          content: reference("Error", Error),
+        }),
       }),
     ]),
   }),
@@ -78,15 +82,19 @@ const schema = z.union([
         status: z.literal(200),
         description: z.literal("Expected response to a valid request"),
         headers: z.object({}),
-        type: z.literal("application/json"),
-        content: reference("Pet", Pet),
+        body: z.object({
+          type: z.literal("application/json"),
+          content: reference("Pet", Pet),
+        }),
       }),
       z.object({
         status: z.literal("default"),
         description: z.literal("unexpected error"),
         headers: z.object({}),
-        type: z.literal("application/json"),
-        content: reference("Error", Error),
+        body: z.object({
+          type: z.literal("application/json"),
+          content: reference("Error", Error),
+        }),
       }),
     ]),
   }),
@@ -107,15 +115,16 @@ const schema = z.union([
         status: z.literal(201),
         description: z.literal("Null response"),
         headers: z.object({}),
-        type: z.undefined(),
-        content: z.undefined(),
+        body: z.undefined(),
       }),
       z.object({
         status: z.literal("default"),
         description: z.literal("unexpected error"),
         headers: z.object({}),
-        type: z.literal("application/json"),
-        content: reference("Error", Error),
+        body: z.object({
+          type: z.literal("application/json"),
+          content: reference("Error", Error),
+        }),
       }),
     ]),
   }),
@@ -125,14 +134,21 @@ Deno.test("api interface", () => {
   const api: Api<typeof schema> = {
     "listPets": () =>
       Promise.resolve(
-        { status: 200, headers: { "x-next": "abc" }, content: [] },
+        {
+          status: 200,
+          headers: { "x-next": "abc" },
+          body: { type: "application/json", content: [] },
+        },
       ),
     "showPetById": () =>
       Promise.resolve(
-        { status: 200, headers: {}, content: { id: 1, name: "Pet" } },
+        {
+          status: 200,
+          headers: {},
+          body: { type: "application/json", content: { id: 1, name: "Pet" } },
+        },
       ),
-    "createPets": () =>
-      Promise.resolve({ status: 201, headers: {}, content: undefined }),
+    "createPets": () => Promise.resolve({ status: 201, headers: {} }),
   };
 });
 
@@ -183,12 +199,14 @@ Deno.test("validate example request", () => {
       headers: {
         "x-next": "?",
       },
-      type: "application/json",
-      content: [{
-        id: 1,
-        name: "Bello",
-        tag: "DOG",
-      }],
+      body: {
+        type: "application/json",
+        content: [{
+          id: 1,
+          name: "Bello",
+          tag: "DOG",
+        }],
+      },
     },
   };
   assertEquals(schema.parse(listPets).name, "listPets");
@@ -202,10 +220,12 @@ Deno.test("validate example request", () => {
       status: "default",
       description: "unexpected error",
       headers: {},
-      type: "application/json",
-      content: {
-        code: 50,
-        message: "This is an error",
+      body: {
+        type: "application/json",
+        content: {
+          code: 50,
+          message: "This is an error",
+        },
       },
     },
   };

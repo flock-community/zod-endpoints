@@ -1,10 +1,10 @@
 import {
   Headers,
   HttpResponseObject,
-  HttpResponses,
+  HttpResponseUnion,
   HttpObject,
   HttpSchema,
-} from "./lib/domain.ts";
+} from "./lib/model.ts";
 
 import {
   ComponentsObject,
@@ -14,7 +14,8 @@ import {
   OperationObject,
   ParameterObject,
   PathsObject,
-  ReferenceObject, RequestBodyObject,
+  ReferenceObject,
+  RequestBodyObject,
   ResponseObject,
   ResponsesObject,
   SchemaObject,
@@ -155,15 +156,14 @@ function createPaths(options: HttpObject[]): PathsObject {
 function createComponents(options: HttpObject[]): ComponentsObject | undefined {
   const schemas = options
     .flatMap((http) => {
-      const shape = http._def.shape();
-      return mapResponsesObject(shape.responses);
+      return mapResponsesObject(http.shape.responses);
     })
     .map((response) => {
-      const shape = response._def.shape();
-      return shape.content;
+      const body = response.shape.body;
+      return ("shape" in body) ? body.shape.content : null;
     })
     .reduce((acc, cur) => {
-      if ("reference" in cur && cur.state.name) {
+      if (cur != null && "reference" in cur && cur.state.name) {
         return { ...acc, [cur.state.name]: createSchema(cur.reference) };
       } else {
         return acc;
@@ -196,15 +196,19 @@ function createOperationObject(http: HttpObject): OperationObject {
   };
 }
 
-function createRequestBody(http: HttpObject): RequestBodyObject | ReferenceObject | undefined {
+function createRequestBody(
+  http: HttpObject,
+): RequestBodyObject | ReferenceObject | undefined {
   const shape = http._def.shape();
-  return (shape.type && "value" in shape.type._def) ? {
-    content: {
-          [shape.type._def.value]: {
-            schema: createSchema(shape.body)
-          },
-        }
-  }: undefined
+  return (shape.body && "shape" in shape.body)
+    ? {
+      content: {
+        [shape.body.shape.type._def.value]: {
+          schema: createSchema(shape.body.shape.content),
+        },
+      },
+    }
+    : undefined;
 }
 
 function createParameterObject(http: HttpObject) {
@@ -247,7 +251,7 @@ function createQueryParameterObject(
 }
 
 function createResponsesObject(
-  responses: HttpResponses,
+  responses: HttpResponseUnion,
 ): ResponsesObject {
   if ("options" in responses) {
     return responses.options.reduce<ResponsesObject>((acc, cur) => {
@@ -276,7 +280,9 @@ function createResponsesObject(
   return {};
 }
 
-function mapResponsesObject(responses: HttpResponses): HttpResponseObject[] {
+function mapResponsesObject(
+  responses: HttpResponseUnion,
+): HttpResponseObject[] {
   if ("options" in responses) {
     return responses.options.map((it) => it);
   }
@@ -298,10 +304,10 @@ function createResponseObject(
     headers: ("shape" in shape.headers)
       ? createHeadersObject(shape.headers)
       : undefined,
-    content: "value" in shape.type._def
+    content: "shape" in shape.body
       ? {
-        [shape.type._def.value]: {
-          schema: createSchema(shape.content),
+        [shape.body.shape.type._def.value]: {
+          schema: createSchema(shape.body.shape.content),
         },
       }
       : undefined,

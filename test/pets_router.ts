@@ -40,14 +40,18 @@ const schema = z.router([
             .name("x-next")
             .description("A link to the next page of responses"),
         },
-        type: "application/json",
-        content: z.reference("Pets", Pets),
+        body: z.body({
+          type: "application/json",
+          content: z.reference("Pets", Pets),
+        }),
       }),
       z.response({
         status: "default",
         description: "unexpected error",
-        type: "application/json",
-        content: z.reference("Error", Error),
+        body: z.body({
+          type: "application/json",
+          content: z.reference("Error", Error),
+        }),
       }),
     ],
   }),
@@ -67,14 +71,18 @@ const schema = z.router([
       z.response({
         status: 200,
         description: "Expected response to a valid request",
-        type: "application/json",
-        content: z.reference("Pet", Pet),
+        body: z.body({
+          type: "application/json",
+          content: z.reference("Pet", Pet),
+        }),
       }),
       z.response({
         status: "default",
         description: "unexpected error",
-        type: "application/json",
-        content: z.reference("Error", Error),
+        body: z.body({
+          type: "application/json",
+          content: z.reference("Error", Error),
+        }),
       }),
     ],
   }),
@@ -96,8 +104,10 @@ const schema = z.router([
       z.response({
         status: "default",
         description: "unexpected error",
-        type: "application/json",
-        content: z.reference("Error", Error),
+        body: z.body({
+          type: "application/json",
+          content: z.reference("Error", Error),
+        }),
       }),
     ],
   }),
@@ -144,12 +154,14 @@ Deno.test("validate example request", () => {
       headers: {
         "x-next": "?",
       },
-      type: "application/json",
-      content: [{
-        id: 1,
-        name: "Bello",
-        tag: "DOG",
-      }],
+      body: {
+        type: "application/json",
+        content: [{
+          id: 1,
+          name: "Bello",
+          tag: "DOG",
+        }],
+      },
     },
   };
   assertEquals(schema.parse(listPets).name, "listPets");
@@ -160,10 +172,12 @@ Deno.test("validate example request", () => {
     responses: {
       status: "default",
       description: "unexpected error",
-      type: "application/json",
-      content: {
-        code: 50,
-        message: "This is an error",
+      body: {
+        type: "application/json",
+        content: {
+          code: 50,
+          message: "This is an error",
+        },
       },
     },
   };
