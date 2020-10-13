@@ -31,21 +31,20 @@ Deno.test("minimal router two routes", async () => {
       responses: [
         z.response({
           status: 200,
-          body: body({
-            type: "application/json",
-            content: z.object({
-              b: z.string(),
+          body: [
+            body({
+              type: "application/json",
+              content: z.object({
+                b: z.string(),
+              }),
             }),
-          }),
-        }),
-        z.response({
-          status: 200,
-          body: body({
-            type: "plain/text",
-            content: z.object({
-              c: z.string(),
+            body({
+              type: "plain/text",
+              content: z.object({
+                c: z.string(),
+              }),
             }),
-          }),
+          ],
         }),
       ],
     }),

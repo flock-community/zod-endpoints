@@ -4,10 +4,13 @@ import {
   HttpResponseUnion,
   HttpObject,
   HttpSchema,
+  HttpBodyUnion,
+  HttpBodyObject,
 } from "./lib/model.ts";
 
 import {
   ComponentsObject,
+  ContentObject,
   HeadersObject,
   InfoObject,
   OpenAPIObject,
@@ -304,14 +307,24 @@ function createResponseObject(
     headers: ("shape" in shape.headers)
       ? createHeadersObject(shape.headers)
       : undefined,
-    content: "shape" in shape.body
-      ? {
-        [shape.body.shape.type._def.value]: {
-          schema: createSchema(shape.body.shape.content),
-        },
-      }
-      : undefined,
+    content: createContentObject(shape.body),
   }];
+}
+function createContentObject(body: HttpBodyUnion): ContentObject | undefined {
+  if ("shape" in body) {
+    return {
+      [body.shape.type._def.value]: {
+        schema: createSchema(body.shape.content),
+      },
+    };
+  }
+  if ("options" in body) {
+    return body.options.reduce(
+      (acc, cur) => ({ ...acc, ...createContentObject(cur) }),
+      {},
+    );
+  }
+  return undefined;
 }
 
 function createHeadersObject(headers: Headers): HeadersObject | undefined {

@@ -2,6 +2,7 @@ import * as z from "../deps.ts";
 import {
   Content,
   HttpBodyObject,
+  HttpBodyUnion,
   HttpObject,
   HttpResponseObject,
   Path,
@@ -25,6 +26,7 @@ export type Request = {
   readonly type?: string;
   readonly body?:
     | [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
+    | [HttpBodyObject]
     | HttpBodyObject;
 };
 
@@ -34,6 +36,7 @@ export type Response = {
   readonly headers?: { [key: string]: Parameter };
   readonly body?:
     | [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
+    | [HttpBodyObject]
     | HttpBodyObject;
 };
 
@@ -81,6 +84,7 @@ export type RouteMapper<T extends Route> = z.ZodObject<{
     : z.ZodUndefined;
   body: T["body"] extends [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
     ? z.ZodUnion<T["body"]>
+    : T["body"] extends [HttpBodyObject] ? T["body"][0]
     : T["body"] extends HttpBodyObject ? T["body"]
     : z.ZodUndefined;
   responses: T["responses"] extends
@@ -110,7 +114,7 @@ export function route<T extends Route>(route: Readonly<T>): RouteMapper<T> {
       ? z.object(route.headers as z.ZodRawShape)
       : z.undefined(),
     // @ts-ignore
-    body: route.body !== undefined ? route.body : z.undefined(),
+    body: transformBody(route.body),
     // @ts-ignore
     responses: route.responses !== undefined
       ? // @ts-ignore
@@ -138,6 +142,7 @@ export type ResponseMapper<T extends Response> = z.ZodObject<{
     : z.ZodUndefined;
   body: T["body"] extends [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
     ? z.ZodUnion<T["body"]>
+    : T["body"] extends [HttpBodyObject] ? T["body"][0]
     : T["body"] extends HttpBodyObject ? T["body"]
     : z.ZodUndefined;
 }>;
@@ -151,7 +156,24 @@ export function response<T extends Response>(
     headers: response.headers !== undefined
       ? z.object(response.headers as z.ZodRawShape)
       : z.undefined(),
-    // @ts-ignore
-    body: response.body !== undefined ? response.body : z.undefined(),
+    body: transformBody(response.body),
   });
+}
+
+function transformBody(
+  body?: [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]] | [
+    HttpBodyObject,
+  ] | HttpBodyObject,
+): HttpBodyUnion {
+  if (body === undefined) {
+    return z.undefined();
+  }
+  if (Array.isArray(body)) {
+    if (body.length === 1) {
+      return body[0];
+    }
+    // @ts-ignore
+    return z.union(body);
+  }
+  return body;
 }
