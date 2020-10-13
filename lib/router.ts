@@ -19,6 +19,8 @@ export type Request = {
   path?: [Path, ...Path[]];
   query?: { [key: string]: Parameter };
   headers?: { [key: string]: Parameter };
+  type?: string;
+  body?: z.ZodType<any, any, any>;
 };
 
 export type Response = {
@@ -71,6 +73,9 @@ export type RouteMapper<T extends Route> = z.ZodObject<{
     : z.ZodUndefined;
   headers: T["headers"] extends z.ZodRawShape ? z.ZodObject<T["headers"]>
     : z.ZodUndefined;
+  type: T["type"] extends string ? z.ZodLiteral<T["type"]> : z.ZodUndefined;
+  body: T["body"] extends z.ZodType<any, any, any> ? T["body"]
+      : z.ZodUndefined;
   responses: T["responses"] extends
     [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]
     ? z.ZodUnion<T["responses"]>
@@ -97,6 +102,12 @@ export function route<T extends Route>(route: Readonly<T>): RouteMapper<T> {
     headers: route.headers !== undefined
       ? z.object(route.headers as z.ZodRawShape)
       : z.undefined(),
+    type: route.type !== undefined
+        ? z.literal(route.type)
+        : z.undefined(),
+    body: route.body !== undefined
+        ? route.body as z.ZodType<any, any, any>
+        : z.undefined(),
     // @ts-ignore
     responses: route.responses !== undefined
       ? // @ts-ignore
@@ -109,9 +120,9 @@ export type ResponseMapper<T extends Response> = z.ZodObject<{
   description: T["description"] extends string ? z.ZodLiteral<T["description"]>
     : z.ZodUndefined;
   status: z.ZodLiteral<T["status"]>;
-  type: T["type"] extends string ? z.ZodLiteral<T["type"]> : z.ZodUndefined;
   headers: T["headers"] extends z.ZodRawShape ? z.ZodObject<T["headers"]>
-    : z.ZodUndefined;
+      : z.ZodUndefined;
+  type: T["type"] extends string ? z.ZodLiteral<T["type"]> : z.ZodUndefined;
   content: T["content"] extends z.ZodType<any, any, any> ? T["content"]
     : z.ZodUndefined;
 }>;

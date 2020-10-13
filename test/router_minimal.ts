@@ -68,6 +68,7 @@ Deno.test("minimal router two routes", async () => {
         post: {
           operationId: "B",
           parameters: undefined,
+          requestBody: undefined,
           responses: {
             200: {
               content: {
@@ -102,7 +103,6 @@ Deno.test("minimal router two routes", async () => {
               headers: undefined,
             },
           },
-
           summary: undefined,
           tags: undefined,
         },

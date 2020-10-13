@@ -33,6 +33,8 @@ const schema = z.union([
         .description("How many items to return at one time (max 100)"),
     }),
     headers: z.object({}),
+    type: z.undefined(),
+    body: z.undefined(),
     responses: z.union([
       z.object({
         status: z.literal(200),
@@ -69,6 +71,8 @@ const schema = z.union([
     method: z.literal("GET"),
     query: z.object({}),
     headers: z.object({}),
+    type: z.undefined(),
+    body: z.undefined(),
     responses: z.union([
       z.object({
         status: z.literal(200),
@@ -96,6 +100,8 @@ const schema = z.union([
     headers: z.object({
       accept: z.parameter(z.literal("application/json")),
     }),
+    type: z.undefined(),
+    body: z.undefined(),
     responses: z.union([
       z.object({
         status: z.literal(201),

@@ -21,6 +21,8 @@ export type HttpRequest = {
     | z.ZodUndefined;
   query: z.ZodObject<{ [key: string]: Parameter }> | z.ZodUndefined;
   headers: Headers | z.ZodUndefined;
+  type: z.ZodLiteral<string> | z.ZodUndefined;
+  body: Content | z.ZodType<any>;
 };
 
 export type HttpRequestObject = z.ZodObject<HttpRequest>;

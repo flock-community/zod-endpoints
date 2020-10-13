@@ -14,7 +14,7 @@ import {
   OperationObject,
   ParameterObject,
   PathsObject,
-  ReferenceObject,
+  ReferenceObject, RequestBodyObject,
   ResponseObject,
   ResponsesObject,
   SchemaObject,
@@ -190,9 +190,21 @@ function createOperationObject(http: HttpObject): OperationObject {
         ("value" in x._def) ? x._def.value : undefined
       )
       : undefined,
+    requestBody: createRequestBody(http),
     parameters: createParameterObject(http),
     responses: createResponsesObject(shape.responses),
   };
+}
+
+function createRequestBody(http: HttpObject): RequestBodyObject | ReferenceObject | undefined {
+  const shape = http._def.shape();
+  return (shape.type && "value" in shape.type._def) ? {
+    content: {
+          [shape.type._def.value]: {
+            schema: createSchema(shape.body)
+          },
+        }
+  }: undefined
 }
 
 function createParameterObject(http: HttpObject) {
