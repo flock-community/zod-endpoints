@@ -203,15 +203,8 @@ function createRequestBody(
   http: HttpObject,
 ): RequestBodyObject | ReferenceObject | undefined {
   const shape = http._def.shape();
-  return (shape.body && "shape" in shape.body)
-    ? {
-      content: {
-        [shape.body.shape.type._def.value]: {
-          schema: createSchema(shape.body.shape.content),
-        },
-      },
-    }
-    : undefined;
+  const content = createContentObject(shape.body);
+  return content ? { content } : undefined;
 }
 
 function createParameterObject(http: HttpObject) {
@@ -256,30 +249,17 @@ function createQueryParameterObject(
 function createResponsesObject(
   responses: HttpResponseUnion,
 ): ResponsesObject {
+  if ("shape" in responses) {
+    return createResponseObject(responses);
+  }
   if ("options" in responses) {
     return responses.options.reduce<ResponsesObject>((acc, cur) => {
-      const res = createResponseObject(cur);
-      const key = res[0];
-      const content = (acc && acc[key]) ? acc[key].content : null;
       return ({
         ...acc,
-        [res[0]]: {
-          ...res[1],
-          content: content || res[1].content
-            ? {
-              ...content,
-              ...res[1].content,
-            }
-            : undefined,
-        },
+        ...createResponseObject(cur),
       });
     }, {});
   }
-  if ("shape" in responses) {
-    const res = createResponseObject(responses);
-    return { [res[0]]: res[1] };
-  }
-
   return {};
 }
 
@@ -297,18 +277,20 @@ function mapResponsesObject(
 
 function createResponseObject(
   response: HttpResponseObject,
-): [string, ResponseObject] {
+): Record<string, ResponseObject> {
   const shape = response._def.shape();
   const name = shape.status._def.value as string;
-  return [name, {
-    description: ("value" in shape.description._def)
-      ? shape.description._def.value
-      : "",
-    headers: ("shape" in shape.headers)
-      ? createHeadersObject(shape.headers)
-      : undefined,
-    content: createContentObject(shape.body),
-  }];
+  return {
+    [name]: {
+      description: ("value" in shape.description._def)
+        ? shape.description._def.value
+        : "",
+      headers: ("shape" in shape.headers)
+        ? createHeadersObject(shape.headers)
+        : undefined,
+      content: createContentObject(shape.body),
+    },
+  };
 }
 function createContentObject(body: HttpBodyUnion): ContentObject | undefined {
   if ("shape" in body) {
