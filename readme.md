@@ -1,10 +1,6 @@
 # Zod-router
-Zod-router is a contract first strict typed router. For building Http services with TypeScript in Deno of Node.
+Zod-router is a contract first strict typed router for building http services with TypeScript. By defining the router as a typed schema all the incoming traffic to the service can be validated against it. The compiler can be leveraged to check of the input of the service is sound. At runtime requests can be early terminated which makes the service more efficient. This narrows down the problem space the focus can be on defining business logic instead of input validation and error handling. On the other hand te schema can be used as a contract between consumer and producer. This can be used to communicate the interface of the service. Drivers can be generate from the contract which ensures proper communication. 
 
-By defining your 
-Zod-router is a typesafe http router for defining and matching requests and responses. Zod router is designed to define a strict contract between client and server. 
-
-Zod router defines a http object as a zod object. It  uses the parse functionality to match a request with the corresponding route (request/responses). 
 
 ## Simplified model
 
@@ -34,6 +30,9 @@ type Schema = Http | ...Http
 ````
 
 ## Open api 3
+Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api by 
+
+![GitHub Logo](images/pets_swagger.png)
 
 
 ## Getting started
