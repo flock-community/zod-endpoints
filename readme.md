@@ -85,7 +85,7 @@ const schema = z.router([
 ````
 
 ### Api
-The router can convert into a service with the [Api](./lib/api.ts) type. This type transforms the schema into an object of the requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exhaustive.
+The router can convert into a service with the [Api](./lib/api.ts) type. This type transforms the schema into an object of all teh requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exhaustive.
 
 ```ts
 const service = {
