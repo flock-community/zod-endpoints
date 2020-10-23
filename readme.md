@@ -8,9 +8,7 @@ The schema can be used as a contract between consumer and producer. Drivers can 
 
 ## Simplified model
 
-Zod-router is based on a type representation of a http schema.  Below a simple representation of the model. The full model can be found here [model](./lib/model.ts).
-
-The model is a union of requests which contains a union of response objects. Both request and response can have an union of bodies.
+Zod-router is based on a type representation of a http schema.  Below a simple representation of the model. The full model can be found here [model](./lib/model.ts). The model is a union of requests which contains a union of response objects. Both request and response contain a union of body types.
 
 ````ts
 type Body = {
@@ -37,15 +35,15 @@ type Schema = Http | ...Http
 ````
 
 ## Open api 3
-Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api json. With Swagger this can be presented as a documentation website.
+Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api json. For example with Swagger this can be presented as a documentation website.
 
 ![GitHub Logo](images/pets_swagger.png)
 
 
 ## Getting started
-This first stap is to define the router schema by making use of the zod-router dsl. Below you can find an example of a simple project router. This example contains two endpoints for getting and creating a project
+This first step is to define a router by making use of the [zod-router dsl](./lib/router.ts). Below you can find an example of a simple router. This example contains two endpoints to get and creat a project.
 
-### Router
+### Route
 ````ts
 import * as z from "../mod.ts";
 
@@ -87,7 +85,7 @@ const schema = z.router([
 ````
 
 ### Api
-The router can connected to the service the [Api](./lib/api.ts) type transforms the schema into an object of the requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exaustive.
+The router can convert into a service with the [Api](./lib/api.ts) type. This type transforms the schema into an object of the requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exhaustive.
 
 ```ts
 const service = {
