@@ -35,13 +35,13 @@ type Schema = Http | ...Http
 ````
 
 ## Open api 3
-Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api by 
+Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api json. With Swagger this can be presented as a documentation website.
 
 ![GitHub Logo](images/pets_swagger.png)
 
 
 ## Getting started
-Simple router
+This first stap is to define the router schema by making use of the zod-router dsl. Below you can find an example of a simple project router. This example contains two endpoints for getting and creating a project
 
 ### Router
 ````ts
@@ -70,7 +70,7 @@ const schema = z.router([
   z.route({
     name: "CREATE_PROJECT",
     method: "POST",
-    path: [z.literal("projects")]
+    path: [z.literal("projects")],
     body:{
       type: "application/json",
       content: project
@@ -84,16 +84,32 @@ const schema = z.router([
 ]);
 ````
 
-
 ### Api
+The router can connected to the service the [Api](./lib/api.ts) type transforms the schema into an object of the requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exaustive.
+
 ```ts
 const service = {
   findProjectById: (id:string):Project => {},
   createProject: (project:Project) => {},
 }
+````
 
-const api: Api<typeof schema> = {
-  "GET_PROJECT": ({path}) => findProjectById(path[1]).then(project => ({ status: 200, body:{type: "application/json", content:project}})),
-  "CREATE_PROJECT": ({body}) => createProject(body).Promise.resolve({ status: 201 }),
+```ts
+import * as z from "../mod.ts";
+
+const api: z.Api<typeof schema> = {
+  "GET_PROJECT": ({path}) => findProjectById(path[1]).then(project => ({ 
+    status: 200, 
+    body:{
+      type: "application/json", 
+      content:project
+    }
+  })),
+  "CREATE_PROJECT": ({body}) => createProject(body).Promise.resolve({ 
+    status: 201 
+  }),
 };
 ```
+
+### Client
+
