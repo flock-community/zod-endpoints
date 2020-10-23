@@ -4,7 +4,7 @@ import * as z from "../deps.ts";
 import { object } from "../deps.ts";
 import {
   Http,
-} from "../lib/domain.ts";
+} from "../lib/model.ts";
 import { openApi } from "../openapi.ts";
 import { component, parameter } from "../lib/index.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
@@ -20,26 +20,25 @@ const route: Http = {
       .description("How many items to return at one time (max 100)"),
   }),
   headers: z.object({}),
+  body: z.undefined(),
   responses: z.union([
     z.object({
       description: z.literal("List of projects"),
       status: z.literal(200),
       headers: z.object({}),
-      type: z.literal("application/json"),
-      content: component(z.object({
-        uuid: z.string().uuid(),
-        name: z.string(),
-      })),
+      body: z.object({
+        type: z.literal("application/json"),
+        content: component(z.object({
+          uuid: z.string().uuid(),
+          name: z.string(),
+        })),
+      })
     }),
     z.object({
       description: z.literal("Not projects found"),
       status: z.literal(404),
       headers: z.object({}),
-      type: z.literal("application/json"),
-      content: component(z.object({
-        uuid: z.string().uuid(),
-        name: z.string(),
-      })),
+      body: z.undefined()
     }),
   ]),
 };
@@ -74,17 +73,11 @@ const exp: OpenAPIObject = {
           "a",
           "b",
         ],
+        requestBody: undefined,
         "responses": {
           "200": {
             "description": "List of projects",
-            "headers": {
-              "content-type": {
-                "schema": [
-                  "application/json",
-                  "text/html",
-                ],
-              },
-            },
+            "headers": undefined,
             "content": {
               "application/json": {
                 schema: {
@@ -106,34 +99,9 @@ const exp: OpenAPIObject = {
             },
           },
           "404": {
-            "description": "Not projects found",
-            "headers": {
-              "content-type": {
-                "schema": [
-                  "application/json",
-                  "text/html",
-                ],
-              },
-            },
-            "content": {
-              "application/json": {
-                schema: {
-                  properties: {
-                    name: {
-                      type: "string",
-                    },
-                    uuid: {
-                      type: "string",
-                    },
-                  },
-                  required: [
-                    "uuid",
-                    "name",
-                  ],
-                  type: "object",
-                },
-              },
-            },
+            description: "Not projects found",
+            headers: undefined,
+            content: undefined,
           },
         },
       },
