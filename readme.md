@@ -1,14 +1,14 @@
 # Zod-router
-Zod-router is a contract first strict typed router for building http services with TypeScript. By defining the router as a typed schema all the incoming and outgoing traffic to the service can be validated against this schema. 
+Zod-router is a contract first strict typed router for building http services. By defining the router as a typed schema all the incoming and outgoing traffic can be validated and parsed. 
 
-The compiler can be leveraged to check if the input and output of the service is type safe. At runtime requests can be validated and early terminated which makes the service more efficient. This narrows down the problem space of the service. The focus can shift more to defining business logic instead of input validation and error handling. 
+Now the compiler can check if the input and output of the service is type safe. At runtime requests can be validated and early terminated. This narrows down the problem space of the service. The focus can shift more to defining business logic instead of input validation and error handling. 
 
 The schema can be used as a contract between consumer and producer. Drivers can be generated from the contract which ensures proper communication between a client and server. 
 
 
 ## Simplified model
 
-Zod-router is based on a type representation of a http schema.  Below a simple representation of the model. The full model can be found here [model](./lib/model.ts). The model is a union of requests which contains a union of response objects. Both request and response contain a union of body types.
+Zod-router is based on a type representation of a http schema.  Below a simplyfied version of the model. The full model can be found here [model](./lib/model.ts). The model is a union of requests which contains a union of response objects. Both request and response contain a union of body types.
 
 ````ts
 type Body = {
@@ -41,7 +41,7 @@ Zod router is fully compatible with [open api specification](https://www.openapi
 
 
 ## Getting started
-This first step is to define a router by making use of the [zod-router dsl](./lib/router.ts). Below you can find an example of a simple router. This example contains two endpoints to get and creat a project.
+First step is to define a router by making use of the [zod-router dsl](./lib/router.ts). Below you can find an example of a simple router. This example contains two endpoints to get and create a project.
 
 ### Route
 ````ts
