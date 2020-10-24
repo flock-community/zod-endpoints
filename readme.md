@@ -1,5 +1,5 @@
 # Zod-router
-Zod-router is a contract first strict typed router for building http services. By defining the router as a zod schema all the incoming and outgoing traffic can be validated and parsed. 
+Zod-router is a contract first strict typed router for building http services. By defining the router as a zod schema all the incoming and outgoing traffic can be checked and parsed against it. 
 
 Now the compiler can check if the input and output of the service is type safe. At runtime requests can be validated and early terminated. 
 
