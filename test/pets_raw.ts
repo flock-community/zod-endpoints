@@ -1,7 +1,7 @@
 import * as z from "../mod.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { openApi } from "../openapi.ts";
+import { openApi } from "../lib/openapi.ts";
 import * as yaml from "https://deno.land/std/encoding/yaml.ts";
 import { Api, integer, parameter, reference } from "../lib/index.ts";
 

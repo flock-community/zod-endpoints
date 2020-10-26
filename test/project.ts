@@ -5,7 +5,7 @@ import { object } from "../deps.ts";
 import {
   Http,
 } from "../lib/model.ts";
-import { openApi } from "../openapi.ts";
+import { openApi } from "../lib/openapi.ts";
 import { component, parameter } from "../lib/index.ts";
 import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
 

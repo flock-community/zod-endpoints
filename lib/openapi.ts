@@ -6,7 +6,7 @@ import {
   HttpSchema,
   HttpBodyUnion,
   HttpBodyObject,
-} from "./lib/model.ts";
+} from "./model.ts";
 
 import {
   ComponentsObject,
@@ -23,13 +23,13 @@ import {
   ResponsesObject,
   SchemaObject,
   ServerObject,
-} from "./utils/openapi3/OpenApi.ts";
+} from "../utils/openapi3/OpenApi.ts";
 
 import {
   ZodLiteral,
   ZodString,
   ZodTypes,
-} from "./deps.ts";
+} from "../deps.ts";
 
 import {
   Parameter,
@@ -37,8 +37,8 @@ import {
   ReferenceType,
   Component,
   ComponentType,
-} from "./lib/index.ts";
-import * as z from "./deps.ts";
+} from "./index.ts";
+import * as z from "../deps.ts";
 
 const base = {
   "openapi": "3.0.0",

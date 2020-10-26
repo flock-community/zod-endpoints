@@ -1,7 +1,7 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 import * as z from "../deps.ts";
-import { createSchema } from "../openapi.ts";
+import { createSchema } from "../lib/openapi.ts";
 import { integer } from "../lib/index.ts";
 
 Deno.test("type string", () => {
