@@ -3,7 +3,7 @@ Zod-router is a contract first strict typed router for building http services. B
 
 Now the compiler can check if the input and output of the service is type safe. At runtime requests can be validated and early terminated. 
 
-This narrows down the problem space of the service. The focus can shift more to defining business logic instead of input validation and error handling. 
+This narrows down the problem space of the service. Once validated by the router, you can safely trust the types from typescript. The focus can shift more to defining business logic instead of input validation and error handling. 
 
 The schema can be used as a contract between consumer and producer. Drivers can be generated from the contract which ensures proper communication between a client and server. 
 
