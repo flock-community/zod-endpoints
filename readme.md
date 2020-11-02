@@ -34,12 +34,6 @@ type Http = Reqest & {
 type Schema = Http | ...Http
 ````
 
-## Open api 3
-Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api json. For example with Swagger this can be presented as a documentation website.
-
-![GitHub Logo](images/pets_swagger.png)
-
-
 ## Getting started
 First step is to define a router by making use of the [zod-router dsl](./lib/router.ts). Below you can find an example of a simple router. This example contains two endpoints to get and create a project.
 
@@ -112,4 +106,9 @@ const api: z.Api<typeof schema> = {
 ```
 
 ### Client
+
+## Open api 3
+Zod router is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api json. For example with Swagger this can be presented as a documentation website.
+
+![GitHub Logo](images/pets_swagger.png)
 
