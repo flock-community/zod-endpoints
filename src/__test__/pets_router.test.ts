@@ -1,11 +1,6 @@
-import * as z from "../mod.ts";
-import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { openApi } from "../lib/openapi.ts";
-import * as yaml from "https://deno.land/std/encoding/yaml.ts";
-
-const petApi =
-  "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
+import * as z from "../index";
+import { openApi } from "../openapi";
+import petApi from './petstore.json'
 
 const Error = z.object({
   code: z.integer(),
@@ -119,28 +114,24 @@ const api = openApi(
   { "version": "1.0.0", "title": "Swagger Petstore", license: { name: "MIT" } },
   [server],
 );
-const res: OpenAPIObject = await fetch(petApi)
-  .then((res) => res.text())
-  .then((text) => yaml.parse(text) as OpenAPIObject);
 
-Deno.test("compare open api schema", () => {
+test("compare open api schema", () => {
   function compare(actual: unknown, expected: unknown) {
     const value = JSON.parse(JSON.stringify(actual));
-    assertEquals(value, expected);
+    expect(value).toEqual(expected);
   }
 
-  compare(api.paths["/pets"].get, res.paths["/pets"].get);
-  compare(api.paths["/pets/{petId}"].get, res.paths["/pets/{petId}"].get);
-  compare(api.paths["/pets"].post, res.paths["/pets"].post);
-  compare(api.components?.schemas?.Error, res.components?.schemas?.Error);
-  compare(api.components?.schemas?.Pet, res.components?.schemas?.Pet);
-  compare(api.components?.schemas?.Pets, res.components?.schemas?.Pets);
-  compare(api, res);
+  compare(api.paths["/pets"].get, petApi.paths["/pets"].get);
+  compare(api.paths["/pets/{petId}"].get, petApi.paths["/pets/{petId}"].get);
+  compare(api.paths["/pets"].post, petApi.paths["/pets"].post);
+  compare(api.components?.schemas?.Error, petApi.components?.schemas?.Error);
+  compare(api.components?.schemas?.Pet, petApi.components?.schemas?.Pet);
+  compare(api.components?.schemas?.Pets, petApi.components?.schemas?.Pets);
+  compare(api, petApi);
 });
 
-Deno.test("validate example request", () => {
+test("validate example request", () => {
   type Input = z.input<typeof schema>;
-  type Output = z.output<typeof schema>;
 
   const listPets: Input = {
     path: ["pets"],
@@ -164,7 +155,7 @@ Deno.test("validate example request", () => {
       },
     },
   };
-  assertEquals(schema.parse(listPets).name, "listPets");
+  expect(schema.parse(listPets).name).toEqual("listPets");
 
   const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
@@ -182,5 +173,5 @@ Deno.test("validate example request", () => {
     },
   };
   const res = schema.parse(showPetById);
-  assertEquals(res.name, "showPetById");
+  expect(res.name).toEqual("showPetById");
 });

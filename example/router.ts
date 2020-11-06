@@ -1,4 +1,4 @@
-import * as z from "../mod.ts";
+import * as z from "../src/mod.ts";
 import {Pet, Pets, Error} from "./model.ts";
 
 export const schema = z.router([

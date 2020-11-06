@@ -1,25 +1,19 @@
-import * as z from "../mod.ts";
-import { OpenAPIObject } from "../utils/openapi3/OpenApi.ts";
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { openApi } from "../lib/openapi.ts";
-import * as yaml from "https://deno.land/std/encoding/yaml.ts";
-import { Api, integer, parameter, reference } from "../lib/index.ts";
-
-const petApi =
-  "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.3/examples/v3.0/petstore.yaml";
+import * as z from "../index";
+import { openApi } from "../openapi";
+import petApi from './petstore.json'
 
 const Error = z.object({
-  code: integer(),
+  code: z.integer(),
   message: z.string(),
 });
 
 const Pet = z.object({
-  id: integer("int64"),
+  id: z.integer("int64"),
   name: z.string(),
   tag: z.string().optional(),
 });
 
-const Pets = z.array(reference("Pet", Pet));
+const Pets = z.array(z.reference("Pet", Pet));
 
 const schema = z.union([
   z.object({
@@ -29,7 +23,7 @@ const schema = z.union([
     path: z.tuple([z.literal("pets")]),
     method: z.literal("GET"),
     query: z.object({
-      limit: parameter(integer("int32").max(100))
+      limit: z.parameter(z.integer("int32").max(100))
         .description("How many items to return at one time (max 100)"),
     }),
     headers: z.object({}),
@@ -40,13 +34,13 @@ const schema = z.union([
         status: z.literal(200),
         description: z.literal("A paged array of pets"),
         headers: z.object({
-          "x-next": parameter(z.string())
+          "x-next": z.parameter(z.string())
             .name("x-next")
             .description("A link to the next page of responses"),
         }),
         body: z.object({
           type: z.literal("application/json"),
-          content: reference("Pets", Pets),
+          content: z.reference("Pets", Pets),
         }),
       }),
       z.object({
@@ -55,7 +49,7 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: reference("Error", Error),
+          content: z.reference("Error", Error),
         }),
       }),
     ]),
@@ -68,7 +62,7 @@ const schema = z.union([
     tags: z.tuple([z.literal("pets")]).default(["pets"]),
     path: z.tuple([
       z.literal("pets"),
-      parameter(z.string().uuid())
+      z.parameter(z.string().uuid())
         .name("petId")
         .description("The id of the pet to retrieve"),
     ]),
@@ -84,7 +78,7 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: reference("Pet", Pet),
+          content: z.reference("Pet", Pet),
         }),
       }),
       z.object({
@@ -93,7 +87,7 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: reference("Error", Error),
+          content: z.reference("Error", Error),
         }),
       }),
     ]),
@@ -123,15 +117,15 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: reference("Error", Error),
+          content: z.reference("Error", Error),
         }),
       }),
     ]),
   }),
 ]);
 
-Deno.test("api interface", () => {
-  const api: Api<typeof schema> = {
+test("api interface", () => {
+  const api: z.Api<typeof schema> = {
     "listPets": () =>
       Promise.resolve(
         {
@@ -150,9 +144,11 @@ Deno.test("api interface", () => {
       ),
     "createPets": () => Promise.resolve({ status: 201, headers: {} }),
   };
+
+  expect(api).toBeTruthy()
 });
 
-Deno.test("compare open api schema", async () => {
+test("compare open api schema", async () => {
   const server = { url: "http://petstore.swagger.io/v1" };
   const api = openApi(
     schema,
@@ -163,27 +159,23 @@ Deno.test("compare open api schema", async () => {
     },
     [server],
   );
-  const res: OpenAPIObject = await fetch(petApi)
-    .then((res) => res.text())
-    .then((text) => yaml.parse(text) as OpenAPIObject);
 
   function compare(actual: unknown, expected: unknown) {
     const value = JSON.parse(JSON.stringify(actual));
-    assertEquals(value, expected);
+    expect(value).toEqual(expected);
   }
 
-  compare(api.paths["/pets"].get, res.paths["/pets"].get);
-  compare(api.paths["/pets/{petId}"].get, res.paths["/pets/{petId}"].get);
-  compare(api.paths["/pets"].post, res.paths["/pets"].post);
-  compare(api.components?.schemas?.Error, res.components?.schemas?.Error);
-  compare(api.components?.schemas?.Pet, res.components?.schemas?.Pet);
-  compare(api.components?.schemas?.Pets, res.components?.schemas?.Pets);
-  compare(api, res);
+  compare(api.paths["/pets"].get, petApi.paths["/pets"].get);
+  compare(api.paths["/pets/{petId}"].get, petApi.paths["/pets/{petId}"].get);
+  compare(api.paths["/pets"].post, petApi.paths["/pets"].post);
+  compare(api.components?.schemas?.Error, petApi.components?.schemas?.Error);
+  compare(api.components?.schemas?.Pet, petApi.components?.schemas?.Pet);
+  compare(api.components?.schemas?.Pets, petApi.components?.schemas?.Pets);
+  compare(api, petApi);
 });
 
-Deno.test("validate example request", () => {
+test("validate example request", () => {
   type Input = z.input<typeof schema>;
-  type Output = z.output<typeof schema>;
 
   const listPets: Input = {
     path: ["pets"],
@@ -209,7 +201,7 @@ Deno.test("validate example request", () => {
       },
     },
   };
-  assertEquals(schema.parse(listPets).name, "listPets");
+  expect(schema.parse(listPets).name).toEqual("listPets");
 
   const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
@@ -229,5 +221,5 @@ Deno.test("validate example request", () => {
       },
     },
   };
-  assertEquals(schema.parse(showPetById).name, "showPetById");
+  expect(schema.parse(showPetById).name).toEqual("showPetById");
 });

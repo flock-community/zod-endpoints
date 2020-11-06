@@ -1,4 +1,4 @@
-import * as z from "../deps.ts";
+import * as z from "./deps";
 import {
   Content,
   HttpBodyObject,
@@ -6,9 +6,8 @@ import {
   HttpObject,
   HttpResponseObject,
   Path,
-} from "../lib/model.ts";
-import { Parameter } from "./parameter.ts";
-import { Reference } from "./reference.ts";
+} from "./model";
+import { Parameter } from "./parameter";
 
 export type Body = {
   readonly type: string;

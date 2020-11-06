@@ -1,6 +1,6 @@
-import * as z from "../deps.ts";
-import { Integer } from "./integer.ts";
-import { ReferenceType } from "./reference.ts";
+import * as z from "./deps";
+import { Integer } from "./integer";
+import { ReferenceType } from "./reference";
 
 export type ComponentType =
   | z.ZodObject<z.ZodRawShape>

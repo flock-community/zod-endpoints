@@ -1,24 +1,30 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "noImplicitAny": false,
-    "strict": true,
-    "noEmit": true,
-    "declaration": true,
-    "downlevelIteration": true,
-    "strictNullChecks": true,
-    "target": "ES2020",
     "lib": [
-      "esnext"
+      "es5",
+      "es6",
+      "es7",
+      "esnext",
+      "dom"
     ],
-    "plugins": [
-      {
-        "name": "typescript-deno-plugin"
-      }
-    ],
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./lib",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "downlevelIteration": true
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "./src/**/*",
+  ],
 }

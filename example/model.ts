@@ -1,4 +1,4 @@
-import * as z from "../mod.ts";
+import * as z from "../src/mod.ts";
 
 export const Error = z.object({
     code: z.integer(),

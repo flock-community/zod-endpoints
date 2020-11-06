@@ -1,5 +1,5 @@
-import * as z from "../deps.ts";
-import { errorUtil } from "../deps.ts";
+import * as z from "./deps";
+import { errorUtil } from "./deps";
 
 export interface IntegerDef extends z.ZodTypeDef {
   t: z.ZodTypes.number;

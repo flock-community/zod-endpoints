@@ -1,7 +1,7 @@
-import * as z from "../deps.ts";
-import { Parameter } from "./parameter.ts";
-import { Reference } from "./reference.ts";
-import { Component } from "./component.ts";
+import * as z from "./deps";
+import { Parameter } from "./parameter";
+import { Reference } from "./reference";
+import { Component } from "./component";
 
 export type Path = z.ZodLiteral<any> | z.ZodString | Parameter;
 export type Headers = z.ZodObject<{ [key: string]: Parameter }>;

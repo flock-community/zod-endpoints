@@ -1,4 +1,4 @@
-import * as z from "../deps.ts";
+import * as z from "./deps";
 
 type ParameterState = {
   name?: string;

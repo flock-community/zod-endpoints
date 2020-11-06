@@ -1,5 +1,5 @@
-import * as z from "../deps.ts";
-import { HttpSchema } from "./model.ts";
+import * as z from "./deps";
+import { HttpSchema } from "./model";
 
 export type ApiRouteNames<T extends HttpSchema> = z.output<T> extends
   { name: string } ? z.output<T>["name"]

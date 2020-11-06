@@ -5,8 +5,7 @@ import {
   HttpObject,
   HttpSchema,
   HttpBodyUnion,
-  HttpBodyObject,
-} from "./model.ts";
+} from "./model";
 
 import {
   ComponentsObject,
@@ -23,13 +22,7 @@ import {
   ResponsesObject,
   SchemaObject,
   ServerObject,
-} from "../utils/openapi3/OpenApi.ts";
-
-import {
-  ZodLiteral,
-  ZodString,
-  ZodTypes,
-} from "../deps.ts";
+} from "openapi3-ts";
 
 import {
   Parameter,
@@ -37,8 +30,9 @@ import {
   ReferenceType,
   Component,
   ComponentType,
-} from "./index.ts";
-import * as z from "../deps.ts";
+} from "./index";
+
+import * as z from "./deps";
 
 const base = {
   "openapi": "3.0.0",
@@ -46,7 +40,7 @@ const base = {
 
 function mapSchema(type: ComponentType): SchemaObject | undefined {
   switch (type._def.t) {
-    case ZodTypes.number:
+    case z.ZodTypes.number:
       if ("format" in type._def) {
         return {
           type: "integer",
@@ -57,15 +51,17 @@ function mapSchema(type: ComponentType): SchemaObject | undefined {
         type: "integer",
         format: "int32",
       };
-    case ZodTypes.bigint:
+    case z.ZodTypes.bigint:
       return {
         type: "integer",
         format: "int32",
       };
-    case ZodTypes.string:
+    case z.ZodTypes.string:
       return {
         type: "string",
       };
+    default:
+      return undefined
   }
 }
 
@@ -98,7 +94,7 @@ export function createSchema(
         };
       }, {}),
       required: Object.keys(shape).reduce<string[]>((acc, cur) => {
-        if (shape[cur]._def.t !== ZodTypes.optional) {
+        if (shape[cur]._def.t !== z.ZodTypes.optional) {
           return [...acc, cur];
         }
         return acc;
@@ -135,10 +131,10 @@ function createPaths(options: HttpObject[]): PathsObject {
                 if ("state" in p) {
                   return `{${p.state.name}}`;
                 }
-                if (p._def.t === ZodTypes.string) {
+                if (p._def.t === z.ZodTypes.string) {
                   return `{${p._def.t}}`;
                 }
-                if (p._def.t === ZodTypes.literal) {
+                if (p._def.t === z.ZodTypes.literal) {
                   return p._def.value;
                 }
               })
@@ -223,7 +219,7 @@ function createParameterObject(http: HttpObject) {
 }
 
 function createPathParameterObject(
-  it: ZodLiteral<any> | ZodString | Parameter,
+  it: z.ZodLiteral<any> | z.ZodString | Parameter,
 ): ParameterObject {
   return {
     name: ("state" in it && it.state.name) ? it.state.name : "undefined",

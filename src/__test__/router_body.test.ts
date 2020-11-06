@@ -1,8 +1,7 @@
-import * as z from "../mod.ts";
-import { Api, body, openApi } from "../mod.ts";
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import * as z from "../index";
+import { openApi } from "../openapi";
 
-Deno.test("router with body", async () => {
+test("router with body", async () => {
   const pet = z.reference(
     "Pets",
     z.object({
@@ -17,7 +16,7 @@ Deno.test("router with body", async () => {
       name: "C",
       method: "POST",
       path: [z.literal("pets")],
-      body: body({
+      body: z.body({
         type: "application/json",
         content: pet,
       }),
@@ -30,7 +29,7 @@ Deno.test("router with body", async () => {
     }),
   ]);
 
-  const api: Api<typeof schema> = {
+  const api: z.Api<typeof schema> = {
     "C": () => Promise.resolve({ status: 201 }),
   };
 
@@ -41,10 +40,10 @@ Deno.test("router with body", async () => {
       body: { type: "application/json", content: { id: 1, name: "Joe" } },
     },
   );
-  assertEquals(res, { status: 201 });
+  expect(res).toEqual({ status: 201 });
 
   const open = openApi(schema);
-  assertEquals(open, {
+  expect(open).toEqual({
     components: undefined,
     info: {
       title: "No title",

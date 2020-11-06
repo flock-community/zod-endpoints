@@ -1,5 +1,5 @@
-import * as z from "../deps.ts";
-import { Integer } from "./integer.ts";
+import * as z from "./deps";
+import { Integer } from "./integer";
 
 export type ReferenceType =
   | z.ZodObject<any>

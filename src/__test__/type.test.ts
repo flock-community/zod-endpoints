@@ -1,23 +1,19 @@
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import * as z from "../index";
 
-import * as z from "../deps.ts";
-import { createSchema } from "../lib/openapi.ts";
-import { integer } from "../lib/index.ts";
-
-Deno.test("type string", () => {
+test("type string", () => {
   const zod = z.string();
-  assertEquals(createSchema(zod), {
+  expect(z.createSchema(zod)).toEqual({
     type: "string",
   });
 });
 
-Deno.test("type object", () => {
+test("type object", () => {
   const zod = z.object({
     id: z.number(),
     name: z.string(),
     tag: z.string().optional(),
   });
-  assertEquals(createSchema(zod), {
+  expect(z.createSchema(zod)).toEqual( {
     type: "object",
     required: ["id", "name"],
     properties: {
@@ -35,7 +31,7 @@ Deno.test("type object", () => {
   });
 });
 
-Deno.test("type nested object", () => {
+test("type nested object", () => {
   const zod = z.object({
     id: z.number(),
     name: z.string(),
@@ -43,7 +39,7 @@ Deno.test("type nested object", () => {
       test: z.string(),
     }).optional(),
   });
-  assertEquals(createSchema(zod), {
+  expect(z.createSchema(zod)).toEqual({
     type: "object",
     required: ["id", "name"],
     properties: {
@@ -67,9 +63,9 @@ Deno.test("type nested object", () => {
   });
 });
 
-Deno.test("type array", () => {
+test("type array", () => {
   const zod = z.array(z.string());
-  assertEquals(createSchema(zod), {
+  expect(z.createSchema(zod)).toEqual({
     "type": "array",
     "items": {
       "type": "string",
@@ -77,15 +73,15 @@ Deno.test("type array", () => {
   });
 });
 
-Deno.test("type integer", () => {
-  const int32 = integer();
-  assertEquals(createSchema(int32), {
+test("type integer", () => {
+  const int32 = z.integer();
+  expect(z.createSchema(int32)).toEqual({
     format: "int32",
     type: "integer",
   });
 
-  const int64 = integer("int64").max(100);
-  assertEquals(createSchema(int64), {
+  const int64 = z.integer("int64").max(100);
+  expect(z.createSchema(int64)).toEqual({
     format: "int64",
     type: "integer",
   });

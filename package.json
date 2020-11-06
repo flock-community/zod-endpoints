@@ -1,5 +1,5 @@
 {
-  "name": "zod",
+  "name": "zod-router",
   "version": "0.0.1",
   "description": "Typescript contract first strictly typed router",
   "main": "./lib/index.js",
@@ -10,14 +10,17 @@
     "type": "git",
     "url": "https://github.com/vriad/zod"
   },
-  "author": "Colin McDonnell <colin@vriad.com>",
+  "author": "Flock Community <info@flock.community>",
   "license": "MIT",
   "sideEffects": false,
   "bugs": {
     "url": "https://github.com/vriad/zod/issues"
   },
   "homepage": "https://github.com/vriad/zod",
-  "dependencies": {},
+  "dependencies": {
+    "openapi3-ts": "^2.0.0",
+    "zod": "^2.0.0-beta.20"
+  },
   "keywords": [
     "typescript",
     "schema",
@@ -30,13 +33,13 @@
     "build": "yarn run clean && tsc --p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "jest --coverage && yarn run badge",
+    "test": "jest",
     "testone": "jest",
     "badge": "make-coverage-badge --report-path ./src/coverage/coverage-summary.json --output-path ./coverage.svg",
     "prepublishOnly": "npm run build",
     "deno_clean": "rm -rf deno_lib",
     "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js",
-    "deno_test": "deno test deno_lib/__tests__"
+    "deno_test": "deno src/__test__ deno_lib/__tests__"
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
@@ -48,6 +51,7 @@
     "ts-jest": "^25.2.1",
     "tslint": "^6.1.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "4.0"
+    "typescript": "4.0",
+    "yaml": "^1.10.0"
   }
 }
