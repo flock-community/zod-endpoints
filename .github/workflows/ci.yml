@@ -15,7 +15,7 @@ jobs:
         with:
           deno-version: v1.4.6
       - run: npm install
-      - run: npm build
-      - run: npm test
+      - run: npm run build
+      - run: npm run test
       - run: npm run deno_build
       - run: npm run deno_test
