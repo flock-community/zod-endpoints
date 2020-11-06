@@ -1,1 +1,8 @@
+.DS_Store
+**/.DS_Store
+node_modules
+/lib
+/coverage
+**/coverage
+.vscode
 .idea
