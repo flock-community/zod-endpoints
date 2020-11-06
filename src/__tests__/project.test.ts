@@ -1,7 +1,7 @@
 import * as z from "../index";
 import { openApi } from "../openapi";
 import { component, parameter } from "../index";
-import { OpenAPIObject } from "openapi3-ts";
+import { OpenAPIObject } from "../utils/openapi3-ts/OpenApi";
 
 test('test project', () => {
   const route: z.Http = {

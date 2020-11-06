@@ -1,6 +1,6 @@
 import * as z from "../index";
 import { openApi } from "../openapi";
-import petApi from './petstore.json'
+import petApi from '../data/petstore'
 
 const Error = z.object({
   code: z.integer(),

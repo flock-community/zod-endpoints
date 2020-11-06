@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/vriad/zod",
   "dependencies": {
-    "openapi3-ts": "^2.0.0",
     "zod": "^2.0.0-beta.20"
   },
   "keywords": [
@@ -39,11 +38,11 @@
     "prepublishOnly": "npm run build",
     "deno_clean": "rm -rf deno_lib",
     "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js",
-    "deno_test": "deno src/__test__ deno_lib/__tests__"
+    "deno_test": "deno test deno_lib/__tests__"
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
-    "denoify": "^0.5.12",
+    "denoify": "0.6.1",
     "jest": "^25.1.0",
     "make-coverage-badge": "^1.2.0",
     "nodemon": "^2.0.2",
@@ -53,5 +52,10 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "4.0",
     "yaml": "^1.10.0"
+  },
+  "denoify": {
+    "ports": {
+      "zod": "https://raw.githubusercontent.com/flock-community/zod/v2_deno/deno_lib/index.ts"
+    }
   }
 }

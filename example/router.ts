@@ -1,4 +1,4 @@
-import * as z from "../src/mod.ts";
+import * as z from "../deno_lib/mod.ts";
 import {Pet, Pets, Error} from "./model.ts";
 
 export const schema = z.router([

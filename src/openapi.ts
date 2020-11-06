@@ -22,7 +22,7 @@ import {
   ResponsesObject,
   SchemaObject,
   ServerObject,
-} from "openapi3-ts";
+} from "./utils/openapi3-ts/OpenApi";
 
 import {
   Parameter,

@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.74.0/http/server.ts";
-import {openApi} from "../src/mod.ts";
+import {openApi} from "../deno_lib/mod.ts";
 import {schema} from "./router.ts";
 
 const port = 5000
