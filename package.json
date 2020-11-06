@@ -40,6 +40,7 @@
     "deno_test": "deno test deno_lib/__tests__"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.15",
     "denoify": "0.6.1",
     "jest": "^26.6.3",
     "make-coverage-badge": "^1.2.0",
