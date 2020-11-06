@@ -7,8 +7,8 @@ test("router with body", async () => {
     z.object({
       id: z.integer("int64"),
       name: z.string(),
-      tag: z.string().optional(),
-    }),
+      tag: z.string().optional()
+    })
   );
 
   const schema = z.router([
@@ -18,28 +18,26 @@ test("router with body", async () => {
       path: [z.literal("pets")],
       body: z.body({
         type: "application/json",
-        content: pet,
+        content: pet
       }),
       responses: [
         z.response({
           status: 201,
-          description: "Post with body",
-        }),
-      ],
-    }),
+          description: "Post with body"
+        })
+      ]
+    })
   ]);
 
   const api: z.Api<typeof schema> = {
-    "C": () => Promise.resolve({ status: 201 }),
+    C: () => Promise.resolve({ status: 201 })
   };
 
-  const res = await api["C"](
-    {
-      method: "POST",
-      path: ["pets"],
-      body: { type: "application/json", content: { id: 1, name: "Joe" } },
-    },
-  );
+  const res = await api["C"]({
+    method: "POST",
+    path: ["pets"],
+    body: { type: "application/json", content: { id: 1, name: "Joe" } }
+  });
   expect(res).toEqual({ status: 201 });
 
   const open = openApi(schema);
@@ -47,7 +45,7 @@ test("router with body", async () => {
     components: undefined,
     info: {
       title: "No title",
-      version: "1.0.0",
+      version: "1.0.0"
     },
     openapi: "3.0.0",
     paths: {
@@ -59,23 +57,23 @@ test("router with body", async () => {
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/Pets",
-                },
-              },
-            },
+                  $ref: "#/components/schemas/Pets"
+                }
+              }
+            }
           },
           responses: {
             201: {
               content: undefined,
               description: "Post with body",
-              headers: undefined,
-            },
+              headers: undefined
+            }
           },
           summary: undefined,
-          tags: undefined,
-        },
-      },
+          tags: undefined
+        }
+      }
     },
-    servers: [],
+    servers: []
   });
 });

@@ -5,7 +5,7 @@ import {
   HttpBodyUnion,
   HttpObject,
   HttpResponseObject,
-  Path,
+  Path
 } from "./model";
 import { Parameter } from "./parameter";
 
@@ -49,13 +49,13 @@ export function router<T extends HttpObject>(types: [T]): T;
 export function router<
   T1 extends HttpObject,
   T2 extends HttpObject,
-  T3 extends HttpObject,
+  T3 extends HttpObject
 >(types: [T1, T2, ...T3[]]): z.ZodUnion<[T1, T2, ...T3[]]>;
 export function router<T extends HttpObject>(
-  types: [T] | [T, T, ...T[]],
+  types: [T] | [T, T, ...T[]]
 ): T | z.ZodUnion<[T, T, ...T[]]> {
   // @ts-ignore
-  return (types.length === 1) ? types[0] : z.union<[T, T, ...T[]]>(types);
+  return types.length === 1 ? types[0] : z.union<[T, T, ...T[]]>(types);
 }
 
 export type RouteMapper<T extends Route> = z.ZodObject<{
@@ -63,106 +63,128 @@ export type RouteMapper<T extends Route> = z.ZodObject<{
     z.ZodOptional<z.ZodLiteral<T["name"]>>,
     z.ZodLiteral<T["name"]>
   >;
-  summary: T["summary"] extends string ? z.ZodTransformer<
-    z.ZodOptional<z.ZodLiteral<T["summary"]>>,
-    z.ZodLiteral<T["summary"]>
-  >
+  summary: T["summary"] extends string
+    ? z.ZodTransformer<
+        z.ZodOptional<z.ZodLiteral<T["summary"]>>,
+        z.ZodLiteral<T["summary"]>
+      >
     : z.ZodUndefined;
   tags: T["tags"] extends [z.ZodTypeAny, ...z.ZodTypeAny[]] | []
     ? z.ZodTransformer<
-      z.ZodOptional<z.ZodTuple<T["tags"]>>,
-      z.ZodTuple<T["tags"]>
-    >
+        z.ZodOptional<z.ZodTuple<T["tags"]>>,
+        z.ZodTuple<T["tags"]>
+      >
     : z.ZodUndefined;
   method: z.ZodLiteral<T["method"]>;
-  path: T["path"] extends [Path, ...Path[]] ? z.ZodTuple<T["path"]>
+  path: T["path"] extends [Path, ...Path[]]
+    ? z.ZodTuple<T["path"]>
     : z.ZodTuple<[z.ZodLiteral<"">]>;
-  query: T["query"] extends z.ZodRawShape ? z.ZodObject<T["query"]>
+  query: T["query"] extends z.ZodRawShape
+    ? z.ZodObject<T["query"]>
     : z.ZodUndefined;
-  headers: T["headers"] extends z.ZodRawShape ? z.ZodObject<T["headers"]>
+  headers: T["headers"] extends z.ZodRawShape
+    ? z.ZodObject<T["headers"]>
     : z.ZodUndefined;
   body: T["body"] extends [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
     ? z.ZodUnion<T["body"]>
-    : T["body"] extends [HttpBodyObject] ? T["body"][0]
-    : T["body"] extends HttpBodyObject ? T["body"]
+    : T["body"] extends [HttpBodyObject]
+    ? T["body"][0]
+    : T["body"] extends HttpBodyObject
+    ? T["body"]
     : z.ZodUndefined;
-  responses: T["responses"] extends
-    [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]
+  responses: T["responses"] extends [
+    HttpResponseObject,
+    HttpResponseObject,
+    ...HttpResponseObject[]
+  ]
     ? z.ZodUnion<T["responses"]>
-    : T["responses"] extends [HttpResponseObject] ? T["responses"][0]
+    : T["responses"] extends [HttpResponseObject]
+    ? T["responses"][0]
     : z.ZodUndefined;
 }>;
 export function route<T extends Route>(route: Readonly<T>): RouteMapper<T> {
   // @ts-ignore
   return z.object({
     name: z.literal(route.name).default(route.name),
-    summary: route.summary !== undefined
-      ? z.literal(route.summary).default(route.summary)
-      : z.undefined(),
-    tags: route.tags !== undefined
-      ? // @ts-ignore
-        z.tuple(route.tags).default(route.tags.map((_) => _._def.value))
-      : z.undefined(),
+    summary:
+      route.summary !== undefined
+        ? z.literal(route.summary).default(route.summary)
+        : z.undefined(),
+    tags:
+      route.tags !== undefined
+        ? // @ts-ignore
+          z.tuple(route.tags).default(route.tags.map(_ => _._def.value))
+        : z.undefined(),
     method: z.literal(route.method),
     // @ts-ignore
     path: route.path !== undefined ? z.tuple(route.path) : [],
-    query: route.query !== undefined
-      ? z.object(route.query as z.ZodRawShape)
-      : z.undefined(),
-    headers: route.headers !== undefined
-      ? z.object(route.headers as z.ZodRawShape)
-      : z.undefined(),
+    query:
+      route.query !== undefined
+        ? z.object(route.query as z.ZodRawShape)
+        : z.undefined(),
+    headers:
+      route.headers !== undefined
+        ? z.object(route.headers as z.ZodRawShape)
+        : z.undefined(),
     // @ts-ignore
     body: transformBody(route.body),
     // @ts-ignore
-    responses: route.responses !== undefined
-      ? // @ts-ignore
-        z.union(route.responses)
-      : z.undefined(),
+    responses:
+      route.responses !== undefined
+        ? // @ts-ignore
+          z.union(route.responses)
+        : z.undefined()
   });
 }
 
-export type BodyMapper<T extends Body> = z.ZodObject<
-  { type: z.ZodLiteral<T["type"]>; content: T["content"] }
->;
+export type BodyMapper<T extends Body> = z.ZodObject<{
+  type: z.ZodLiteral<T["type"]>;
+  content: T["content"];
+}>;
 
 export function body<T extends Body>(body: Readonly<T>): BodyMapper<T> {
   return z.object({
     type: z.literal(body.type),
-    content: body.content,
+    content: body.content
   });
 }
 
 export type ResponseMapper<T extends Response> = z.ZodObject<{
-  description: T["description"] extends string ? z.ZodLiteral<T["description"]>
+  description: T["description"] extends string
+    ? z.ZodLiteral<T["description"]>
     : z.ZodUndefined;
   status: z.ZodLiteral<T["status"]>;
-  headers: T["headers"] extends z.ZodRawShape ? z.ZodObject<T["headers"]>
+  headers: T["headers"] extends z.ZodRawShape
+    ? z.ZodObject<T["headers"]>
     : z.ZodUndefined;
   body: T["body"] extends [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
     ? z.ZodUnion<T["body"]>
-    : T["body"] extends [HttpBodyObject] ? T["body"][0]
-    : T["body"] extends HttpBodyObject ? T["body"]
+    : T["body"] extends [HttpBodyObject]
+    ? T["body"][0]
+    : T["body"] extends HttpBodyObject
+    ? T["body"]
     : z.ZodUndefined;
 }>;
 export function response<T extends Response>(
-  response: Readonly<T>,
+  response: Readonly<T>
 ): ResponseMapper<T> {
   // @ts-ignore
   return z.object({
     status: z.literal(response.status),
     description: z.literal(response.description),
-    headers: response.headers !== undefined
-      ? z.object(response.headers as z.ZodRawShape)
-      : z.undefined(),
-    body: transformBody(response.body),
+    headers:
+      response.headers !== undefined
+        ? z.object(response.headers as z.ZodRawShape)
+        : z.undefined(),
+    body: transformBody(response.body)
   });
 }
 
 function transformBody(
-  body?: [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]] | [
-    HttpBodyObject,
-  ] | HttpBodyObject,
+  body?:
+    | [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
+    | [HttpBodyObject]
+    | HttpBodyObject
 ): HttpBodyUnion {
   if (body === undefined) {
     return z.undefined();

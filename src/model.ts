@@ -51,8 +51,8 @@ export type HttpResponseObject = z.ZodObject<HttpResponse>;
 export type HttpResponseUnion =
   | HttpResponseObject
   | z.ZodUnion<
-    [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]
-  >;
+      [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]
+    >;
 
 export type Http = HttpRequest & {
   responses: HttpResponseUnion;

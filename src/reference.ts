@@ -12,8 +12,11 @@ export type ReferenceType =
   | z.ZodTypeAny
   | Integer;
 
-export class Reference<T extends ReferenceType>
-  extends z.ZodType<T["_output"], T["_def"], T["_input"]> {
+export class Reference<T extends ReferenceType> extends z.ZodType<
+  T["_output"],
+  T["_def"],
+  T["_input"]
+> {
   readonly reference: ReferenceType;
   state: {
     name?: string;

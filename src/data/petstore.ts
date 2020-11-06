@@ -1,84 +1,80 @@
 export default {
-  "openapi": "3.0.0",
-  "info": {
-    "version": "1.0.0",
-    "title": "Swagger Petstore",
-    "license": {
-      "name": "MIT"
+  openapi: "3.0.0",
+  info: {
+    version: "1.0.0",
+    title: "Swagger Petstore",
+    license: {
+      name: "MIT"
     }
   },
-  "servers": [
+  servers: [
     {
-      "url": "http://petstore.swagger.io/v1"
+      url: "http://petstore.swagger.io/v1"
     }
   ],
-  "paths": {
+  paths: {
     "/pets": {
-      "get": {
-        "summary": "List all pets",
-        "operationId": "listPets",
-        "tags": [
-          "pets"
-        ],
-        "parameters": [
+      get: {
+        summary: "List all pets",
+        operationId: "listPets",
+        tags: ["pets"],
+        parameters: [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "How many items to return at one time (max 100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+            name: "limit",
+            in: "query",
+            description: "How many items to return at one time (max 100)",
+            required: false,
+            schema: {
+              type: "integer",
+              format: "int32"
             }
           }
         ],
-        "responses": {
+        responses: {
           "200": {
-            "description": "A paged array of pets",
-            "headers": {
+            description: "A paged array of pets",
+            headers: {
               "x-next": {
-                "description": "A link to the next page of responses",
-                "schema": {
-                  "type": "string"
+                description: "A link to the next page of responses",
+                schema: {
+                  type: "string"
                 }
               }
             },
-            "content": {
+            content: {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pets"
+                schema: {
+                  $ref: "#/components/schemas/Pets"
                 }
               }
             }
           },
-          "default": {
-            "description": "unexpected error",
-            "content": {
+          default: {
+            description: "unexpected error",
+            content: {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                schema: {
+                  $ref: "#/components/schemas/Error"
                 }
               }
             }
           }
         }
       },
-      "post": {
-        "summary": "Create a pet",
-        "operationId": "createPets",
-        "tags": [
-          "pets"
-        ],
-        "responses": {
+      post: {
+        summary: "Create a pet",
+        operationId: "createPets",
+        tags: ["pets"],
+        responses: {
           "201": {
-            "description": "Null response"
+            description: "Null response"
           },
-          "default": {
-            "description": "unexpected error",
-            "content": {
+          default: {
+            description: "unexpected error",
+            content: {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                schema: {
+                  $ref: "#/components/schemas/Error"
                 }
               }
             }
@@ -87,40 +83,38 @@ export default {
       }
     },
     "/pets/{petId}": {
-      "get": {
-        "summary": "Info for a specific pet",
-        "operationId": "showPetById",
-        "tags": [
-          "pets"
-        ],
-        "parameters": [
+      get: {
+        summary: "Info for a specific pet",
+        operationId: "showPetById",
+        tags: ["pets"],
+        parameters: [
           {
-            "name": "petId",
-            "in": "path",
-            "required": true,
-            "description": "The id of the pet to retrieve",
-            "schema": {
-              "type": "string"
+            name: "petId",
+            in: "path",
+            required: true,
+            description: "The id of the pet to retrieve",
+            schema: {
+              type: "string"
             }
           }
         ],
-        "responses": {
+        responses: {
           "200": {
-            "description": "Expected response to a valid request",
-            "content": {
+            description: "Expected response to a valid request",
+            content: {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
+                schema: {
+                  $ref: "#/components/schemas/Pet"
                 }
               }
             }
           },
-          "default": {
-            "description": "unexpected error",
-            "content": {
+          default: {
+            description: "unexpected error",
+            content: {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                schema: {
+                  $ref: "#/components/schemas/Error"
                 }
               }
             }
@@ -129,49 +123,43 @@ export default {
       }
     }
   },
-  "components": {
-    "schemas": {
-      "Pet": {
-        "type": "object",
-        "required": [
-          "id",
-          "name"
-        ],
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
+  components: {
+    schemas: {
+      Pet: {
+        type: "object",
+        required: ["id", "name"],
+        properties: {
+          id: {
+            type: "integer",
+            format: "int64"
           },
-          "name": {
-            "type": "string"
+          name: {
+            type: "string"
           },
-          "tag": {
-            "type": "string"
+          tag: {
+            type: "string"
           }
         }
       },
-      "Pets": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Pet"
+      Pets: {
+        type: "array",
+        items: {
+          $ref: "#/components/schemas/Pet"
         }
       },
-      "Error": {
-        "type": "object",
-        "required": [
-          "code",
-          "message"
-        ],
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
+      Error: {
+        type: "object",
+        required: ["code", "message"],
+        properties: {
+          code: {
+            type: "integer",
+            format: "int32"
           },
-          "message": {
-            "type": "string"
+          message: {
+            type: "string"
           }
         }
       }
     }
   }
-}
+};

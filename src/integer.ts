@@ -12,70 +12,70 @@ export class Integer extends z.ZodType<number, IntegerDef> {
   static create = (format?: string): Integer => {
     return new Integer({
       t: z.ZodTypes.number,
-      format: format ?? "int32",
+      format: format ?? "int32"
     });
   };
 
   min = (minimum: number, message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => data >= minimum, {
+    this.refinement(data => data >= minimum, {
       code: z.ZodIssueCode.too_small,
       minimum,
       type: "number",
       inclusive: true,
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 
   max = (maximum: number, message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => data <= maximum, {
+    this.refinement(data => data <= maximum, {
       code: z.ZodIssueCode.too_big,
       maximum,
       type: "number",
       inclusive: true,
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 
   int = (message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => Number.isInteger(data), {
+    this.refinement(data => Number.isInteger(data), {
       code: z.ZodIssueCode.invalid_type,
       expected: "integer",
       received: "number",
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 
   positive = (message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => data > 0, {
+    this.refinement(data => data > 0, {
       code: z.ZodIssueCode.too_small,
       minimum: 0,
       type: "number",
       inclusive: false,
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 
   negative = (message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => data < 0, {
+    this.refinement(data => data < 0, {
       code: z.ZodIssueCode.too_big,
       maximum: 0,
       type: "number",
       inclusive: false,
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 
   nonpositive = (message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => data <= 0, {
+    this.refinement(data => data <= 0, {
       code: z.ZodIssueCode.too_big,
       maximum: 0,
       type: "number",
       inclusive: true,
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 
   nonnegative = (message?: errorUtil.ErrMessage) =>
-    this.refinement((data) => data >= 0, {
+    this.refinement(data => data >= 0, {
       code: z.ZodIssueCode.too_small,
       minimum: 0,
       type: "number",
       inclusive: true,
-      ...errorUtil.errToObj(message),
+      ...errorUtil.errToObj(message)
     });
 }
 

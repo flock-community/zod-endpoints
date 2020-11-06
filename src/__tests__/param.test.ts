@@ -1,7 +1,8 @@
 import * as z from "../index";
 
 test("parameter with number", () => {
-  const n = z.parameter(z.number().max(100))
+  const n = z
+    .parameter(z.number().max(100))
     .name("limit")
     .description("How many items to return at one time (max 100)");
   expect(n.check(50)).toBeTruthy();
@@ -9,7 +10,8 @@ test("parameter with number", () => {
 });
 
 test("parameter with string", () => {
-  const s = z.parameter(z.string().max(7))
+  const s = z
+    .parameter(z.string().max(7))
     .name("limit")
     .description("How many items to return at one time (max 100)");
   expect(s.check("123456")).toBeTruthy();

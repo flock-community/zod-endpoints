@@ -1,16 +1,16 @@
 import * as z from "../index";
 import { openApi } from "../openapi";
-import petApi from '../data/petstore'
+import petApi from "../data/petstore";
 
 const Error = z.object({
   code: z.integer(),
-  message: z.string(),
+  message: z.string()
 });
 
 const Pet = z.object({
   id: z.integer("int64"),
   name: z.string(),
-  tag: z.string().optional(),
+  tag: z.string().optional()
 });
 
 const Pets = z.array(z.reference("Pet", Pet));
@@ -23,8 +23,9 @@ const schema = z.union([
     path: z.tuple([z.literal("pets")]),
     method: z.literal("GET"),
     query: z.object({
-      limit: z.parameter(z.integer("int32").max(100))
-        .description("How many items to return at one time (max 100)"),
+      limit: z
+        .parameter(z.integer("int32").max(100))
+        .description("How many items to return at one time (max 100)")
     }),
     headers: z.object({}),
     type: z.undefined(),
@@ -34,14 +35,15 @@ const schema = z.union([
         status: z.literal(200),
         description: z.literal("A paged array of pets"),
         headers: z.object({
-          "x-next": z.parameter(z.string())
+          "x-next": z
+            .parameter(z.string())
             .name("x-next")
-            .description("A link to the next page of responses"),
+            .description("A link to the next page of responses")
         }),
         body: z.object({
           type: z.literal("application/json"),
-          content: z.reference("Pets", Pets),
-        }),
+          content: z.reference("Pets", Pets)
+        })
       }),
       z.object({
         status: z.literal("default"),
@@ -49,22 +51,23 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: z.reference("Error", Error),
-        }),
-      }),
-    ]),
+          content: z.reference("Error", Error)
+        })
+      })
+    ])
   }),
   z.object({
     name: z.literal("showPetById").default("showPetById"),
-    summary: z.literal("Info for a specific pet").default(
-      "Info for a specific pet",
-    ),
+    summary: z
+      .literal("Info for a specific pet")
+      .default("Info for a specific pet"),
     tags: z.tuple([z.literal("pets")]).default(["pets"]),
     path: z.tuple([
       z.literal("pets"),
-      z.parameter(z.string().uuid())
+      z
+        .parameter(z.string().uuid())
         .name("petId")
-        .description("The id of the pet to retrieve"),
+        .description("The id of the pet to retrieve")
     ]),
     method: z.literal("GET"),
     query: z.object({}),
@@ -78,8 +81,8 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: z.reference("Pet", Pet),
-        }),
+          content: z.reference("Pet", Pet)
+        })
       }),
       z.object({
         status: z.literal("default"),
@@ -87,10 +90,10 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: z.reference("Error", Error),
-        }),
-      }),
-    ]),
+          content: z.reference("Error", Error)
+        })
+      })
+    ])
   }),
   z.object({
     name: z.literal("createPets").default("createPets"),
@@ -100,7 +103,7 @@ const schema = z.union([
     method: z.literal("POST"),
     query: z.object({}),
     headers: z.object({
-      accept: z.parameter(z.literal("application/json")),
+      accept: z.parameter(z.literal("application/json"))
     }),
     type: z.undefined(),
     body: z.undefined(),
@@ -109,7 +112,7 @@ const schema = z.union([
         status: z.literal(201),
         description: z.literal("Null response"),
         headers: z.object({}),
-        body: z.undefined(),
+        body: z.undefined()
       }),
       z.object({
         status: z.literal("default"),
@@ -117,35 +120,31 @@ const schema = z.union([
         headers: z.object({}),
         body: z.object({
           type: z.literal("application/json"),
-          content: z.reference("Error", Error),
-        }),
-      }),
-    ]),
-  }),
+          content: z.reference("Error", Error)
+        })
+      })
+    ])
+  })
 ]);
 
 test("api interface", () => {
   const api: z.Api<typeof schema> = {
-    "listPets": () =>
-      Promise.resolve(
-        {
-          status: 200,
-          headers: { "x-next": "abc" },
-          body: { type: "application/json", content: [] },
-        },
-      ),
-    "showPetById": () =>
-      Promise.resolve(
-        {
-          status: 200,
-          headers: {},
-          body: { type: "application/json", content: { id: 1, name: "Pet" } },
-        },
-      ),
-    "createPets": () => Promise.resolve({ status: 201, headers: {} }),
+    listPets: () =>
+      Promise.resolve({
+        status: 200,
+        headers: { "x-next": "abc" },
+        body: { type: "application/json", content: [] }
+      }),
+    showPetById: () =>
+      Promise.resolve({
+        status: 200,
+        headers: {},
+        body: { type: "application/json", content: { id: 1, name: "Pet" } }
+      }),
+    createPets: () => Promise.resolve({ status: 201, headers: {} })
   };
 
-  expect(api).toBeTruthy()
+  expect(api).toBeTruthy();
 });
 
 test("compare open api schema", async () => {
@@ -153,11 +152,11 @@ test("compare open api schema", async () => {
   const api = openApi(
     schema,
     {
-      "version": "1.0.0",
-      "title": "Swagger Petstore",
-      license: { name: "MIT" },
+      version: "1.0.0",
+      title: "Swagger Petstore",
+      license: { name: "MIT" }
     },
-    [server],
+    [server]
   );
 
   function compare(actual: unknown, expected: unknown) {
@@ -181,7 +180,7 @@ test("validate example request", () => {
     path: ["pets"],
     method: "GET",
     query: {
-      limit: 10,
+      limit: 10
     },
     headers: {},
 
@@ -189,17 +188,19 @@ test("validate example request", () => {
       status: 200,
       description: "A paged array of pets",
       headers: {
-        "x-next": "?",
+        "x-next": "?"
       },
       body: {
         type: "application/json",
-        content: [{
-          id: 1,
-          name: "Bello",
-          tag: "DOG",
-        }],
-      },
-    },
+        content: [
+          {
+            id: 1,
+            name: "Bello",
+            tag: "DOG"
+          }
+        ]
+      }
+    }
   };
   expect(schema.parse(listPets).name).toEqual("listPets");
 
@@ -216,10 +217,10 @@ test("validate example request", () => {
         type: "application/json",
         content: {
           code: 50,
-          message: "This is an error",
-        },
-      },
-    },
+          message: "This is an error"
+        }
+      }
+    }
   };
   expect(schema.parse(showPetById).name).toEqual("showPetById");
 });

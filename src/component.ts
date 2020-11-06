@@ -13,8 +13,11 @@ export type ComponentType =
   | z.ZodTypeAny
   | Integer;
 
-export class Component<T extends ReferenceType>
-  extends z.ZodType<T["_output"], T["_def"], T["_input"]> {
+export class Component<T extends ReferenceType> extends z.ZodType<
+  T["_output"],
+  T["_def"],
+  T["_input"]
+> {
   readonly component: ComponentType;
 
   constructor(type: ComponentType) {

@@ -16,7 +16,7 @@ export class Parameter extends z.ZodType<any> {
     this.state = {
       name: undefined,
       description: undefined,
-      required: false,
+      required: false
     };
   }
 
