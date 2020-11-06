@@ -15,7 +15,6 @@ jobs:
         with:
           deno-version: v1.4.6
       - run: npm install
-      - run: npm install yarn -g
       - run: npm build
       - run: npm test
       - run: npm run deno_build
