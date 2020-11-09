@@ -11,8 +11,8 @@ test("router with body", async () => {
     })
   );
 
-  const schema = z.router([
-    z.route({
+  const schema = z.endpoints([
+    z.endpoint({
       name: "C",
       method: "POST",
       path: [z.literal("pets")],
