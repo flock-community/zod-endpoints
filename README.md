@@ -1,5 +1,5 @@
 # Zod-endpoints
-Zod endpoints is a contract first strictly typed endpoints. By defining the endpoints as a zod schema, all the requests and responses can be checked and parsed at runtime. Moreover, the TypeScript compiler can check the in- and output types of the endpoints.
+Contract first strictly typed endpoints. By defining the endpoints as a zod schema, all the requests and responses can be checked and parsed at runtime. Moreover, the TypeScript compiler can check the in- and output types of the endpoints.
 
 In this way the problem space is much smaller to begin with. By using zod-endpoints you can rely on the types during development and on validation at runtime. This yields reqests and responses you can trust. The focus can shift more to defining business logic instead of input validation and error handling. 
 
