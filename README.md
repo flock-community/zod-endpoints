@@ -8,7 +8,7 @@ The schema can be used as a contract between consumer and producer. Drivers can 
 
 ## Simplified model
 
-Zod-endpoints is based on a type representation of a http schema.  Below a simplyfied version of the model. The full model can be found here [model](src/model.ts). The model is a union of requests which contains a union of response objects. Both request and response contain a union of body types.
+Zod-endpoints is based on a type representation of a http schema.  Below a simplyfied version of the model. The full model can be found [here](src/model.ts). The model is a union of requests which contains a union of response objects. Both request and response contain a union of body types.
 
 ````ts
 type Body = {
