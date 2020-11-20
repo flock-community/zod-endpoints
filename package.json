@@ -34,7 +34,6 @@
     "test": "jest",
     "testone": "jest",
     "badge": "make-coverage-badge --report-path ./src/coverage/coverage-summary.json --output-path ./coverage.svg",
-    "prepublishOnly": "npm run build",
     "deno_clean": "rm -rf deno_lib",
     "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js",
     "deno_test": "deno test deno_lib/__tests__"
