@@ -1,7 +1,7 @@
 {
-  "name": "zod-router",
+  "name": "zod-endpoints",
   "version": "0.0.1",
-  "description": "Typescript contract first strictly typed router",
+  "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/index.js",
   "files": [
     "lib"
@@ -22,7 +22,7 @@
   },
   "keywords": [
     "openapi",
-    "router",
+    "endpoints",
     "typescript",
     "zod"
   ],

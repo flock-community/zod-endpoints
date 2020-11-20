@@ -1,9 +1,9 @@
 import * as z from "../index";
 import { openApi } from "../openapi";
 
-test("minimal router one route", async () => {
-  const schema = z.router([
-    z.route({
+test("minimal one endpoint", async () => {
+  const schema = z.endpoints([
+    z.endpoint({
       name: "A",
       method: "GET",
       responses: [
@@ -22,9 +22,9 @@ test("minimal router one route", async () => {
   expect(res).toEqual({ status: 200 });
 });
 
-test("minimal router two routes", async () => {
-  const schema = z.router([
-    z.route({
+test("minimal endpoint two endpoints", async () => {
+  const schema = z.endpoints([
+    z.endpoint({
       name: "B",
       method: "POST",
       responses: [

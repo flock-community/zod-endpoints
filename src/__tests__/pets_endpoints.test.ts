@@ -15,8 +15,8 @@ const Pet = z.object({
 
 const Pets = z.array(z.reference("Pet", Pet));
 
-const schema = z.router([
-  z.route({
+const schema = z.endpoints([
+  z.endpoint({
     name: "listPets",
     summary: "List all pets",
     tags: [z.literal("pets")],
@@ -53,7 +53,7 @@ const schema = z.router([
     ]
   }),
 
-  z.route({
+  z.endpoint({
     name: "showPetById",
     summary: "Info for a specific pet",
     tags: [z.literal("pets")],
@@ -85,7 +85,7 @@ const schema = z.router([
     ]
   }),
 
-  z.route({
+  z.endpoint({
     name: "createPets",
     summary: "Create a pet",
     tags: [z.literal("pets")],

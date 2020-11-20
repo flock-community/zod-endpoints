@@ -45,20 +45,20 @@ export type Route = Request & {
     | [HttpResponseObject];
 };
 
-export function router<T extends HttpObject>(types: [T]): T;
-export function router<
+export function endpoints<T extends HttpObject>(types: [T]): T;
+export function endpoints<
   T1 extends HttpObject,
   T2 extends HttpObject,
   T3 extends HttpObject
 >(types: [T1, T2, ...T3[]]): z.ZodUnion<[T1, T2, ...T3[]]>;
-export function router<T extends HttpObject>(
+export function endpoints<T extends HttpObject>(
   types: [T] | [T, T, ...T[]]
 ): T | z.ZodUnion<[T, T, ...T[]]> {
   // @ts-ignore
   return types.length === 1 ? types[0] : z.union<[T, T, ...T[]]>(types);
 }
 
-export type RouteMapper<T extends Route> = z.ZodObject<{
+export type EndpointMapper<T extends Route> = z.ZodObject<{
   name: z.ZodTransformer<
     z.ZodOptional<z.ZodLiteral<T["name"]>>,
     z.ZodLiteral<T["name"]>
@@ -102,7 +102,7 @@ export type RouteMapper<T extends Route> = z.ZodObject<{
     ? T["responses"][0]
     : z.ZodUndefined;
 }>;
-export function route<T extends Route>(route: Readonly<T>): RouteMapper<T> {
+export function endpoint<T extends Route>(route: Readonly<T>): EndpointMapper<T> {
   // @ts-ignore
   return z.object({
     name: z.literal(route.name).default(route.name),
