@@ -39,7 +39,7 @@ First step is to define an endpoint by making use of the [zod-endpoints dsl](src
 
 ### Define endpoints
 ````ts
-import * as z from "../mod.ts";
+import * as z from "zod-endpoints";
 
 const project = z.object({
   id: z.string().uuid(),
@@ -78,8 +78,11 @@ const schema = z.endpoints([
 ]);
 ````
 
-### Api
-The endpoints can be convert into a service with the [Api](src/api.ts) type. This type transforms the schema into an object of the requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exhaustive.
+## Api
+The endpoints can be convert into a service or a client with the [Api](src/api.ts) type. 
+
+### Server
+For the  type transforms the schema into an object of the requests. The key of the object is the name of the route the value is a function from the request to a union of the responses. This object is strict typed and exhaustive.
 
 ```ts
 const service = {
@@ -89,9 +92,9 @@ const service = {
 ````
 
 ```ts
-import * as z from "../mod.ts";
+import * as z from "zod-endpoints";
 
-const api: z.Api<typeof schema> = {
+const server: z.Api<typeof schema> = {
   "GET_PROJECT": ({path}) => findProjectById(path[1]).then(project => ({ 
     status: 200, 
     body:{
@@ -106,9 +109,30 @@ const api: z.Api<typeof schema> = {
 ```
 
 ### Client
+The client implementation
 
-## Open api 3
+```ts
+const http = (req: z.ApiRequest) => {
+    fetch(req.path.join('/'), {
+      method: req.method
+    })
+}
+````
+
+```ts
+import * as z from "zod-endpoints";
+
+const client: z.Api<typeof schema> = {
+  "GET_PROJECT": (req) => http(req),
+  "CREATE_PROJECT": (req) => http(req)
+};
+```
+
+## Documentation
 Zod endpoints is fully compatible with [open api specification](https://www.openapis.org/). The schema can be transformed into open api json. For example with Swagger this can be presented as a documentation website.
 
+```ts
+const docs = z.openApi(schema)
+````
 ![GitHub Logo](images/pets_swagger.png)
 
