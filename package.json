@@ -1,6 +1,6 @@
 {
   "name": "zod-endpoints",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/index.js",
   "files": [
@@ -8,15 +8,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/vriad/zod"
+    "url": "https://github.com/flock-community/zod-endpoints"
   },
   "author": "Flock Community <info@flock.community>",
   "license": "MIT",
   "sideEffects": false,
   "bugs": {
-    "url": "https://github.com/vriad/zod/issues"
+    "url": "https://github.com/flock-community/zod-endpoints/issues"
   },
-  "homepage": "https://github.com/vriad/zod",
+  "homepage": "https://github.com/flock-community/zod-endpoints",
   "dependencies": {
     "zod": "^2.0.0-beta.20"
   },
