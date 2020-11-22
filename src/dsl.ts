@@ -39,7 +39,7 @@ export type Response = {
     | HttpBodyObject;
 };
 
-export type Route = Request & {
+export type Endpoint = Request & {
   responses?:
     | [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]
     | [HttpResponseObject];
@@ -47,18 +47,18 @@ export type Route = Request & {
 
 export function endpoints<T extends HttpObject>(types: [T]): T;
 export function endpoints<
-  T1 extends HttpObject,
-  T2 extends HttpObject,
-  T3 extends HttpObject
->(types: [T1, T2, ...T3[]]): z.ZodUnion<[T1, T2, ...T3[]]>;
+    T1 extends HttpObject,
+    T2 extends HttpObject,
+    T3 extends HttpObject,
+    >(types: [T1, T2, ...T3[]]): z.ZodUnion<[T1, T2, ...T3[]]>;
 export function endpoints<T extends HttpObject>(
-  types: [T] | [T, T, ...T[]]
+    types: [T] | [T, T, ...T[]],
 ): T | z.ZodUnion<[T, T, ...T[]]> {
   // @ts-ignore
-  return types.length === 1 ? types[0] : z.union<[T, T, ...T[]]>(types);
+  return (types.length === 1) ? types[0] : z.union<[T, T, ...T[]]>(types);
 }
 
-export type EndpointMapper<T extends Route> = z.ZodObject<{
+export type EndpointMapper<T extends Endpoint> = z.ZodObject<{
   name: z.ZodTransformer<
     z.ZodOptional<z.ZodLiteral<T["name"]>>,
     z.ZodLiteral<T["name"]>
@@ -102,37 +102,37 @@ export type EndpointMapper<T extends Route> = z.ZodObject<{
     ? T["responses"][0]
     : z.ZodUndefined;
 }>;
-export function endpoint<T extends Route>(route: Readonly<T>): EndpointMapper<T> {
+export function endpoint<T extends Endpoint>(endpoint: Readonly<T>): EndpointMapper<T> {
   // @ts-ignore
   return z.object({
-    name: z.literal(route.name).default(route.name),
+    name: z.literal(endpoint.name).default(endpoint.name),
     summary:
-      route.summary !== undefined
-        ? z.literal(route.summary).default(route.summary)
+      endpoint.summary !== undefined
+        ? z.literal(endpoint.summary).default(endpoint.summary)
         : z.undefined(),
     tags:
-      route.tags !== undefined
+      endpoint.tags !== undefined
         ? // @ts-ignore
-          z.tuple(route.tags).default(route.tags.map(_ => _._def.value))
+          z.tuple(endpoint.tags).default(endpoint.tags.map(_ => _._def.value))
         : z.undefined(),
-    method: z.literal(route.method),
+    method: z.literal(endpoint.method),
     // @ts-ignore
-    path: route.path !== undefined ? z.tuple(route.path) : [],
+    path: endpoint.path !== undefined ? z.tuple(endpoint.path) : [],
     query:
-      route.query !== undefined
-        ? z.object(route.query as z.ZodRawShape)
+      endpoint.query !== undefined
+        ? z.object(endpoint.query as z.ZodRawShape)
         : z.undefined(),
     headers:
-      route.headers !== undefined
-        ? z.object(route.headers as z.ZodRawShape)
+      endpoint.headers !== undefined
+        ? z.object(endpoint.headers as z.ZodRawShape)
         : z.undefined(),
     // @ts-ignore
-    body: transformBody(route.body),
+    body: transformBody(endpoint.body),
     // @ts-ignore
     responses:
-      route.responses !== undefined
+      endpoint.responses !== undefined
         ? // @ts-ignore
-          z.union(route.responses)
+          z.union(endpoint.responses)
         : z.undefined()
   });
 }

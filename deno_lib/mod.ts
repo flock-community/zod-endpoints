@@ -1,1 +1,1 @@
-export * from "./cjs/index.ts";
+export * from "./index.ts";

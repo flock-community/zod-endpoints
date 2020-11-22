@@ -1,12 +1,13 @@
 {
   "name": "zod-endpoints",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/cjs/index.js",
   "types": "./lib/cjs/index.d.ts",
   "module": "./lib/esm/index.js",
   "files": [
-    "lib"
+    "lib",
+    "deno_lib"
   ],
   "repository": {
     "type": "git",
@@ -50,7 +51,7 @@
     "ts-jest": "^26.4.3",
     "tslint": "^6.1.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "4.0"
+    "typescript": "3.9.7"
   },
   "denoify": {
     "ports": {

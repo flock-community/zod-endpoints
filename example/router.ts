@@ -1,8 +1,8 @@
 import * as z from "../deno_lib/mod.ts";
 import {Pet, Pets, Error} from "./model.ts";
 
-export const schema = z.router([
-    z.route({
+export const schema = z.endpoints([
+    z.endpoint({
         name: "listPets",
         summary: "List all pets",
         tags: [z.literal("pets")],
@@ -37,7 +37,7 @@ export const schema = z.router([
         ],
     }),
 
-    z.route({
+    z.endpoint({
         name: "showPetById",
         summary: "Info for a specific pet",
         tags: [z.literal("pets")],
@@ -68,7 +68,7 @@ export const schema = z.router([
         ],
     }),
 
-    z.route({
+    z.endpoint({
         name: "createPets",
         summary: "Create a pet",
         tags: [z.literal("pets")],
