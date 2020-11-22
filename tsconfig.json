@@ -7,10 +7,11 @@
       "esnext",
       "dom"
     ],
+    "outDir": "./lib",
     "target": "es5",
+    "removeComments": true,
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./lib",
     "esModuleInterop": true,
     "sourceMap": true,
     "moduleResolution": "node",
