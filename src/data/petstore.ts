@@ -162,4 +162,4 @@ export default {
       }
     }
   }
-};
+} as const;
