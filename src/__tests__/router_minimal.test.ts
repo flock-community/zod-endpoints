@@ -30,6 +30,7 @@ test("minimal endpoint two endpoints", async () => {
         z.endpoint({
             name: "A",
             method: "GET",
+            path:[z.literal("a")],
             responses: [
                 z.response({
                     status: 200
@@ -39,6 +40,7 @@ test("minimal endpoint two endpoints", async () => {
         z.endpoint({
             name: "B",
             method: "POST",
+            path:[z.literal("b")],
             responses: [
                 z.response({
                     status: 200,
@@ -69,7 +71,7 @@ test("minimal endpoint two endpoints", async () => {
         })
     };
 
-    const res = await api["B"]({method: "POST", path: [""]});
+    const res = await api["B"]({method: "POST", path: ["b"]});
     expect(res).toEqual({
         status: 200,
         body: {
@@ -87,7 +89,7 @@ test("minimal endpoint two endpoints", async () => {
         },
         openapi: "3.0.0",
         paths: {
-            "/": {
+            "/a": {
                 get: {
                     operationId: "A",
                     parameters: undefined,
@@ -102,6 +104,8 @@ test("minimal endpoint two endpoints", async () => {
                     summary: undefined,
                     tags: undefined,
                 },
+            },
+            "/b": {
                 post: {
                     operationId: "B",
                     parameters: undefined,

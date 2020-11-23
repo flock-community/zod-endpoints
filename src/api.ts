@@ -6,20 +6,20 @@ export type ApiNames<T extends HttpSchema> = z.output<T> extends {
 }
   ? z.output<T>["name"]
   : never;
-export type ApiRequest<T extends HttpSchema> = Pick<
-  Extract<z.output<T>, { name: ApiNames<T> }>,
+export type ApiRequest<T extends HttpSchema, Key extends string> = Pick<
+  Extract<z.output<T>, { name: Key }>,
   "method" | "path" |  "query" | "headers" | "body"
 >;
-export type ApiResponse<T extends HttpSchema> = Pick<
-  Extract<z.output<T>, { name: ApiNames<T> }>["responses"],
+export type ApiResponse<T extends HttpSchema, Key extends string> = Pick<
+  Extract<z.output<T>, { name: Key }>["responses"],
   "status" | "headers" | "body"
 >;
-export type ApiFunction<T extends HttpSchema> = (
-  request: ApiRequest<T>
-) => Promise<ApiResponse<T>>;
+export type ApiFunction<T extends HttpSchema, Key extends string> = (
+  request: ApiRequest<T, Key>
+) => Promise<ApiResponse<T, Key>>;
 
 export type Api<T extends HttpSchema> = {
-  [Key in ApiNames<T>]: ApiFunction<T>;
+  [Key in ApiNames<T>]: ApiFunction<T, Key>;
 };
 export type ApiFragment<
   T extends HttpSchema,
