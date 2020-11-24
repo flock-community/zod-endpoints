@@ -1,6 +1,6 @@
 {
   "name": "zod-endpoints",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/cjs/index.js",
   "types": "./lib/cjs/index.d.ts",
@@ -38,8 +38,9 @@
     "testone": "jest",
     "badge": "make-coverage-badge --report-path ./src/coverage/coverage-summary.json --output-path ./coverage.svg",
     "deno_clean": "rm -rf deno_lib",
-    "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js",
-    "deno_test": "deno test deno_lib/__tests__"
+    "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js && node deno_scripts/UpdateModTs.js",
+    "deno_test": "deno test deno_lib/__tests__",
+    "prepare": "npm run build && npm run deno_build"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
@@ -51,7 +52,7 @@
     "ts-jest": "^26.4.3",
     "tslint": "^6.1.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "3.9.7"
+    "typescript": "4.0"
   },
   "denoify": {
     "ports": {
