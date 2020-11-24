@@ -8,3 +8,4 @@ export { openApi, createSchema } from "./openapi.ts";
 export * from "./dsl.ts";
 export * from "./model.ts";
 export * from "./api.ts";
+export * from "./client.ts";

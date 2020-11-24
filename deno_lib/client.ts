@@ -1,5 +1,5 @@
-import * as z from "./index";
-import {PickUnion} from "./utils";
+import * as z from "./index.ts";
+import {PickUnion} from "./utils.ts";
 
 type ClientRequestAttributes = "method" | "path" | "query" | "headers" | "body"
 type ClientRequest<T extends z.HttpSchema> = PickUnion<z.output<T>, ClientRequestAttributes>

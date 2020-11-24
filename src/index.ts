@@ -8,3 +8,4 @@ export { openApi, createSchema } from "./openapi";
 export * from "./dsl";
 export * from "./model";
 export * from "./api";
+export * from "./client";
