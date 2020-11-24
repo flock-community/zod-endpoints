@@ -6,8 +6,7 @@
   "types": "./lib/cjs/index.d.ts",
   "module": "./lib/esm/index.js",
   "files": [
-    "lib",
-    "deno_lib"
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -30,21 +29,21 @@
     "zod"
   ],
   "scripts": {
-    "clean": "rm -rf lib/*",
+    "clean": "rm -rf lib/cjs && rm -rf lib/esm",
     "build": "yarn run clean && tsc --p tsconfig.cjs.json && tsc --p tsconfig.esm.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest",
     "testone": "jest",
     "badge": "make-coverage-badge --report-path ./src/coverage/coverage-summary.json --output-path ./coverage.svg",
-    "deno_clean": "rm -rf deno_lib",
-    "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js && node deno_scripts/UpdateModTs.js",
-    "deno_test": "deno test deno_lib/__tests__",
+    "deno_clean": "rm -rf deno_lib && rm -rf lib/deno",
+    "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js && node deno_scripts/UpdateModTs.js && mv deno_lib lib/deno",
+    "deno_test": "deno test lib/deno/__tests__",
     "prepare": "npm run build && npm run deno_build"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
-    "denoify": "0.6.1",
+    "denoify": "0.6.3",
     "jest": "^26.6.3",
     "make-coverage-badge": "^1.2.0",
     "nodemon": "^2.0.2",
