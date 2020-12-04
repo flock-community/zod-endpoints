@@ -22,7 +22,6 @@ export type Request = {
   readonly path?: [Path, ...Path[]];
   readonly query?: { [key: string]: Parameter };
   readonly headers?: { [key: string]: Parameter };
-  readonly type?: string;
   readonly body?:
     | [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
     | [HttpBodyObject]

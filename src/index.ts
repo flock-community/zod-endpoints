@@ -9,3 +9,4 @@ export * from "./dsl";
 export * from "./model";
 export * from "./api";
 export * from "./client";
+export * from "./match";

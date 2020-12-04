@@ -1,6 +1,6 @@
 {
   "name": "zod-endpoints",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/cjs/index.js",
   "types": "./lib/cjs/index.d.ts",
@@ -39,7 +39,8 @@
     "deno_clean": "rm -rf deno_lib && rm -rf lib/deno",
     "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js && node deno_scripts/UpdateModTs.js && mv deno_lib lib/deno",
     "deno_test": "deno test lib/deno/__tests__",
-    "prepare": "npm run build && npm run deno_build"
+    "prepare": "npm run build && npm run deno_build",
+    "all": "npm run build && npm run deno_build && npm run test && npm run deno_test"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
