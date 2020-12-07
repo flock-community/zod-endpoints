@@ -142,7 +142,7 @@ export type ResponseMapper<T extends Response> = z.ZodObject<{
     status: z.ZodLiteral<T["status"]>;
     headers: T["headers"] extends z.ZodRawShape
         ? z.ZodObject<T["headers"]>
-        : z.ZodObject<{}>;
+        : z.ZodUndefined;
     body: T["body"] extends [HttpBodyObject, HttpBodyObject, ...HttpBodyObject[]]
         ? z.ZodUnion<T["body"]>
         : T["body"] extends [HttpBodyObject]
@@ -162,7 +162,7 @@ export function response<T extends Response>(
         headers:
             response.headers !== undefined
                 ? z.object(response.headers as z.ZodRawShape)
-                : z.object({}),
+                : z.undefined(),
         body: transformBody(response.body)
     });
 }

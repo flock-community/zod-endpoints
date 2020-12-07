@@ -42,7 +42,7 @@ export type HttpRequestObject = z.ZodObject<HttpRequest>;
 export type HttpResponse = {
   status: z.ZodLiteral<number | string>;
   description: z.ZodLiteral<string> | z.ZodUndefined;
-  headers: ParameterObject;
+  headers: ParameterObject | z.ZodUndefined;
   body: HttpBodyUnion;
 };
 

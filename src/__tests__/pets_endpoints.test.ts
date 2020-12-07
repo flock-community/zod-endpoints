@@ -144,8 +144,8 @@ test("validate example request", () => {
     },
     headers:{},
     responses: {
-      status: 200,
       description: "A paged array of pets",
+      status: 200,
       headers: {
         "x-next": "?"
       },
@@ -169,9 +169,9 @@ test("validate example request", () => {
     query:{},
     headers:{},
     responses: {
-      status: "default",
-      headers:{},
       description: "unexpected error",
+      status: "default",
+      headers: undefined,
       body: {
         type: "application/json",
         content: {
