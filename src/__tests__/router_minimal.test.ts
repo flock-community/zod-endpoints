@@ -17,12 +17,20 @@ test("minimal one endpoint", async () => {
     const api: z.Api<typeof schema> = {
         A: ({path}) => {
             expect(path[0]).toEqual("");
-            return Promise.resolve({status: 200})
+            return Promise.resolve({
+                status: 200,
+                headers:{}
+            })
         }
     };
 
-    const res = await api["A"]({method: "GET", path: [""]});
-    expect(res).toEqual({status: 200});
+    const res = await api["A"]({
+        method: "GET",
+        path: [""],
+        query: {},
+        headers: {}
+    });
+    expect(res).toEqual({status: 200, headers: {}});
 });
 
 test("minimal endpoint two endpoints", async () => {
@@ -64,16 +72,26 @@ test("minimal endpoint two endpoints", async () => {
     ]);
 
     const api: z.Api<typeof schema> = {
-        A: () => Promise.resolve({status: 200}),
+        A: () => Promise.resolve({
+            status: 200,
+            headers: {},
+        }),
         B: () => Promise.resolve({
             status: 200,
+            headers: {},
             body: {type: "application/json", content: {b: "b"}}
         })
     };
 
-    const res = await api["B"]({method: "POST", path: ["b"]});
+    const res = await api["B"]({
+        method: "POST",
+        path: ["b"],
+        query: {},
+        headers: {},
+    });
     expect(res).toEqual({
         status: 200,
+        headers: {},
         body: {
             type: "application/json",
             content: {b: "b"}

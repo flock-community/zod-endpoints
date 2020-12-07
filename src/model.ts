@@ -4,7 +4,7 @@ import { Reference } from "./reference";
 import { Component } from "./component";
 
 export type Path = z.ZodLiteral<any> | z.ZodString | Parameter;
-export type Headers = z.ZodObject<{ [key: string]: Parameter }>;
+export type ParameterObject = z.ZodObject<{ [key: string]: Parameter }>;
 export type Content =
   | Reference<any>
   | Component<any>
@@ -32,8 +32,8 @@ export type HttpRequest = {
   tags:
     | z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>
     | z.ZodUndefined;
-  query: z.ZodObject<{ [key: string]: Parameter }> | z.ZodUndefined;
-  headers: Headers | z.ZodUndefined;
+  query: ParameterObject;
+  headers: ParameterObject;
   body: HttpBodyUnion;
 };
 
@@ -42,7 +42,7 @@ export type HttpRequestObject = z.ZodObject<HttpRequest>;
 export type HttpResponse = {
   status: z.ZodLiteral<number | string>;
   description: z.ZodLiteral<string> | z.ZodUndefined;
-  headers: Headers | z.ZodUndefined;
+  headers: ParameterObject;
   body: HttpBodyUnion;
 };
 

@@ -142,6 +142,7 @@ test("validate example request", () => {
     query: {
       limit: 10
     },
+    headers:{},
     responses: {
       status: 200,
       description: "A paged array of pets",
@@ -165,8 +166,11 @@ test("validate example request", () => {
   const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
     method: "GET",
+    query:{},
+    headers:{},
     responses: {
       status: "default",
+      headers:{},
       description: "unexpected error",
       body: {
         type: "application/json",

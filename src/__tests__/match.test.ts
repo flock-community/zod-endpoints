@@ -50,7 +50,8 @@ test("match requset", () => {
         path: ["a"],
         query: {
             next: "a"
-        }
+        },
+        headers:{}
     }
 
     const reqB: z.MatchRequest = {
@@ -58,7 +59,8 @@ test("match requset", () => {
         path: ["b"],
         query: {
             next: undefined
-        }
+        },
+        headers:{}
     }
 
     expect(z.matchRequest(schema, reqA)).toEqual(a);

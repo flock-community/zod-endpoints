@@ -1,10 +1,10 @@
 import {
-  Headers,
   HttpResponseObject,
   HttpResponseUnion,
   HttpObject,
   HttpSchema,
-  HttpBodyUnion
+  HttpBodyUnion,
+  ParameterObject as ParameterObj
 } from "./model";
 
 import {
@@ -303,7 +303,7 @@ function createContentObject(body: HttpBodyUnion): ContentObject | undefined {
   return undefined;
 }
 
-function createHeadersObject(headers: Headers): HeadersObject | undefined {
+function createHeadersObject(headers: ParameterObj): HeadersObject | undefined {
   const shape = headers._def.shape();
 
   if (Object.keys(shape).length === 0) {
@@ -320,14 +320,6 @@ function createHeadersObject(headers: Headers): HeadersObject | undefined {
         }
       };
     }
-    // if ("options" in obj) {
-    //   return ({
-    //     ...acc,
-    //     [cur]: {
-    //       "schema": obj.options.map((it) => it._def.value),
-    //     },
-    //   });
-    // }
     if ("state" in obj) {
       return {
         ...acc,
