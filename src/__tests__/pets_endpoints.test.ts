@@ -24,7 +24,7 @@ const schema = z.endpoints([
     path: [z.literal("pets")],
     query: {
       limit: z
-        .parameter(z.integer("int32").max(100))
+        .parameter(z.integer("int32").max(100).optional())
         .description("How many items to return at one time (max 100)")
     },
     responses: [

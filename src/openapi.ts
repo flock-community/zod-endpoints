@@ -219,26 +219,28 @@ function createParameterObject(http: HttpObject) {
 }
 
 function createPathParameterObject(
-  it: z.ZodLiteral<any> | z.ZodString | Parameter
+  it: z.ZodLiteral<any> | z.ZodString | z.ZodOptional<z.ZodTypeAny> | Parameter
 ): ParameterObject {
   return {
     name: "state" in it && it.state.name ? it.state.name : "undefined",
     in: "path",
-    required: true,
     description: "state" in it ? it.state.description : undefined,
-    schema: mapSchema(it)
+    required: !("innerType" in it._def),
+    schema: "innerType" in it._def ? mapSchema(it._def.innerType) : mapSchema(it)
   };
 }
 
 function createQueryParameterObject(
   it: Record<PropertyKey, Parameter>
 ): ParameterObject[] {
+
   return Object.keys(it).map(key => ({
     name: key,
     in: "query",
-    description: it[key].state.description,
-    required: it[key].state.required,
-    schema: mapSchema(it[key])
+    description: "state" in it[key] ? it[key].state.description : undefined,
+    required: !("innerType" in it[key]._def),
+    // @ts-ignore
+    schema: "innerType" in it[key]._def ? mapSchema(it[key]._def.innerType) : mapSchema(it[key])
   }));
 }
 

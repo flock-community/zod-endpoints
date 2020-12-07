@@ -11,7 +11,7 @@ test("test project", () => {
     summary: z.undefined(),
     tags: z.tuple([z.literal("a"), z.literal("b")]).default(["a", "b"]),
     query: z.object({
-      test: parameter(z.number().max(100)).description(
+      test: parameter(z.number().max(100).optional()).description(
         "How many items to return at one time (max 100)"
       )
     }),

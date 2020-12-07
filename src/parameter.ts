@@ -3,7 +3,6 @@ import * as z from "./deps";
 type ParameterState = {
   name?: string;
   description?: string;
-  required?: boolean;
 };
 
 export class Parameter extends z.ZodType<any> {
@@ -16,7 +15,6 @@ export class Parameter extends z.ZodType<any> {
     this.state = {
       name: undefined,
       description: undefined,
-      required: false
     };
   }
 
@@ -29,11 +27,6 @@ export class Parameter extends z.ZodType<any> {
 
   public description(description: string) {
     this.state = { ...this.state, description };
-    return this;
-  }
-
-  public required(required: boolean) {
-    this.state = { ...this.state, required };
     return this;
   }
 
