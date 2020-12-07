@@ -145,11 +145,11 @@ test("api interface", () => {
 });
 
 test("client interface", async () => {
+    // @ts-ignore
     const client: z.Client<typeof schema> = (req) => {
         const match = z.matchRequest(schema, req)
-
         return Promise.resolve({
-            status: "default",
+            status: 200,
             headers: {
                 "x-next": "xxx"
             },
@@ -157,10 +157,10 @@ test("client interface", async () => {
                 type: 'application/json',
                 content: [{
                     id: 123,
-                    name: match && match.shape.name.parse(undefined) || ""
+                    name: match?.shape.name.parse(undefined) ?? ""
                 }]
             }
-        })
+        } as const)
     };
 
     const res = await client({
