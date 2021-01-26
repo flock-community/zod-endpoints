@@ -1,6 +1,6 @@
 {
   "name": "zod-endpoints",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/cjs/index.js",
   "types": "./lib/cjs/index.d.ts",
