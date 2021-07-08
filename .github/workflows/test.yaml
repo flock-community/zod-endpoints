@@ -21,10 +21,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - run: yarn install
-      - run: yarn add typescript@${{ matrix.typescript }}
-      - run: yarn build
-      - run: yarn test
+      - run: npm install
+      - run: npm install typescript@${{ matrix.typescript }}
+      - run: npm run build
+      - run: npm run test
 
   test-deno:
     runs-on: Ubuntu-20.04
