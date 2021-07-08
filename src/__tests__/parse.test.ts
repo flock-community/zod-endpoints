@@ -1,3 +1,6 @@
+// @ts-ignore TS6133
+import { expect, test } from "@jest/globals";
+
 import * as z from "../index";
 
 test("parse bigint", () => {
@@ -10,17 +13,17 @@ test("parse pet", () => {
   const Pet = z.object({
     id: z.bigint(),
     name: z.string(),
-    tag: z.string().optional()
+    tag: z.string().optional(),
   });
   const Pets = z.array(z.reference("Pet", Pet));
 
   const arr = [
     { id: BigInt(0), name: "a", tag: "Test" },
-    { id: BigInt(1), name: "b", tag: "Test" }
+    { id: BigInt(1), name: "b", tag: "Test" },
   ];
 
   expect(Pets.parse(arr)).toEqual([
     { id: BigInt(0), name: "a", tag: "Test" },
-    { id: BigInt(1), name: "b", tag: "Test" }
+    { id: BigInt(1), name: "b", tag: "Test" },
   ]);
 });

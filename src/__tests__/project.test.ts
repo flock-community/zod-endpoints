@@ -1,6 +1,9 @@
+// @ts-ignore TS6133
+import { expect, test } from "@jest/globals";
+
 import * as z from "../index";
-import { openApi } from "../openapi";
 import { component, parameter } from "../index";
+import { openApi } from "../openapi";
 import { OpenAPIObject } from "../utils/openapi3-ts/OpenApi";
 
 test("test project", () => {
@@ -13,7 +16,7 @@ test("test project", () => {
     query: z.object({
       test: parameter(z.number().max(100).optional()).description(
         "How many items to return at one time (max 100)"
-      )
+      ),
     }),
     headers: z.object({}),
     body: z.undefined(),
@@ -27,18 +30,18 @@ test("test project", () => {
           content: component(
             z.object({
               uuid: z.string().uuid(),
-              name: z.string()
+              name: z.string(),
             })
-          )
-        })
+          ),
+        }),
       }),
       z.object({
         description: z.literal("Not projects found"),
         status: z.literal(404),
         headers: z.object({}),
-        body: z.undefined()
-      })
-    ])
+        body: z.undefined(),
+      }),
+    ]),
   };
 
   const res = openApi(z.object(route));
@@ -47,7 +50,7 @@ test("test project", () => {
     openapi: "3.0.0",
     info: {
       version: "1.0.0",
-      title: "No title"
+      title: "No title",
     },
     servers: [],
     paths: {
@@ -62,9 +65,9 @@ test("test project", () => {
               required: false,
               schema: {
                 format: "int32",
-                type: "integer"
-              }
-            }
+                type: "integer",
+              },
+            },
           ],
           summary: undefined,
           tags: ["a", "b"],
@@ -78,28 +81,28 @@ test("test project", () => {
                   schema: {
                     properties: {
                       name: {
-                        type: "string"
+                        type: "string",
                       },
                       uuid: {
-                        type: "string"
-                      }
+                        type: "string",
+                      },
                     },
                     required: ["uuid", "name"],
-                    type: "object"
-                  }
-                }
-              }
+                    type: "object",
+                  },
+                },
+              },
             },
             "404": {
               description: "Not projects found",
               headers: undefined,
-              content: undefined
-            }
-          }
-        }
-      }
+              content: undefined,
+            },
+          },
+        },
+      },
     },
-    components: undefined
+    components: undefined,
   };
   expect(res).toEqual(exp);
 });

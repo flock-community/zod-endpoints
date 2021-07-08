@@ -21,8 +21,12 @@ export class Reference<T extends ReferenceType> extends z.ZodType<
   state: {
     name?: string;
   };
-  _parse(_ctx: z.ParseContext, _data: any, _parsedType: z.ZodParsedType): z.ParseReturnType<T["_output"]>{
-    return this.reference._parse(_ctx, _data,_parsedType)
+  _parse(
+    _ctx: z.ParseContext,
+    _data: any,
+    _parsedType: z.ZodParsedType
+  ): z.ParseReturnType<T["_output"]> {
+    return this.reference._parse(_ctx, _data, _parsedType);
   }
 
   constructor(name: string, type: T) {

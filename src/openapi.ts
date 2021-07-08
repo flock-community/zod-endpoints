@@ -1,12 +1,23 @@
 import {
+  Component,
+  ComponentType,
+  Parameter,
+  Reference,
+  ReferenceType,
+  ZodFirstPartyTypeKind,
+  ZodLiteral,
+  ZodOptional,
+  ZodString,
+  ZodTypeAny,
+} from "./index";
+import {
+  HttpBodyUnion,
+  HttpObject,
   HttpResponseObject,
   HttpResponseUnion,
-  HttpObject,
   HttpSchema,
-  HttpBodyUnion,
-  ParameterObject as ParameterObj
+  ParameterObject as ParameterObj,
 } from "./model";
-
 import {
   ComponentsObject,
   ContentObject,
@@ -21,44 +32,34 @@ import {
   ResponseObject,
   ResponsesObject,
   SchemaObject,
-  ServerObject
+  ServerObject,
 } from "./utils/openapi3-ts/OpenApi";
 
-import {
-  Parameter,
-  Reference,
-  ReferenceType,
-  Component,
-  ComponentType
-} from "./index";
-
-import * as z from "./deps";
-
 const base = {
-  openapi: "3.0.0"
+  openapi: "3.0.0",
 };
 
 function mapSchema(type: ComponentType): SchemaObject | undefined {
   switch (type._def.typeName) {
-    case z.ZodFirstPartyTypeKind.ZodNumber:
+    case ZodFirstPartyTypeKind.ZodNumber:
       if ("format" in type._def) {
         return {
           type: "integer",
-          format: type._def.format
+          format: type._def.format,
         };
       }
       return {
         type: "integer",
-        format: "int32"
+        format: "int32",
       };
-    case z.ZodFirstPartyTypeKind.ZodBigInt:
+    case ZodFirstPartyTypeKind.ZodBigInt:
       return {
         type: "integer",
-        format: "int32"
+        format: "int32",
       };
-    case z.ZodFirstPartyTypeKind.ZodString:
+    case ZodFirstPartyTypeKind.ZodString:
       return {
-        type: "string"
+        type: "string",
       };
     default:
       return undefined;
@@ -80,7 +81,7 @@ export function createSchema(
   if ("type" in obj._def) {
     return {
       type: "array",
-      items: createSchema(obj._def.type)
+      items: createSchema(obj._def.type),
     };
   }
   if ("shape" in obj._def) {
@@ -90,15 +91,15 @@ export function createSchema(
       properties: Object.keys(shape).reduce((acc, cur) => {
         return {
           ...acc,
-          [cur]: createSchema(shape[cur])
+          [cur]: createSchema(shape[cur]),
         };
       }, {}),
       required: Object.keys(shape).reduce<string[]>((acc, cur) => {
-        if (shape[cur]._def.typeName !== z.ZodFirstPartyTypeKind.ZodOptional) {
+        if (shape[cur]._def.typeName !== ZodFirstPartyTypeKind.ZodOptional) {
           return [...acc, cur];
         }
         return acc;
-      }, [])
+      }, []),
     };
   }
   if ("checks" in obj._def) {
@@ -126,14 +127,14 @@ function createPaths(options: HttpObject[]): PathsObject {
       shape.path._def !== undefined && "items" in shape.path._def
         ? "/" +
           shape.path._def.items
-            .map(p => {
+            .map((p) => {
               if ("state" in p) {
                 return `{${p.state.name}}`;
               }
-              if (p._def.typeName === z.ZodFirstPartyTypeKind.ZodString) {
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodString) {
                 return `{${p._def.typeName}}`;
               }
-              if (p._def.typeName === z.ZodFirstPartyTypeKind.ZodLiteral) {
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodLiteral) {
                 return p._def.value;
               }
             })
@@ -143,26 +144,26 @@ function createPaths(options: HttpObject[]): PathsObject {
       ...acc,
       [path]: {
         ...acc[path],
-        [method.toLowerCase()]: createOperationObject(cur)
-      }
+        [method.toLowerCase()]: createOperationObject(cur),
+      },
     };
   }, {});
 }
 
 function createComponents(options: HttpObject[]): ComponentsObject | undefined {
   const schemas = options
-    .flatMap(http => {
+    .flatMap((http) => {
       return mapResponsesObject(http.shape.responses);
     })
-    .map(response => {
+    .map((response) => {
       const body = response.shape.body;
-      if("shape" in body){
-        return body.shape.content
+      if ("shape" in body) {
+        return body.shape.content;
       }
-      if("options" in body){
-        body.options.map(it => it.shape.content)
+      if ("options" in body) {
+        body.options.map((it) => it.shape.content);
       }
-      return undefined
+      return undefined;
     })
     .reduce((acc, cur) => {
       if (cur != null && "reference" in cur && cur.state.name) {
@@ -173,7 +174,7 @@ function createComponents(options: HttpObject[]): ComponentsObject | undefined {
     }, {});
   return Object.keys(schemas).length > 0
     ? {
-        schemas: schemas
+        schemas: schemas,
       }
     : undefined;
 }
@@ -191,11 +192,11 @@ function createOperationObject(http: HttpObject): OperationObject {
         : undefined,
     tags:
       "defaultValue" in shape.tags._def
-        ? shape.tags._def.defaultValue() as string[]
+        ? (shape.tags._def.defaultValue() as string[])
         : undefined,
     requestBody: createRequestBody(http),
     parameters: createParameterObject(http),
-    responses: createResponsesObject(shape.responses)
+    responses: createResponsesObject(shape.responses),
   };
 }
 
@@ -215,36 +216,40 @@ function createParameterObject(http: HttpObject) {
       : []),
     ...(shape.path._def && "items" in shape.path._def
       ? shape.path._def.items
-          .filter(it => "state" in it)
+          .filter((it) => "state" in it)
           .map(createPathParameterObject)
-      : [])
+      : []),
   ];
   return res.length > 0 ? res : undefined;
 }
 
 function createPathParameterObject(
-  it: z.ZodLiteral<any> | z.ZodString | z.ZodOptional<z.ZodTypeAny> | Parameter
+  it: ZodLiteral<any> | ZodString | ZodOptional<ZodTypeAny> | Parameter
 ): ParameterObject {
   return {
     name: "state" in it && it.state.name ? it.state.name : "undefined",
     in: "path",
     description: "state" in it ? it.state.description : undefined,
     required: !("innerType" in it._def),
-    schema: "innerType" in it._def ? mapSchema(it._def.innerType) : mapSchema(it)
+    schema:
+      "innerType" in it._def ? mapSchema(it._def.innerType) : mapSchema(it),
   };
 }
 
 function createQueryParameterObject(
   it: Record<PropertyKey, Parameter>
 ): ParameterObject[] {
-
-  return Object.keys(it).map(key => ({
+  return Object.keys(it).map((key) => ({
     name: key,
     in: "query",
     description: "state" in it[key] ? it[key].state.description : undefined,
     required: !("innerType" in it[key]._def),
     // @ts-ignore
-    schema: "innerType" in it[key]._def ? mapSchema(it[key]._def.innerType) : mapSchema(it[key])
+    schema:
+      "innerType" in it[key]._def
+        ? // @ts-ignore
+          mapSchema(it[key]._def.innerType)
+        : mapSchema(it[key]),
   }));
 }
 
@@ -256,7 +261,7 @@ function createResponsesObject(responses: HttpResponseUnion): ResponsesObject {
     return responses.options.reduce<ResponsesObject>((acc, cur) => {
       return {
         ...acc,
-        ...createResponseObject(cur)
+        ...createResponseObject(cur),
       };
     }, {});
   }
@@ -267,7 +272,7 @@ function mapResponsesObject(
   responses: HttpResponseUnion
 ): HttpResponseObject[] {
   if ("options" in responses) {
-    return responses.options.map(it => it);
+    return responses.options.map((it) => it);
   }
   if ("shape" in responses) {
     return [responses];
@@ -288,16 +293,16 @@ function createResponseObject(
         "shape" in shape.headers
           ? createHeadersObject(shape.headers)
           : undefined,
-      content: createContentObject(shape.body)
-    }
+      content: createContentObject(shape.body),
+    },
   };
 }
 function createContentObject(body: HttpBodyUnion): ContentObject | undefined {
   if ("shape" in body) {
     return {
       [body.shape.type._def.value]: {
-        schema: createSchema(body.shape.content)
-      }
+        schema: createSchema(body.shape.content),
+      },
     };
   }
   if ("options" in body) {
@@ -322,8 +327,8 @@ function createHeadersObject(headers: ParameterObj): HeadersObject | undefined {
       return {
         ...acc,
         [cur]: {
-          schema: mapSchema(obj)
-        }
+          schema: mapSchema(obj),
+        },
       };
     }
     if ("state" in obj) {
@@ -331,13 +336,13 @@ function createHeadersObject(headers: ParameterObj): HeadersObject | undefined {
         ...acc,
         [cur]: {
           description: obj.state.description,
-          schema: mapSchema(obj)
-        }
+          schema: mapSchema(obj),
+        },
       };
     }
     return {
       ...acc,
-      [cur]: {}
+      [cur]: {},
     };
   }, {});
 }

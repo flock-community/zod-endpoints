@@ -9,8 +9,12 @@ export class Parameter extends z.ZodType<any> {
   readonly type: z.ZodType<any>;
   state: ParameterState;
 
-  _parse(_ctx: z.ParseContext, _data: any, _parsedType: z.ZodParsedType): z.ParseReturnType<any>{
-    return this.type._parse(_ctx, _data,_parsedType)
+  _parse(
+    _ctx: z.ParseContext,
+    _data: any,
+    _parsedType: z.ZodParsedType
+  ): z.ParseReturnType<any> {
+    return this.type._parse(_ctx, _data, _parsedType);
   }
   constructor(type: z.ZodType<any>) {
     super(type._def);

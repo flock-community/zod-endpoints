@@ -3,7 +3,7 @@
 
 import {
   ISpecificationExtension,
-  SpecificationExtension
+  SpecificationExtension,
 } from "./SpecificationExtension";
 
 export function getExtension(
@@ -271,6 +271,7 @@ export interface ReferenceObject {
  * @param obj The value to check.
  */
 export function isReferenceObject(obj: object): obj is ReferenceObject {
+  /* eslint-disable-next-line no-prototype-builtins */
   return obj.hasOwnProperty("$ref");
 }
 
@@ -327,6 +328,7 @@ export interface SchemaObject extends ISpecificationExtension {
 export function isSchemaObject(
   schema: SchemaObject | ReferenceObject
 ): schema is SchemaObject {
+  /* eslint-disable-next-line no-prototype-builtins */
   return !schema.hasOwnProperty("$ref");
 }
 
