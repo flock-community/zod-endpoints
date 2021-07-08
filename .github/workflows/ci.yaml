@@ -17,5 +17,3 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test
-      - run: npm run deno_build
-      - run: npm run deno_test
