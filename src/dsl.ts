@@ -50,15 +50,12 @@ export function endpoints<T extends HttpObject>(
 }
 
 export type EndpointMapper<T extends Endpoint> = z.ZodObject<{
-    name: z.ZodTransformer<z.ZodOptional<z.ZodLiteral<T["name"]>>,
-        z.ZodLiteral<T["name"]>>;
+    name: z.ZodDefault<z.ZodLiteral<T["name"]>>;
     summary: T["summary"] extends string
-        ? z.ZodTransformer<z.ZodOptional<z.ZodLiteral<T["summary"]>>,
-            z.ZodLiteral<T["summary"]>>
+        ? z.ZodDefault<z.ZodLiteral<T["summary"]>>
         : z.ZodUndefined;
     tags: T["tags"] extends [z.ZodTypeAny, ...z.ZodTypeAny[]] | []
-        ? z.ZodTransformer<z.ZodOptional<z.ZodTuple<T["tags"]>>,
-            z.ZodTuple<T["tags"]>>
+        ? z.ZodDefault<z.ZodTuple<T["tags"]>>
         : z.ZodUndefined;
     method: z.ZodLiteral<T["method"]>;
     path: T["path"] extends [Path, ...Path[]]
@@ -88,7 +85,7 @@ export type EndpointMapper<T extends Endpoint> = z.ZodObject<{
             : z.ZodUndefined;
 }>;
 
-export function endpoint<T extends Endpoint>(endpoint: Readonly<T>): EndpointMapper<T> {
+export function endpoint<T extends Endpoint>(endpoint: T): EndpointMapper<T> {
     // @ts-ignore
     return z.object({
         name: z.literal(endpoint.name).default(endpoint.name),

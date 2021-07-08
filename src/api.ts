@@ -8,11 +8,12 @@ export type ApiNames<T extends z.HttpSchema> = z.output<T> extends {
   : never;
 
 
+export type ApiRequestAttributes = "method" | "path" |  "query" | "headers" | "body"
+export type ApiResponseAttributes = "status" | "headers" | "body"
 export type ApiRequest<T extends z.HttpSchema, Key> = Extract<z.output<T>, { name: Key }>;
 export type ApiResponse<T extends z.HttpSchema, Key> = ApiRequest<T, Key>["responses"]
-export type ApiFunction<T extends z.HttpSchema, Key> = (
-  request: Readonly<PickUnion<ApiRequest<T, Key>, "method" | "path" |  "query" | "headers" | "body">>
-) => Readonly<Promise<PickUnion<ApiResponse<T, Key>,"status" | "headers" | "body">>>;
+export type ApiFunction<T extends z.HttpSchema, Key> = (request: Readonly<PickUnion<ApiRequest<T, Key>, ApiRequestAttributes>>) => Readonly<Promise<ApiResponseAttributes extends keyof ApiResponse<T, Key> ? PickUnion<ApiResponse<T, Key>, ApiResponseAttributes> : undefined>>;
+
 
 export type Api<T extends z.HttpSchema> = {
   [Key in ApiNames<T>]: ApiFunction<T, Key>;

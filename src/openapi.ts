@@ -39,8 +39,8 @@ const base = {
 };
 
 function mapSchema(type: ComponentType): SchemaObject | undefined {
-  switch (type._def.t) {
-    case z.ZodTypes.number:
+  switch (type._def.typeName) {
+    case z.ZodFirstPartyTypeKind.ZodNumber:
       if ("format" in type._def) {
         return {
           type: "integer",
@@ -51,12 +51,12 @@ function mapSchema(type: ComponentType): SchemaObject | undefined {
         type: "integer",
         format: "int32"
       };
-    case z.ZodTypes.bigint:
+    case z.ZodFirstPartyTypeKind.ZodBigInt:
       return {
         type: "integer",
         format: "int32"
       };
-    case z.ZodTypes.string:
+    case z.ZodFirstPartyTypeKind.ZodString:
       return {
         type: "string"
       };
@@ -94,14 +94,14 @@ export function createSchema(
         };
       }, {}),
       required: Object.keys(shape).reduce<string[]>((acc, cur) => {
-        if (shape[cur]._def.t !== z.ZodTypes.optional) {
+        if (shape[cur]._def.typeName !== z.ZodFirstPartyTypeKind.ZodOptional) {
           return [...acc, cur];
         }
         return acc;
       }, [])
     };
   }
-  if ("t" in obj._def) {
+  if ("checks" in obj._def) {
     return mapSchema(obj);
   }
   return undefined;
@@ -130,10 +130,10 @@ function createPaths(options: HttpObject[]): PathsObject {
               if ("state" in p) {
                 return `{${p.state.name}}`;
               }
-              if (p._def.t === z.ZodTypes.string) {
-                return `{${p._def.t}}`;
+              if (p._def.typeName === z.ZodFirstPartyTypeKind.ZodString) {
+                return `{${p._def.typeName}}`;
               }
-              if (p._def.t === z.ZodTypes.literal) {
+              if (p._def.typeName === z.ZodFirstPartyTypeKind.ZodLiteral) {
                 return p._def.value;
               }
             })
@@ -156,7 +156,13 @@ function createComponents(options: HttpObject[]): ComponentsObject | undefined {
     })
     .map(response => {
       const body = response.shape.body;
-      return "shape" in body ? body.shape.content : null;
+      if("shape" in body){
+        return body.shape.content
+      }
+      if("options" in body){
+        body.options.map(it => it.shape.content)
+      }
+      return undefined
     })
     .reduce((acc, cur) => {
       if (cur != null && "reference" in cur && cur.state.name) {
@@ -176,18 +182,16 @@ function createOperationObject(http: HttpObject): OperationObject {
   const shape = http._def.shape();
   return {
     summary:
-      "output" in shape.summary._def
-        ? shape.summary._def.output._def.value
+      "defaultValue" in shape.summary._def
+        ? shape.summary._def.defaultValue()
         : undefined,
     operationId:
-      "output" in shape.name._def
-        ? shape.name._def.output._def.value
+      "defaultValue" in shape.name._def
+        ? shape.name._def.defaultValue()
         : undefined,
     tags:
-      "output" in shape.tags._def
-        ? shape.tags._def.output._def.items.map((x: z.ZodLiteral<string>) =>
-            "value" in x._def ? x._def.value : undefined
-          )
+      "defaultValue" in shape.tags._def
+        ? shape.tags._def.defaultValue() as string[]
         : undefined,
     requestBody: createRequestBody(http),
     parameters: createParameterObject(http),

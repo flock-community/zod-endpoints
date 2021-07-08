@@ -5,8 +5,16 @@ test("parameter with number", () => {
     .parameter(z.number().max(100))
     .name("limit")
     .description("How many items to return at one time (max 100)");
-  expect(n.check(50)).toBeTruthy();
-  expect(n.check(400)).toBeFalsy();
+
+  expect(n.parse(50)).toEqual(50)
+
+  try {
+    n.parse(400)
+  } catch (err) {
+    const zerr: z.ZodError = err;
+    expect(zerr.issues[0].code).toEqual(z.ZodIssueCode.too_big);
+    expect(zerr.issues[0].message).toEqual(`Value should be less than or equal to 100`);
+  }
 });
 
 test("parameter with string", () => {
@@ -14,6 +22,14 @@ test("parameter with string", () => {
     .parameter(z.string().max(7))
     .name("limit")
     .description("How many items to return at one time (max 100)");
-  expect(s.check("123456")).toBeTruthy();
-  expect(s.check("12345678")).toBeFalsy();
+
+  expect(s.parse("123456")).toEqual("123456")
+
+  try {
+    s.parse("12345678")
+  } catch (err) {
+    const zerr: z.ZodError = err;
+    expect(zerr.issues[0].code).toEqual(z.ZodIssueCode.too_big);
+    expect(zerr.issues[0].message).toEqual(`Should be at most 7 characters long`);
+  }
 });

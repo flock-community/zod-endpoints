@@ -1,6 +1,6 @@
 import { ZodTypeAny } from "zod";
 
-export * from "zod";
+export *  from "zod";
 
 export type ZodRawShape = {
   [k: string]: ZodTypeAny;

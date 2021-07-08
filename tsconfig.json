@@ -9,11 +9,8 @@
     ],
     "outDir": "./lib",
     "target": "es5",
-    "removeComments": true,
-    "module": "commonjs",
-    "declaration": true,
+    "removeComments": false,
     "esModuleInterop": true,
-    "sourceMap": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
@@ -23,7 +20,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "isolatedModules": true
   },
   "include": [
     "./src/**/*",

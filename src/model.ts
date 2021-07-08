@@ -8,7 +8,7 @@ export type ParameterObject = z.ZodObject<{ [key: string]: Parameter }>;
 export type Content =
   | Reference<any>
   | Component<any>
-  | z.ZodType<any, any, any>;
+  | z.ZodObject<any>
 
 export type HttpBody = {
   type: z.ZodLiteral<string>;
@@ -22,15 +22,15 @@ export type HttpBodyUnion =
 
 export type HttpRequest = {
   name:
-    | z.ZodTransformer<z.ZodOptional<z.ZodLiteral<any>>, z.ZodLiteral<string>>
+    | z.ZodDefault<z.ZodLiteral<any>>
     | z.ZodUndefined;
   method: z.ZodLiteral<string>;
   path: z.ZodTuple<[Path, ...Path[]]> | z.ZodUndefined;
   summary:
-    | z.ZodTransformer<z.ZodOptional<z.ZodLiteral<any>>, z.ZodLiteral<string>>
+    | z.ZodDefault<z.ZodLiteral<string>>
     | z.ZodUndefined;
   tags:
-    | z.ZodTransformer<z.ZodOptional<z.ZodTuple<any>>, z.ZodTuple<any>>
+    | z.ZodDefault<z.ZodTuple<any>>
     | z.ZodUndefined;
   query: ParameterObject;
   headers: ParameterObject;
@@ -50,9 +50,8 @@ export type HttpResponseObject = z.ZodObject<HttpResponse>;
 
 export type HttpResponseUnion =
   | HttpResponseObject
-  | z.ZodUnion<
-      [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]
-    >;
+  | z.ZodUnion<[HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]>
+  | z.ZodUndefined;
 
 export type Http = HttpRequest & {
   responses: HttpResponseUnion;
