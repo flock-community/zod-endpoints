@@ -1,6 +1,5 @@
 import * as z from "./deps";
 import { Integer } from "./integer";
-import { ReferenceType } from "./reference";
 
 export type ComponentType =
   | z.ZodObject<z.ZodRawShape>
@@ -13,14 +12,14 @@ export type ComponentType =
   | z.ZodTypeAny
   | Integer;
 
-export class Component<T extends ReferenceType> extends z.ZodType<
+export class Component<T extends ComponentType> extends z.ZodType<
   T["_output"],
   T["_def"],
   T["_input"]
 > {
   _parse(
     _ctx: z.ParseContext,
-    _data: unknown,
+    _data: any,
     _parsedType: z.ZodParsedType
   ): z.ParseReturnType<T["_output"]> {
     return this.component._parse(_ctx, _data, _parsedType);
