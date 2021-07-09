@@ -20,7 +20,7 @@ export class Component<T extends ReferenceType> extends z.ZodType<
 > {
   _parse(
     _ctx: z.ParseContext,
-    _data: any,
+    _data: unknown,
     _parsedType: z.ZodParsedType
   ): z.ParseReturnType<T["_output"]> {
     return this.component._parse(_ctx, _data, _parsedType);
