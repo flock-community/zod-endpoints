@@ -22,6 +22,7 @@ export class Component<T extends ComponentType> extends z.ZodType<
     _data: any,
     _parsedType: z.ZodParsedType
   ): z.ParseReturnType<T["_output"]> {
+    // @ts-ignore
     return this.component._parse(_ctx, _data, _parsedType);
   }
   readonly component: ComponentType;
