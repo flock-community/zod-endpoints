@@ -43,7 +43,7 @@ const walkAndBuild = (/** @type string */ dir) => {
                     }
 
                     if (target === "zod") {
-                        return `export * from "https://raw.githubusercontent.com/colinhacks/zod/master/deno/lib/mod.ts"`;
+                        return `export * from "https://raw.githubusercontent.com/colinhacks/zod/master/deno/lib/mod.ts";`;
                     }
 
                     const targetNodePath = join(dirname(nodePath), target);
