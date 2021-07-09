@@ -44,6 +44,7 @@
     "rollup": "rollup --config rollup.config.js",
     "test": "node --trace-warnings node_modules/.bin/jest --coverage && npm run badge",
     "testone": "jest",
+    "version": "tsc --version && node --version",
     "badge": "make-coverage-badge --output-path ./coverage.svg",
     "prepublishOnly": "npm run test && npm run build && npm run build:deno",
     "play": "nodemon -e ts -w . -x ts-node src/playground.ts --project tsconfig.json --trace-warnings",
@@ -75,7 +76,7 @@
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.0",
     "tslib": "^2.1.0",
-    "typescript": "^4.3.2"
+    "typescript": "4.1.2"
   },
   "husky": {
     "hooks": {
