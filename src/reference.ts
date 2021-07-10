@@ -1,13 +1,11 @@
-import { ZodTypeAny } from "zod";
-
 import * as z from "./deps";
 
-export class Reference<T extends ZodTypeAny> extends z.ZodType<
+export class Reference<T extends z.ZodTypeAny> extends z.ZodType<
   T["_output"],
   T["_def"],
   T["_input"]
 > {
-  readonly reference: ZodTypeAny;
+  readonly reference: z.ZodTypeAny;
   state: {
     name?: string;
   };
@@ -27,7 +25,7 @@ export class Reference<T extends ZodTypeAny> extends z.ZodType<
 
   public toJSON = () => this._def;
 
-  static create<T extends ZodTypeAny>(name: string, type: T) {
+  static create<T extends z.ZodTypeAny>(name: string, type: T) {
     return new Reference(name, type);
   }
 }

@@ -1,8 +1,6 @@
-export * from "https://raw.githubusercontent.com/colinhacks/zod/master/deno/lib/mod.ts";
-
 import * as z from "./deps.ts";
 
-export class Component<T extends ZodTypeAny> extends z.ZodType<
+export class Component<T extends z.ZodTypeAny> extends z.ZodType<
   T["_output"],
   T["_def"],
   T["_input"]
@@ -14,16 +12,16 @@ export class Component<T extends ZodTypeAny> extends z.ZodType<
   ): z.ParseReturnType<T["_output"]> {
     return this.component._parse(_ctx, _data, _parsedType);
   }
-  readonly component: ZodTypeAny;
+  readonly component: z.ZodTypeAny;
 
-  constructor(type: ZodTypeAny) {
+  constructor(type: z.ZodTypeAny) {
     super(type._def);
     this.component = type;
   }
 
   public toJSON = () => this._def;
 
-  static create(type: ZodTypeAny) {
+  static create(type: z.ZodTypeAny) {
     return new Component(type);
   }
 }
