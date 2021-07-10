@@ -164,7 +164,12 @@ function createComponents(options: HttpObject[]): ComponentsObject | undefined {
       return undefined;
     })
     .reduce((acc, cur) => {
-      if (cur != null && "reference" in cur && cur.state.name) {
+      if (
+        cur != null &&
+        "reference" in cur &&
+        "state" in cur &&
+        cur.state.name
+      ) {
         return { ...acc, [cur.state.name]: createSchema(cur.reference) };
       } else {
         return acc;

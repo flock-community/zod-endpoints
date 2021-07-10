@@ -5,7 +5,10 @@ import { Reference } from "./reference";
 
 export type Path = z.ZodLiteral<any> | z.ZodString | Parameter;
 export type ParameterObject = z.ZodObject<{ [key: string]: Parameter }>;
-export type Content = Reference<any> | Component<any> | z.ZodAny;
+export type Content =
+  | Reference<any>
+  | Component<any>
+  | z.ZodFirstPartySchemaTypes;
 
 export type HttpBody = {
   type: z.ZodLiteral<string>;
