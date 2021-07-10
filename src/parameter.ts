@@ -14,7 +14,6 @@ export class Parameter extends z.ZodType<any> {
     _data: any,
     _parsedType: z.ZodParsedType
   ): z.ParseReturnType<any> {
-    // @ts-ignore
     return this.type._parse(_ctx, _data, _parsedType);
   }
   constructor(type: z.ZodType<any>) {
