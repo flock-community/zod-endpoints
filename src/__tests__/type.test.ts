@@ -1,9 +1,12 @@
+// @ts-ignore TS6133
+import { expect, test } from "@jest/globals";
+
 import * as z from "../index";
 
 test("type string", () => {
   const zod = z.string();
   expect(z.createSchema(zod)).toEqual({
-    type: "string"
+    type: "string",
   });
 });
 
@@ -11,7 +14,7 @@ test("type object", () => {
   const zod = z.object({
     id: z.number(),
     name: z.string(),
-    tag: z.string().optional()
+    tag: z.string().optional(),
   });
   expect(z.createSchema(zod)).toEqual({
     type: "object",
@@ -19,15 +22,15 @@ test("type object", () => {
     properties: {
       id: {
         type: "integer",
-        format: "int32"
+        format: "int32",
       },
       name: {
-        type: "string"
+        type: "string",
       },
       tag: {
-        type: "string"
-      }
-    }
+        type: "string",
+      },
+    },
   });
 });
 
@@ -37,9 +40,9 @@ test("type nested object", () => {
     name: z.string(),
     obj: z
       .object({
-        test: z.string()
+        test: z.string(),
       })
-      .optional()
+      .optional(),
   });
   expect(z.createSchema(zod)).toEqual({
     type: "object",
@@ -47,21 +50,21 @@ test("type nested object", () => {
     properties: {
       id: {
         type: "integer",
-        format: "int32"
+        format: "int32",
       },
       name: {
-        type: "string"
+        type: "string",
       },
       obj: {
         properties: {
           test: {
-            type: "string"
-          }
+            type: "string",
+          },
         },
         required: ["test"],
-        type: "object"
-      }
-    }
+        type: "object",
+      },
+    },
   });
 });
 
@@ -70,8 +73,8 @@ test("type array", () => {
   expect(z.createSchema(zod)).toEqual({
     type: "array",
     items: {
-      type: "string"
-    }
+      type: "string",
+    },
   });
 });
 
@@ -79,12 +82,12 @@ test("type integer", () => {
   const int32 = z.integer();
   expect(z.createSchema(int32)).toEqual({
     format: "int32",
-    type: "integer"
+    type: "integer",
   });
 
   const int64 = z.integer("int64").max(100);
   expect(z.createSchema(int64)).toEqual({
     format: "int64",
-    type: "integer"
+    type: "integer",
   });
 });

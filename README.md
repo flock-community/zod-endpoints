@@ -1,3 +1,6 @@
+<a href="./src/__tests__" rel="nofollow"><img src="./coverage.svg" alt="coverage"></a>
+
+
 # Zod-endpoints
 Contract first strictly typed endpoints. By defining endpoints as a zod schema, all the requests and responses can be checked and parsed at runtime. Moreover, the TypeScript compiler can check the in- and output types of the endpoints.
 

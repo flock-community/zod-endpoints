@@ -1,16 +1,19 @@
+// @ts-ignore TS6133
+import { expect, test } from "@jest/globals";
+
+import petApi from "../data/petstore";
 import * as z from "../index";
 import { openApi } from "../openapi";
-import petApi from "../data/petstore";
 
 const Error = z.object({
   code: z.integer(),
-  message: z.string()
+  message: z.string(),
 });
 
 const Pet = z.object({
   id: z.integer("int64"),
   name: z.string(),
-  tag: z.string().optional()
+  tag: z.string().optional(),
 });
 
 const Pets = z.array(z.reference("Pet", Pet));
@@ -25,7 +28,7 @@ const schema = z.endpoints([
     query: {
       limit: z
         .parameter(z.integer("int32").max(100).optional())
-        .description("How many items to return at one time (max 100)")
+        .description("How many items to return at one time (max 100)"),
     },
     responses: [
       z.response({
@@ -35,22 +38,22 @@ const schema = z.endpoints([
           "x-next": z
             .parameter(z.string())
             .name("x-next")
-            .description("A link to the next page of responses")
+            .description("A link to the next page of responses"),
         },
         body: z.body({
           type: "application/json",
-          content: z.reference("Pets", Pets)
-        })
+          content: z.reference("Pets", Pets),
+        }),
       }),
       z.response({
         status: "default",
         description: "unexpected error",
         body: z.body({
           type: "application/json",
-          content: z.reference("Error", Error)
-        })
-      })
-    ]
+          content: z.reference("Error", Error),
+        }),
+      }),
+    ],
   }),
 
   z.endpoint({
@@ -63,7 +66,7 @@ const schema = z.endpoints([
       z
         .parameter(z.string().uuid())
         .name("petId")
-        .description("The id of the pet to retrieve")
+        .description("The id of the pet to retrieve"),
     ],
     responses: [
       z.response({
@@ -71,18 +74,18 @@ const schema = z.endpoints([
         description: "Expected response to a valid request",
         body: z.body({
           type: "application/json",
-          content: z.reference("Pet", Pet)
-        })
+          content: z.reference("Pet", Pet),
+        }),
       }),
       z.response({
         status: "default",
         description: "unexpected error",
         body: z.body({
           type: "application/json",
-          content: z.reference("Error", Error)
-        })
-      })
-    ]
+          content: z.reference("Error", Error),
+        }),
+      }),
+    ],
   }),
 
   z.endpoint({
@@ -92,23 +95,23 @@ const schema = z.endpoints([
     method: "POST",
     path: [z.literal("pets")],
     headers: {
-      accept: z.parameter(z.literal("application/json"))
+      accept: z.parameter(z.literal("application/json")),
     },
     responses: [
       z.response({
         status: 201,
-        description: "Null response"
+        description: "Null response",
       }),
       z.response({
         status: "default",
         description: "unexpected error",
         body: z.body({
           type: "application/json",
-          content: z.reference("Error", Error)
-        })
-      })
-    ]
-  })
+          content: z.reference("Error", Error),
+        }),
+      }),
+    ],
+  }),
 ]);
 
 const server = { url: "http://petstore.swagger.io/v1" };
@@ -140,14 +143,14 @@ test("validate example request", () => {
     path: ["pets"],
     method: "GET",
     query: {
-      limit: 10
+      limit: 10,
     },
-    headers:{},
+    headers: {},
     responses: {
       description: "A paged array of pets",
       status: 200,
       headers: {
-        "x-next": "?"
+        "x-next": "?",
       },
       body: {
         type: "application/json",
@@ -155,19 +158,19 @@ test("validate example request", () => {
           {
             id: 1,
             name: "Bello",
-            tag: "DOG"
-          }
-        ]
-      }
-    }
+            tag: "DOG",
+          },
+        ],
+      },
+    },
   };
   expect(schema.parse(listPets).name).toEqual("listPets");
 
   const showPetById: Input = {
     path: ["pets", "b945f0a8-022d-11eb-adc1-0242ac120002"],
     method: "GET",
-    query:{},
-    headers:{},
+    query: {},
+    headers: {},
     responses: {
       description: "unexpected error",
       status: "default",
@@ -176,10 +179,10 @@ test("validate example request", () => {
         type: "application/json",
         content: {
           code: 50,
-          message: "This is an error"
-        }
-      }
-    }
+          message: "This is an error",
+        },
+      },
+    },
   };
   const res = schema.parse(showPetById);
   expect(res.name).toEqual("showPetById");

@@ -1,12 +1,11 @@
-export * from "./deps";
-
-export { Parameter, parameter } from "./parameter";
-export { Reference, reference, ReferenceType } from "./reference";
-export { Component, component, ComponentType } from "./component";
-export { Integer, integer } from "./integer";
-export { openApi, createSchema } from "./openapi";
-export * from "./dsl";
-export * from "./model";
 export * from "./api";
 export * from "./client";
+export { Component, component } from "./component";
+export * from "./deps";
+export * from "./dsl";
+export { Integer, integer } from "./integer";
 export * from "./match";
+export * from "./model";
+export { createSchema, openApi } from "./openapi";
+export { Parameter, parameter } from "./parameter";
+export { Reference, reference } from "./reference";

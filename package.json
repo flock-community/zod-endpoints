@@ -1,6 +1,6 @@
 {
   "name": "zod-endpoints",
-  "version": "0.0.22",
+  "version": "0.1.0",
   "description": "Typescript contract first strictly typed endpoints",
   "main": "./lib/cjs/index.js",
   "types": "./lib/cjs/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/flock-community/zod-endpoints",
   "dependencies": {
-    "zod": "^2.0.0-beta.20"
+    "zod": "3.5.1"
   },
   "keywords": [
     "openapi",
@@ -29,34 +29,64 @@
     "zod"
   ],
   "scripts": {
-    "clean": "rm -rf lib/cjs && rm -rf lib/esm",
-    "build": "yarn run clean && tsc --p tsconfig.cjs.json && tsc --p tsconfig.esm.json",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json",
-    "test": "jest",
+    "check:format": "prettier --check \"src/**/*.ts\" \"deno/lib/**/*.ts\"",
+    "fix:format": "prettier --write \"src/**/*.ts\" \"deno/lib/**/*.ts\"",
+    "check:lint": "eslint --ext .ts ./src",
+    "fix:lint": "eslint --fix --ext .ts ./src",
+    "check": "yarn check:lint && yarn check:format",
+    "fix": "yarn fix:lint && yarn fix:format",
+    "clean": "rm -rf lib/* deno/lib/*",
+    "build": "yarn run clean && npm run build:cjs && npm run build:esm && npm run build:deno",
+    "build:deno": "node ./deno/build.mjs",
+    "build:esm": "rollup --config rollup.config.js",
+    "build:cjs": "tsc --p tsconfig.cjs.json",
+    "build:types": "tsc --p tsconfig.types.json",
+    "rollup": "rollup --config rollup.config.js",
+    "test": "node --trace-warnings node_modules/.bin/jest --coverage && yarn run badge",
     "testone": "jest",
-    "badge": "make-coverage-badge --report-path ./src/coverage/coverage-summary.json --output-path ./coverage.svg",
-    "deno_clean": "rm -rf deno_lib && rm -rf lib/deno",
-    "deno_build": "yarn run deno_clean && denoify && node deno_scripts/UpdateTestImports.js && node deno_scripts/UpdateModTs.js && mv deno_lib lib/deno",
-    "deno_test": "deno test lib/deno/__tests__",
-    "prepare": "npm run build && npm run deno_build",
-    "all": "npm run build && npm run deno_build && npm run test && npm run deno_test"
+    "badge": "make-coverage-badge --output-path ./coverage.svg",
+    "prepublishOnly": "npm run test && npm run build && npm run build:deno",
+    "play": "nodemon -e ts -w . -x ts-node src/playground.ts --project tsconfig.json --trace-warnings",
+    "depcruise": "depcruise -c .dependency-cruiser.js src",
+    "benchmark": "ts-node src/benchmarks/index.ts"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.15",
-    "denoify": "0.6.3",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "@types/benchmark": "^2.1.0",
+    "@types/jest": "^26.0.17",
+    "@types/node": "^14.14.10",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
+    "benchmark": "^2.1.4",
+    "dependency-cruiser": "^9.19.0",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unused-imports": "^1.1.0",
+    "husky": "^4.3.4",
     "jest": "^26.6.3",
+    "lint-staged": "^10.5.3",
     "make-coverage-badge": "^1.2.0",
     "nodemon": "^2.0.2",
-    "prettier": "^1.19.1",
-    "ts-jest": "^26.4.3",
-    "tslint": "^6.1.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "4.0"
+    "prettier": "^2.2.1",
+    "rollup": "^2.42.1",
+    "rollup-plugin-uglify": "^6.0.4",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.0",
+    "tslib": "^2.1.0",
+    "typescript": "^4.3.2"
   },
-  "denoify": {
-    "ports": {
-      "zod": "https://raw.githubusercontent.com/flock-community/zod/v2_deno/deno_lib/index.ts"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn build:deno && git add .",
+      "pre-push": "lint-staged && yarn build && yarn test"
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "yarn fix:lint",
+      "yarn fix:format"
+    ]
   }
 }
