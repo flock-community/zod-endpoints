@@ -1,12 +1,16 @@
 {
   "name": "zod-endpoints",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Typescript contract first strictly typed endpoints",
-  "main": "./lib/cjs/index.js",
-  "types": "./lib/cjs/index.d.ts",
-  "module": "./lib/esm/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "module": "./lib/index.mjs",
+  "exports": {
+    "require": "./lib/index.js",
+    "import": "./lib/index.mjs"
+  },
   "files": [
-    "lib"
+    "/lib"
   ],
   "repository": {
     "type": "git",
