@@ -1,13 +1,11 @@
+import { Component } from "./component.ts";
 import {
-  Component,
-  Parameter,
-  Reference,
   ZodFirstPartyTypeKind,
   ZodLiteral,
   ZodOptional,
   ZodString,
   ZodTypeAny,
-} from "./index.ts";
+} from "./deps.ts";
 import {
   HttpBodyUnion,
   HttpObject,
@@ -16,6 +14,8 @@ import {
   HttpSchema,
   ParameterObject as ParameterObj,
 } from "./model.ts";
+import { Parameter } from "./parameter.ts";
+import { Reference } from "./reference.ts";
 import {
   ComponentsObject,
   ContentObject,

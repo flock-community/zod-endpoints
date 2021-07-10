@@ -1,11 +1,18 @@
-import * as z from "./index";
+import * as z from "./deps";
+import {
+  HttpObject,
+  HttpRequestObject,
+  HttpResponseObject,
+  HttpResponseUnion,
+  HttpUnion,
+} from "./model";
 
 export type MatchRequest = Pick<
-  z.output<z.HttpRequestObject>,
+  z.output<HttpRequestObject>,
   "method" | "path" | "query" | "headers" | "body"
 >;
 export type MatchResponse = Pick<
-  z.output<z.HttpResponseObject>,
+  z.output<HttpResponseObject>,
   "status" | "headers" | "body"
 >;
 
@@ -19,10 +26,10 @@ const requestPicker = {
 const responsePicker = { status: true, headers: true, body: true } as const;
 
 export function matchRequest(
-  schema: z.HttpUnion,
+  schema: HttpUnion,
   req: MatchRequest
-): z.HttpObject | undefined {
-  function check(request: z.HttpRequestObject) {
+): HttpObject | undefined {
+  function check(request: HttpRequestObject) {
     try {
       request.pick(requestPicker).parse(req);
       return true;
@@ -35,10 +42,10 @@ export function matchRequest(
 }
 
 export function matchResponse(
-  responses: z.HttpResponseUnion,
+  responses: HttpResponseUnion,
   req: MatchResponse
-): z.HttpResponseObject | undefined {
-  function check(response: z.HttpResponseObject) {
+): HttpResponseObject | undefined {
+  function check(response: HttpResponseObject) {
     try {
       response.pick(responsePicker).parse(req);
       return true;
