@@ -1,6 +1,5 @@
 export * from "./api.ts";
 export * from "./client.ts";
-export type { ComponentType } from "./component.ts";
 export { Component, component } from "./component.ts";
 export * from "./deps.ts";
 export * from "./dsl.ts";
@@ -9,5 +8,4 @@ export * from "./match.ts";
 export * from "./model.ts";
 export { createSchema, openApi } from "./openapi.ts";
 export { Parameter, parameter } from "./parameter.ts";
-export type { ReferenceType } from "./reference.ts";
 export { Reference, reference } from "./reference.ts";

@@ -2,7 +2,6 @@ import {
   Component,
   Parameter,
   Reference,
-  ReferenceType,
   ZodFirstPartyTypeKind,
   ZodLiteral,
   ZodOptional,
@@ -66,7 +65,7 @@ function mapSchema(type: ZodTypeAny): SchemaObject | undefined {
 }
 
 export function createSchema(
-  obj: ReferenceType | Reference<any> | Component<any>
+  obj: ZodTypeAny | Reference<any> | Component<any>
 ): SchemaObject | ReferenceObject | undefined {
   if ("reference" in obj) {
     return { $ref: `#/components/schemas/${obj.state.name}` };

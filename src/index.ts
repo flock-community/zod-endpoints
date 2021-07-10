@@ -1,6 +1,5 @@
 export * from "./api";
 export * from "./client";
-export type { ComponentType } from "./component";
 export { Component, component } from "./component";
 export * from "./deps";
 export * from "./dsl";
@@ -9,5 +8,4 @@ export * from "./match";
 export * from "./model";
 export { createSchema, openApi } from "./openapi";
 export { Parameter, parameter } from "./parameter";
-export type { ReferenceType } from "./reference";
 export { Reference, reference } from "./reference";

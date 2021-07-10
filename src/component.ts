@@ -1,18 +1,8 @@
+import { ZodTypeAny } from "zod";
+
 import * as z from "./deps";
-import { Integer } from "./integer";
 
-export type ComponentType =
-  | z.ZodObject<z.ZodRawShape>
-  | z.ZodArray<z.ZodTypeAny>
-  | z.ZodString
-  | z.ZodBigInt
-  | z.ZodNumber
-  | z.ZodBoolean
-  | z.ZodOptional<z.ZodTypeAny>
-  | z.ZodTypeAny
-  | Integer;
-
-export class Component<T extends ComponentType> extends z.ZodType<
+export class Component<T extends ZodTypeAny> extends z.ZodType<
   T["_output"],
   T["_def"],
   T["_input"]
@@ -24,16 +14,16 @@ export class Component<T extends ComponentType> extends z.ZodType<
   ): z.ParseReturnType<T["_output"]> {
     return this.component._parse(_ctx, _data, _parsedType);
   }
-  readonly component: ComponentType;
+  readonly component: ZodTypeAny;
 
-  constructor(type: ComponentType) {
+  constructor(type: ZodTypeAny) {
     super(type._def);
     this.component = type;
   }
 
   public toJSON = () => this._def;
 
-  static create(type: ComponentType) {
+  static create(type: ZodTypeAny) {
     return new Component(type);
   }
 }

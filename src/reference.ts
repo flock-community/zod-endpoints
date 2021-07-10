@@ -1,24 +1,13 @@
+import { ZodTypeAny } from "zod";
+
 import * as z from "./deps";
-import { Integer } from "./integer";
-import { Parameter } from "./parameter";
 
-export type ReferenceType =
-  | z.ZodObject<any>
-  | z.ZodArray<any>
-  | z.ZodString
-  | z.ZodBigInt
-  | z.ZodNumber
-  | z.ZodBoolean
-  | z.ZodOptional<any>
-  | Parameter
-  | Integer;
-
-export class Reference<T extends ReferenceType> extends z.ZodType<
+export class Reference<T extends ZodTypeAny> extends z.ZodType<
   T["_output"],
   T["_def"],
   T["_input"]
 > {
-  readonly reference: ReferenceType;
+  readonly reference: ZodTypeAny;
   state: {
     name?: string;
   };
@@ -38,7 +27,7 @@ export class Reference<T extends ReferenceType> extends z.ZodType<
 
   public toJSON = () => this._def;
 
-  static create<T extends ReferenceType>(name: string, type: T) {
+  static create<T extends ZodTypeAny>(name: string, type: T) {
     return new Reference(name, type);
   }
 }
