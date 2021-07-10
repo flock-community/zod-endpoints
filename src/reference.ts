@@ -1,5 +1,6 @@
 import * as z from "./deps";
 import { Integer } from "./integer";
+import { Parameter } from "./parameter";
 
 export type ReferenceType =
   | z.ZodObject<any>
@@ -9,7 +10,7 @@ export type ReferenceType =
   | z.ZodNumber
   | z.ZodBoolean
   | z.ZodOptional<any>
-  | z.ZodTypeAny
+  | Parameter
   | Integer;
 
 export class Reference<T extends ReferenceType> extends z.ZodType<

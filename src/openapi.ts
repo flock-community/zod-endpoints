@@ -1,6 +1,5 @@
 import {
   Component,
-  ComponentType,
   Parameter,
   Reference,
   ReferenceType,
@@ -39,7 +38,7 @@ const base = {
   openapi: "3.0.0",
 };
 
-function mapSchema(type: ComponentType): SchemaObject | undefined {
+function mapSchema(type: ZodTypeAny): SchemaObject | undefined {
   switch (type._def.typeName) {
     case ZodFirstPartyTypeKind.ZodNumber:
       if ("format" in type._def) {
