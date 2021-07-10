@@ -33,18 +33,17 @@
     "fix:format": "prettier --write \"src/**/*.ts\" \"deno/lib/**/*.ts\"",
     "check:lint": "eslint --ext .ts ./src",
     "fix:lint": "eslint --fix --ext .ts ./src",
-    "check": "npm run check:lint && npm run check:format",
-    "fix": "npm run fix:lint && npm run fix:format",
+    "check": "yarn check:lint && yarn check:format",
+    "fix": "yarn fix:lint && yarn fix:format",
     "clean": "rm -rf lib/* deno/lib/*",
-    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:deno",
+    "build": "yarn run clean && npm run build:cjs && npm run build:esm && npm run build:deno",
     "build:deno": "node ./deno/build.mjs",
     "build:esm": "rollup --config rollup.config.js",
     "build:cjs": "tsc --p tsconfig.cjs.json",
     "build:types": "tsc --p tsconfig.types.json",
     "rollup": "rollup --config rollup.config.js",
-    "test": "node --trace-warnings node_modules/.bin/jest --coverage && npm run badge",
+    "test": "node --trace-warnings node_modules/.bin/jest --coverage && yarn run badge",
     "testone": "jest",
-    "version": "tsc --version && node --version",
     "badge": "make-coverage-badge --output-path ./coverage.svg",
     "prepublishOnly": "npm run test && npm run build && npm run build:deno",
     "play": "nodemon -e ts -w . -x ts-node src/playground.ts --project tsconfig.json --trace-warnings",
@@ -76,18 +75,18 @@
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.0",
     "tslib": "^2.1.0",
-    "typescript": "4.3.5"
+    "typescript": "^4.3.2"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run build:deno && git add .",
-      "pre-push": "lint-staged && npm run build && npm test"
+      "pre-commit": "lint-staged && yarn build:deno && git add .",
+      "pre-push": "lint-staged && yarn build && yarn test"
     }
   },
   "lint-staged": {
     "*.ts": [
-      "npm run fix:lint",
-      "npm run fix:format"
+      "yarn fix:lint",
+      "yarn fix:format"
     ]
   }
 }

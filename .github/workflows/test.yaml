@@ -14,24 +14,23 @@ jobs:
     strategy:
       matrix:
         node: [ '14' ]
-        typescript: [ '4.1', '4.2', '4.3' ]
+        typescript: [ '4.1', '4.2' ]
     name: Test with TypeScript ${{ matrix.typescript }} on Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
-      - run: npm install typescript@${{ matrix.typescript }}
-      - run: npm run version
-      - run: npm run build
-      - run: npm run test
+      - run: yarn install
+      - run: yarn add typescript@${{ matrix.typescript }}
+      - run: yarn build
+      - run: yarn test
 
   test-deno:
     runs-on: Ubuntu-20.04
     strategy:
       matrix:
-        deno: [ "v1.9.x", "v1.x" ]
+        deno: [ "v1.7.1", "v1.x" ]
     name: Test with Deno ${{ matrix.deno }}
     steps:
       - uses: actions/checkout@v2
@@ -61,6 +60,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
-      - run: npm run check:format
-      - run: npm run check:lint
+      - run: yarn install
+      - run: yarn check:format
+      - run: yarn check:lint
