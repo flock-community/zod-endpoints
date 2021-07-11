@@ -1,3 +1,4 @@
+<a href="https://npmjs.org/package/zod-endpoints" title="View this project on NPM"><img src="https://img.shields.io/npm/v/zod-endpoints.svg" alt="NPM version" /></a>
 <a href="./src/__tests__" rel="nofollow"><img src="./coverage.svg" alt="coverage"></a>
 
 
@@ -8,6 +9,9 @@ In this way the problem space of your application will become much smaller to be
 
 The schema can be used as a contract between consumer and producer. Drivers can be generated from the contract which ensures proper communication between a client and server. 
 
+# Example project
+
+[Example](https://github.com/flock-community/zod-endpoints-example)
 
 ## Simplified model
 
