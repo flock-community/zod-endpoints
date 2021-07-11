@@ -120,21 +120,21 @@ function createPaths(options: HttpObject[]): PathsObject {
       shape.path._def !== undefined && "items" in shape.path._def
         ? "/" +
           shape.path._def.items
-            .map((p) => {
+            .map((p, index) => {
               if ("state" in p) {
                 return `{${p.state.name}}`;
               }
-              if (p._def.typeName === ZodFirstPartyTypeKind.ZodString) {
-                return `{${p._def.typeName}}`;
-              }
-              if (p._def.typeName === ZodFirstPartyTypeKind.ZodNumber) {
-                return `{${p._def.typeName}}`;
-              }
-              if (p._def.typeName === ZodFirstPartyTypeKind.ZodBoolean) {
-                return `{${p._def.typeName}}`;
-              }
               if (p._def.typeName === ZodFirstPartyTypeKind.ZodLiteral) {
                 return p._def.value;
+              }
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodString) {
+                return `{param_${index}}`;
+              }
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodNumber) {
+                return `{param_${index}}`;
+              }
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodBoolean) {
+                return `{param_${index}}`;
               }
             })
             .join("/")
@@ -220,16 +220,16 @@ function createParameterObject(http: HttpObject) {
       : []),
     ...(shape.path._def && "items" in shape.path._def
       ? shape.path._def.items
-          .filter((it) => "state" in it)
           .map(createPathParameterObject)
+          .filter((it) => it.schema !== undefined)
       : []),
   ];
   return res.length > 0 ? res : undefined;
 }
 
-function createPathParameterObject(it: Path): ParameterObject {
+function createPathParameterObject(it: Path, index: number): ParameterObject {
   return {
-    name: "state" in it && it.state.name ? it.state.name : "undefined",
+    name: "state" in it && it.state.name ? it.state.name : `param_${index}`,
     in: "path",
     description: "state" in it ? it.state.description : undefined,
     required: !("innerType" in it._def),

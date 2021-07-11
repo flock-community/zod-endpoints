@@ -167,3 +167,22 @@ test("client", async () => {
     expect(resGetId.body.content.id).toBe(id);
   }
 });
+
+test("openapi", () => {
+  const openApi = z.openApi(schema);
+
+  const assert = Object.entries(openApi.paths).flatMap(([key, value]) =>
+    Object.entries(value).map(([_, req]) => [
+      key,
+      // @ts-ignore
+      req.parameters?.map((par) => par.name),
+    ])
+  );
+  expect(JSON.stringify(assert)).toBe(
+    JSON.stringify([
+      ["/projects/{param_1}", ["param_1"]],
+      ["/projects", undefined],
+      ["/projects", undefined],
+    ])
+  );
+});
