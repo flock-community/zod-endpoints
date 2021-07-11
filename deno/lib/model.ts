@@ -3,7 +3,12 @@ import * as z from "./deps.ts";
 import { Parameter } from "./parameter.ts";
 import { Reference } from "./reference.ts";
 
-export type Path = z.ZodLiteral<any> | z.ZodString | Parameter;
+export type Path =
+  | z.ZodLiteral<any>
+  | z.ZodString
+  | z.ZodNumber
+  | z.ZodBoolean
+  | Parameter;
 export type ParameterObject = z.ZodObject<{ [key: string]: Parameter }>;
 export type Content =
   | Reference<any>

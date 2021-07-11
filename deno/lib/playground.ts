@@ -1,6 +1,5 @@
 export * from "https://raw.githubusercontent.com/colinhacks/zod/master/deno/lib/mod.ts";
 
-const a = "a";
-const b: z.ZodDefault<z.ZodLiteral<string>> = z.literal(a).default(a);
+const x = z.literal("");
 
-console.log(b);
+console.log(x);
