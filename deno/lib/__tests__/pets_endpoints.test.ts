@@ -58,7 +58,7 @@ const schema = z.endpoints([
   }),
 
   z.endpoint({
-    name: "showPetById",
+    name: "showPetById" as const,
     summary: "Info for a specific pet",
     tags: [z.literal("pets")],
     method: "GET",
@@ -90,7 +90,7 @@ const schema = z.endpoints([
   }),
 
   z.endpoint({
-    name: "createPets",
+    name: "createPets" as const,
     summary: "Create a pet",
     tags: [z.literal("pets")],
     method: "POST",
@@ -187,4 +187,23 @@ test("validate example request", () => {
   };
   const res = schema.parse(showPetById);
   expect(res.name).toEqual("showPetById");
+});
+
+test("api interface", () => {
+  const api: z.Api<typeof schema> = {
+    listPets: () =>
+      Promise.resolve({
+        status: 200,
+        headers: { "x-next": "abc" },
+        body: { type: "application/json", content: [] },
+      }),
+    showPetById: () =>
+      Promise.resolve({
+        status: 200,
+        body: { type: "application/json", content: { id: 1, name: "Pet" } },
+      }),
+    createPets: () => Promise.resolve({ status: 201 }),
+  };
+
+  expect(api).toBeTruthy();
 });

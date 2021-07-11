@@ -93,13 +93,17 @@ export type EndpointMapper<T extends Endpoint> = z.ZodObject<{
     : z.ZodUndefined;
 }>;
 
-export function endpoint<T extends Endpoint>(endpoint: T): EndpointMapper<T> {
+export function endpoint<T extends Endpoint>(
+  endpoint: Readonly<T>
+): EndpointMapper<T> {
   // @ts-ignore
   return z.object({
+    // @ts-ignore
     name: z.literal(endpoint.name).default(endpoint.name),
     summary:
       endpoint.summary !== undefined
-        ? z.literal(endpoint.summary).default(endpoint.summary)
+        ? // @ts-ignore
+          z.literal(endpoint.summary).default(endpoint.summary)
         : z.undefined(),
     tags:
       endpoint.tags !== undefined
