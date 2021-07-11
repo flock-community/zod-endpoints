@@ -23,11 +23,11 @@ const errorResponse = z.response({
   }),
 });
 
-const schema = z.union([
+const schema = z.endpoints([
   z.endpoint({
     name: "GET_PROJECT",
     method: "GET",
-    path: [z.literal("projects"), z.string().uuid()],
+    path: z.path("projects", z.string().uuid()),
     responses: [
       z.response({
         description: "Found project",
@@ -51,7 +51,7 @@ const schema = z.union([
   z.endpoint({
     name: "LIST_PROJECT",
     method: "GET",
-    path: [z.literal("projects")],
+    path: z.path("projects"),
     headers: {},
     responses: [
       z.response({
@@ -68,7 +68,7 @@ const schema = z.union([
   z.endpoint({
     name: "CREATE_PROJECT",
     method: "POST",
-    path: [z.literal("projects")],
+    path: z.path("projects"),
     body: z.body({
       type: "application/json",
       content: project,

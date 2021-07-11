@@ -38,6 +38,17 @@ export type Response = {
     | HttpBodyObject;
 };
 
+export type PathInput = [string | Path, ...(string | Path)[]];
+export type PathMapper<Tuple extends PathInput> = {
+  [Index in keyof Tuple]: Tuple[Index] extends string
+    ? z.ZodLiteral<Tuple[Index]>
+    : Tuple[Index];
+};
+export function path<T extends PathInput>(...input: T): PathMapper<T> {
+  // @ts-ignore
+  return input.map((it) => (typeof it === "string" ? z.literal(it) : it));
+}
+
 export type Endpoint = Request & {
   responses?:
     | [HttpResponseObject, HttpResponseObject, ...HttpResponseObject[]]

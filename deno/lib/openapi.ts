@@ -1,11 +1,5 @@
 import { Component } from "./component.ts";
-import {
-  ZodFirstPartyTypeKind,
-  ZodLiteral,
-  ZodOptional,
-  ZodString,
-  ZodTypeAny,
-} from "./deps.ts";
+import { ZodFirstPartyTypeKind, ZodTypeAny } from "./deps.ts";
 import {
   HttpBodyUnion,
   HttpObject,
@@ -13,6 +7,7 @@ import {
   HttpResponseUnion,
   HttpSchema,
   ParameterObject as ParameterObj,
+  Path,
 } from "./model.ts";
 import { Parameter } from "./parameter.ts";
 import { Reference } from "./reference.ts";
@@ -132,6 +127,12 @@ function createPaths(options: HttpObject[]): PathsObject {
               if (p._def.typeName === ZodFirstPartyTypeKind.ZodString) {
                 return `{${p._def.typeName}}`;
               }
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodNumber) {
+                return `{${p._def.typeName}}`;
+              }
+              if (p._def.typeName === ZodFirstPartyTypeKind.ZodBoolean) {
+                return `{${p._def.typeName}}`;
+              }
               if (p._def.typeName === ZodFirstPartyTypeKind.ZodLiteral) {
                 return p._def.value;
               }
@@ -226,16 +227,13 @@ function createParameterObject(http: HttpObject) {
   return res.length > 0 ? res : undefined;
 }
 
-function createPathParameterObject(
-  it: ZodLiteral<any> | ZodString | ZodOptional<ZodTypeAny> | Parameter
-): ParameterObject {
+function createPathParameterObject(it: Path): ParameterObject {
   return {
     name: "state" in it && it.state.name ? it.state.name : "undefined",
     in: "path",
     description: "state" in it ? it.state.description : undefined,
     required: !("innerType" in it._def),
-    schema:
-      "innerType" in it._def ? mapSchema(it._def.innerType) : mapSchema(it),
+    schema: mapSchema(it),
   };
 }
 
