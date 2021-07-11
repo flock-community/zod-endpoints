@@ -89,8 +89,8 @@ const state: z.infer<typeof project>[] = [];
 // @ts-ignore
 const client: z.Client<typeof schema> = (req) => {
   console.log(req);
-  if (req.method === "POST" && req.path[0] == "projects") {
-    state.push(req?.body?.content);
+  if (req && req.body && req.method === "POST" && req.path[0] == "projects") {
+    state.push(req.body.content);
     return Promise.resolve({
       status: 201,
       body: {
