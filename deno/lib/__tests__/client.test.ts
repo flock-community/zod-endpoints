@@ -24,7 +24,6 @@ const errorResponse = z.response({
 });
 
 const schema = z.union([
-
   z.endpoint({
     name: "GET_PROJECT",
     method: "GET",
@@ -84,56 +83,50 @@ const schema = z.union([
   }),
 ]);
 
-const id = "1a2c8758-e223-11eb-ba80-0242ac130004" as string
-const state: z.infer<typeof project>[] = []
-
+const id = "1a2c8758-e223-11eb-ba80-0242ac130004" as string;
+const state: z.infer<typeof project>[] = [];
 
 // @ts-ignore
-const client : z.Client<typeof schema>  = (req) => {
-
+const client: z.Client<typeof schema> = (req) => {
   console.log(req);
-  if(req.method === "POST" && req.path[0] == "projects"){
-    state.push(req.body.content)
+  if (req.method === "POST" && req.path[0] == "projects") {
+    state.push(req.body.content);
     return Promise.resolve({
-      status:201,
+      status: 201,
       body: {
         type: "application/json",
-        content: state
+        content: state,
       },
-      headers: {}
-    })
+      headers: {},
+    });
   }
 
-  if(req.method === "GET" && req.path[1] == id){
+  if (req.method === "GET" && req.path[1] == id) {
     return Promise.resolve({
-      status:200,
+      status: 200,
       body: {
         type: "application/json",
-        content: state.find(it => it.id === id)
+        content: state.find((it) => it.id === id),
       },
-      headers: {}
-    })
+      headers: {},
+    });
   }
 
-  if(req.method === "GET" && req.path[0] == "projects"){
+  if (req.method === "GET" && req.path[0] == "projects") {
     return Promise.resolve({
-      status:200,
+      status: 200,
       body: {
         type: "application/json",
-        content: state
+        content: state,
       },
-      headers: {}
-    })
+      headers: {},
+    });
   }
 
-  throw new Error("Cannot respond")
-
-}
+  throw new Error("Cannot respond");
+};
 
 test("client", async () => {
-
-
-
   const resPost = await client({
     method: "POST",
     path: ["projects"],
@@ -146,7 +139,7 @@ test("client", async () => {
     },
     query: {},
     headers: {},
-  })
+  });
 
   expect(resPost.status).toBe(201);
 
@@ -155,11 +148,11 @@ test("client", async () => {
     path: ["projects"],
     query: {},
     headers: {},
-  })
+  });
 
   expect(resGetList.status).toBe(200);
-  if(resGetList.status == 200) {
-    expect(resGetList.body.content.find(it => it.id === id)?.id).toBe(id);
+  if (resGetList.status == 200) {
+    expect(resGetList.body.content.find((it) => it.id === id)?.id).toBe(id);
   }
 
   const resGetId = await client({
@@ -167,11 +160,10 @@ test("client", async () => {
     path: ["projects", id],
     query: {},
     headers: {},
-  })
+  });
 
   expect(resGetId.status).toBe(200);
-  if(resGetId.status == 200) {
+  if (resGetId.status == 200) {
     expect(resGetId.body.content.id).toBe(id);
   }
-
 });

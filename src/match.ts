@@ -43,11 +43,11 @@ export function matchRequest(
 
 export function matchResponse(
   responses: HttpResponseUnion,
-  req: MatchResponse
+  res: MatchResponse
 ): HttpResponseObject | undefined {
   function check(response: HttpResponseObject) {
     try {
-      response.pick(responsePicker).parse(req);
+      response.pick(responsePicker).parse(res);
       return true;
     } catch (e) {
       return false;
