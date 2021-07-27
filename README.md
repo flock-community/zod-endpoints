@@ -9,7 +9,7 @@ In this way the problem space of your application will become much smaller to be
 
 The schema can be used as a contract between consumer and producer. Drivers can be generated from the contract which ensures proper communication between a client and server. 
 
-# Example project
+## Example project
 
 [Example](https://github.com/flock-community/zod-endpoints-example)
 
