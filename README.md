@@ -23,7 +23,7 @@ type Body = {
     content: any
 }
 
-type Reqest = {
+type Request = {
     method: "GET" | "POST" | "PUT" | "DELETE"
     path: [...string[]]
     body: Body | ...Body
@@ -34,7 +34,7 @@ type Response = {
     body: Body | ...Body
 }
 
-type Http = Reqest & {
+type Http = Request & {
     responses: Response | ...Response
 }
 
