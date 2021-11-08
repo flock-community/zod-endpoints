@@ -52,7 +52,8 @@
     "prepublishOnly": "npm run test && npm run build && npm run build:deno",
     "play": "nodemon -e ts -w . -x ts-node src/playground.ts --project tsconfig.json --trace-warnings",
     "depcruise": "depcruise -c .dependency-cruiser.js src",
-    "benchmark": "ts-node src/benchmarks/index.ts"
+    "benchmark": "ts-node src/benchmarks/index.ts",
+    "update": "npx --yes update-ruecksichtslos@latest"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.0",
