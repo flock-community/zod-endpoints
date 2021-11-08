@@ -14,7 +14,7 @@ test("parameter with number", () => {
   try {
     n.parse(400);
   } catch (err) {
-    const zerr: z.ZodError = err;
+    const zerr = err as z.ZodError;
     expect(zerr.issues[0].code).toEqual(z.ZodIssueCode.too_big);
     expect(zerr.issues[0].message).toEqual(
       `Value should be less than or equal to 100`
@@ -33,7 +33,7 @@ test("parameter with string", () => {
   try {
     s.parse("12345678");
   } catch (err) {
-    const zerr: z.ZodError = err;
+    const zerr = err as z.ZodError;
     expect(zerr.issues[0].code).toEqual(z.ZodIssueCode.too_big);
     expect(zerr.issues[0].message).toEqual(
       `Should be at most 7 characters long`

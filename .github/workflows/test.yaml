@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         node: [ '14' ]
-        typescript: [ '4.1', '4.2' ]
+        typescript: [ '4.1', '4.2', '4.3', '4.4' ]
     name: Test with TypeScript ${{ matrix.typescript }} on Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
     runs-on: Ubuntu-20.04
     strategy:
       matrix:
-        deno: [ "v1.8.1", "v1.x" ]
+        deno: [ "v1.x" ]
     name: Test with Deno ${{ matrix.deno }}
     steps:
       - uses: actions/checkout@v2

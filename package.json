@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/flock-community/zod-endpoints",
   "dependencies": {
-    "zod": "3.5.1"
+    "zod": "3.11.5"
   },
   "keywords": [
     "openapi",
@@ -79,7 +79,7 @@
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.0",
     "tslib": "^2.1.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.4"
   },
   "husky": {
     "hooks": {
