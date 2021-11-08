@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/flock-community/zod-endpoints",
   "dependencies": {
-    "zod": "3.5.1"
+    "zod": "3.11.5"
   },
   "keywords": [
     "openapi",
